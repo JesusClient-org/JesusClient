@@ -1,0 +1,16 @@
+[
+{
+  "modid": "examplemod",
+  "name": "Example Mod",
+  "description": "JesusTouchMe best gamer",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://niggafart.com",
+  "updateUrl": "",
+  "authorList": ["JesusTouchMe"],
+  "credits": "india",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

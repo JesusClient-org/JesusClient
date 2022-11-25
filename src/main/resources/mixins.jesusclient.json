@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "package": "cum.jesus.jesusclient.injection.mixins",
+  "refmap": "mixins.jesusclient.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "client.MinecraftMixin",
+    "client.gui.MixinGuiScreen"
+  ]
+}
