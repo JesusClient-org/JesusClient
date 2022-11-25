@@ -28,9 +28,11 @@ public class MinecraftMixin {
     }
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))
-    private void onKey(CallbackInfo ci) {
+    private void runTick(CallbackInfo ci) {
         if (Keyboard.getEventKeyState() && currentScreen == null)
             EventManager.call(new KeyInputEvent(Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey()));
+
+        EventManager.call(new GameTickEvent());
     }
 
     @Inject(method = "startGame", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;ingameGUI:Lnet/minecraft/client/gui/GuiIngame;", shift = At.Shift.AFTER))
@@ -41,10 +43,5 @@ public class MinecraftMixin {
     @Inject(method = "shutdown", at = @At("HEAD"))
     private void onShutdown(CallbackInfo ci) {
         JesusClient.INSTANCE.stopClient();
-    }
-
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void tick(CallbackInfo callbackInfo) {
-        EventManager.call(new GameTickEvent());
     }
 }

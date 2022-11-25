@@ -5,6 +5,12 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "client.MinecraftMixin",
-    "client.gui.MixinGuiScreen"
+    "client.gui.MixinGuiScreen",
+    "entity.MixinEntity",
+    "entity.MixinEntityLivingBase",
+    "entity.player.MixinEntityPlayer"
+  ],
+  "client": [
+    "client.entity.MixinAbstractClientPlayer"
   ]
 }

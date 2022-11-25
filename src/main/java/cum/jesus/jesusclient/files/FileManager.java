@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 public class FileManager {
     private final File clientDir = new File(JesusClient.INSTANCE.mc.mcDataDir, JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""));
     public final File backupDir = new File(clientDir, "config-backups");
+    public final File cacheDir = new File(clientDir, "CACHE");
     public final File configFile = new File(clientDir, "jesusconfig.json");
     private final File firstTimeFile = new File(clientDir, "firsttime.txt");
 

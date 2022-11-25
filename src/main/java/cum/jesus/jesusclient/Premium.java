@@ -10,6 +10,8 @@ import java.util.Iterator;
 public class Premium {
     private static boolean userPremium;
 
+    private static String verType;
+
     public static void load() {
         JsonArray whitelist = JesusClient.backend.get("whitelist").getAsJsonArray();
         ArrayList<String> whitelistArray = new ArrayList<>();
@@ -26,10 +28,12 @@ public class Premium {
 
         if (uuidInList || JesusClient.username.equals("Jesus")) {
             userPremium = true;
+            verType = "PREMIUM";
 
             Logger.info("Using premium version. Enjoy");
         } else {
             userPremium = false;
+            verType = "PUBLIC";
 
             Logger.info("Using free/public version");
         }
@@ -37,5 +41,9 @@ public class Premium {
 
     public static boolean isUserPremium() {
         return userPremium;
+    }
+
+    public static String getVerType() {
+        return verType;
     }
 }

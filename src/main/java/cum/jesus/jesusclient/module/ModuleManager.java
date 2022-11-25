@@ -4,6 +4,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.KeyInputEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
+import cum.jesus.jesusclient.module.modules.combat.Cum;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +21,9 @@ public class ModuleManager {
 
     public boolean addModules() {
         addModule(new Gui());
+        addModule(new Cum());
 
-        return getModules().size() == 1;
+        return true;
     }
 
     private void addModule(@NotNull Module module) {

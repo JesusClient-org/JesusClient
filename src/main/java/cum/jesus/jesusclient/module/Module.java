@@ -15,14 +15,14 @@ public abstract class Module {
     private boolean hidden;
     private int keybind;
     private boolean toggled;
-    private boolean premiumFeature;
+    private boolean premiumFeature = false;
     private boolean shouldNotify = true;
 
     protected Module(String name, String description, Category category) {
-        this(name, description, category, false, true, Keyboard.KEY_NONE);
+        this(name, description, category, true, false, Keyboard.KEY_NONE);
     }
 
-    protected Module(String name, String description, Category category, boolean hidden, boolean canBeEnabled, int keybind) {
+    protected Module(String name, String description, Category category, boolean canBeEnabled, boolean hidden, int keybind) {
         this.name = name;
         this.description = description;
         this.category = category;
@@ -86,7 +86,7 @@ public abstract class Module {
 
             onDisable();
 
-            if (!Gui.hideNotifs.getObject() && shouldNotify){
+            if (!Gui.hideNotifs.getObject() && shouldNotify()){
                 JesusClient.sendPrefixMessage(Utils.getColouredBoolean(state) + " " + getName());
             }
         }

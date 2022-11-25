@@ -2,8 +2,10 @@ package cum.jesus.jesusclient.command;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.Premium;
+import cum.jesus.jesusclient.command.commands.DiscordCommand;
 import cum.jesus.jesusclient.command.commands.HelpCommand;
 import cum.jesus.jesusclient.command.commands.JesusCommand;
+import cum.jesus.jesusclient.command.commands.VClipCommand;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 
@@ -18,8 +20,10 @@ public class CommandManager {
     public boolean addCommands() {
         addCommand(new HelpCommand());
         addCommand(new JesusCommand());
+        addCommand(new DiscordCommand());
+        addCommand(new VClipCommand());
 
-        return getCommandList().size() == 2;
+        return true;
     }
 
     public void addCommand(Command c) {

@@ -14,7 +14,7 @@ public class Gui extends Module {
     public static StringSetting prefix = new StringSetting("Command prefix", "-");
 
     public Gui() {
-        super("ClickGui", "Config Gui", Category.RENDER, false, true,  Keyboard.KEY_F4);
+        super("ClickGui", "Config Gui", Category.RENDER, true, false,  Keyboard.KEY_F4);
     }
 
     @Override

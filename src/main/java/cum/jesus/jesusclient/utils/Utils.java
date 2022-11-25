@@ -1,8 +1,13 @@
 package cum.jesus.jesusclient.utils;
 
+import cum.jesus.jesusclient.JesusClient;
 import jline.internal.Log;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Mouse;
 
@@ -15,6 +20,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utils {
     public static String getColouredBoolean(boolean bool) {
@@ -70,5 +77,39 @@ public class Utils {
             } catch (Exception e) {
                 Log.info("fail");
             }
+    }
+
+    public static void throwSlot(int slot) {
+        ItemStack curInSlot = JesusClient.mc.thePlayer.inventory.getStackInSlot(slot);
+        if (curInSlot != null)
+            if (curInSlot.getDisplayName().contains("Snowball")) {
+                int ss = curInSlot.stackSize;
+                for (int i = 0; i < ss; i++) {
+                    JesusClient.mc.thePlayer.inventory.currentItem = slot;
+                    JesusClient.mc.playerController.sendUseItem((EntityPlayer)JesusClient.mc.thePlayer, (World)JesusClient.mc.theWorld, JesusClient.mc.thePlayer.inventory.getStackInSlot(slot));
+                }
+            } else {
+                JesusClient.mc.thePlayer.inventory.currentItem = slot;
+                JesusClient.mc.playerController.sendUseItem((EntityPlayer)JesusClient.mc.thePlayer, (World)JesusClient.mc.theWorld, JesusClient.mc.thePlayer.inventory.getStackInSlot(slot));
+            }
+    }
+
+    public static int getAvailableHotbarSlot(String name) {
+        for (int i = 0; i < 9; i++) {
+            ItemStack is = JesusClient.mc.thePlayer.inventory.getStackInSlot(i);
+            if (is == null || is.getDisplayName().contains(name))
+                return i;
+        }
+        return -1;
+    }
+
+    public static java.util.List<Integer> getAllSlots(int throwSlot, String name) {
+        List<Integer> ret = new ArrayList<>();
+        for (int i = 9; i < 44; i++) {
+            ItemStack is = ((Slot)JesusClient.mc.thePlayer.inventoryContainer.inventorySlots.get(i)).getStack();
+            if (is != null && is.getDisplayName().contains(name) && i - 36 != throwSlot)
+                ret.add(Integer.valueOf(i));
+        }
+        return ret;
     }
 }

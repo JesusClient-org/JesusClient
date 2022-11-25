@@ -9,6 +9,7 @@ import cum.jesus.jesusclient.config.ConfigManager;
 import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
+import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.WebUtils;
 import net.minecraft.client.Minecraft;
@@ -33,7 +34,7 @@ public class JesusClient {
     public static final String CLIENT_AUTHOR = "JesusTouchMe";
     public static final double CLIENT_VERSION_NUMBER = 0.1;
     @NotNull
-    public static final String CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-DEV";
+    public static final String CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
     @NotNull
     public static final String CLIENT_INITIALS;
 
@@ -113,6 +114,9 @@ public class JesusClient {
 
         // Add modules
         if (moduleManager.addModules()) Logger.info("Loaded module manager");
+
+        // Load capes
+        Capes.load();
 
         configManager.load();
     }
