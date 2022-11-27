@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGuiScreen {
     @Inject(method = "sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void sendChatMessage(String msg, CallbackInfo ci) {
+        if (JesusClient.INSTANCE.blacklisted) return;
         if (msg.startsWith(Gui.prefix.getObject())) {
             String c = msg.substring(Gui.prefix.getObject().length());
             if (!c.isEmpty()) {

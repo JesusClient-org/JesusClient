@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient.injection;
 
+import cum.jesus.jesusclient.JesusClient;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

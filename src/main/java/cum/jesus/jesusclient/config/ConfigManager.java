@@ -188,8 +188,6 @@ public class ConfigManager {
         Logger.info("Creating backup " + backupReasons);
 
         try {
-            JesusClient.INSTANCE.fileManager.backupDir.mkdirs();
-
             File out = new File(JesusClient.INSTANCE.fileManager.backupDir, "backup_" + System.currentTimeMillis() + ".zip");
             out.createNewFile();
 

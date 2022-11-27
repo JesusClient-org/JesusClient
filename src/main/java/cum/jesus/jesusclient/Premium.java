@@ -15,25 +15,19 @@ public class Premium {
     public static void load() {
         JsonArray whitelist = JesusClient.backend.get("whitelist").getAsJsonArray();
         ArrayList<String> whitelistArray = new ArrayList<>();
-        Iterator<JsonElement> iterator = whitelist.iterator();
 
-        int c = 0;
-        while (iterator.hasNext()) {
-            JsonElement next = iterator.next();
+        for (JsonElement next : whitelist) {
             whitelistArray.add(next.getAsString());
-            c++;
         }
 
         boolean uuidInList = whitelistArray.stream().anyMatch(s -> s.equals(JesusClient.compactUUID));
 
         if (uuidInList || JesusClient.username.equals("Jesus")) {
             userPremium = true;
-            verType = "PREMIUM";
 
             Logger.info("Using premium version. Enjoy");
         } else {
             userPremium = false;
-            verType = "PUBLIC";
 
             Logger.info("Using free/public version");
         }
@@ -44,6 +38,6 @@ public class Premium {
     }
 
     public static String getVerType() {
-        return verType;
+        return userPremium ? "PREMIUM" : "PUBLIC";
     }
 }

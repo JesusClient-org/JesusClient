@@ -11,6 +11,10 @@
     "entity.player.MixinEntityPlayer"
   ],
   "client": [
-    "client.entity.MixinAbstractClientPlayer"
+    "client.entity.EntityPlayerSPAccessor",
+    "client.entity.MixinAbstractClientPlayer",
+    "client.entity.MixinEntityPlayerSP",
+    "client.network.MixinNetHandlerPlayClient",
+    "client.renderer.MixinEntityRenderer"
   ]
 }

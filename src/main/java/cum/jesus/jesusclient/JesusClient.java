@@ -6,16 +6,24 @@ import com.google.gson.JsonObject;
 import cum.jesus.jesusclient.command.CommandManager;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
 import cum.jesus.jesusclient.config.ConfigManager;
+import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.utils.Logger;
+import cum.jesus.jesusclient.utils.SkyblockUtils;
 import cum.jesus.jesusclient.utils.WebUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.LWJGLException;
@@ -34,7 +42,7 @@ public class JesusClient {
     public static final String CLIENT_AUTHOR = "JesusTouchMe";
     public static final double CLIENT_VERSION_NUMBER = 0.1;
     @NotNull
-    public static final String CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
+    public static String CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-DEV";
     @NotNull
     public static final String CLIENT_INITIALS;
 
@@ -47,6 +55,8 @@ public class JesusClient {
     public static String ssid = RandomStringUtils.random(mc.getSession().getSessionID().length(), true, true);
 
     public static JsonObject backend;
+
+    public boolean blacklisted;
 
     static {
         List<Character> chars = new ArrayList<>();
@@ -75,19 +85,15 @@ public class JesusClient {
 
     public void startClient() {
         backend = (JsonObject) WebUtils.getJsonFromUrl("https://jesustouchme.ga/api/v1/childp/jessepinkman.json");
-
+        ClientCommandHandler.instance.registerCommand(new JesusSlashCommand());
         // check blacklist
         JsonArray blacklist = backend.get("blacklist").getAsJsonArray();
         ArrayList<String> blacklistArray = new ArrayList<>();
-        Iterator<JsonElement> iterator = blacklist.iterator();
-        int c = 0;
-        while (iterator.hasNext()) {
-            JsonElement next = iterator.next();
+        for (JsonElement next : blacklist) {
             blacklistArray.add(next.getAsString());
-            c++;
         }
-        boolean uuidInList = blacklistArray.stream().anyMatch(s -> s.equals(compactUUID));
-        if (uuidInList) return;
+        blacklisted = blacklistArray.stream().anyMatch(s -> s.equals(compactUUID));
+        if (blacklisted) return;
 
         Premium.load();
 
@@ -98,6 +104,7 @@ public class JesusClient {
         settingManager = new SettingManager();
         moduleManager = new ModuleManager();
 
+        CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
         Display.setTitle(CLIENT_NAME + " v" + CLIENT_VERSION);
 
         // loading file manager
@@ -109,11 +116,12 @@ public class JesusClient {
         }
 
         // Add commands
-        ClientCommandHandler.instance.registerCommand(new JesusSlashCommand());
         if (commandManager.addCommands()) Logger.info("Loaded command manager");
 
         // Add modules
         if (moduleManager.addModules()) Logger.info("Loaded module manager");
+
+        EventManager.register(new SkyblockUtils());
 
         // Load capes
         Capes.load();
@@ -122,6 +130,8 @@ public class JesusClient {
     }
 
     public void stopClient() {
+        if (blacklisted) return;
+
         Logger.info("Stopping client");
 
         try {

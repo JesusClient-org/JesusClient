@@ -23,7 +23,10 @@ public class JesusSlashCommand extends CommandBase {
     }
 
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        JesusClient.sendPrefixMessage("the command is " + Gui.prefix.getObject() + "jesus");
+        if (JesusClient.INSTANCE.blacklisted)
+            JesusClient.sendPrefixMessage("you're black");
+        else
+            JesusClient.sendPrefixMessage("the command is " + Gui.prefix.getObject() + "jesus");
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class FileManager {
     private final File clientDir = new File(JesusClient.INSTANCE.mc.mcDataDir, JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""));
@@ -25,6 +26,28 @@ public class FileManager {
     public void init() {
         //noinspection ResultOfMethodCallIgnored
         clientDir.mkdirs();
+        //noinspection ResultOfMethodCallIgnored
+        backupDir.mkdirs();
+
+        // delete oldest backup if there's more than 25
+        File[] backups = backupDir.listFiles();
+        long oldestDate = Long.MAX_VALUE;
+        File oldestFile = null;
+        if( backups != null && backups.length >= 25) {
+            //delete oldest files after theres more than 25 backup files
+            for(File f : backups) {
+                if(f.lastModified() < oldestDate) {
+                    oldestDate = f.lastModified();
+                    oldestFile = f;
+                }
+            }
+
+            if(oldestFile != null) {
+                Logger.info("Deleted config backup: " + oldestFile.getName());
+                //noinspection ResultOfMethodCallIgnored
+                oldestFile.delete();
+            }
+        }
     }
 
     public void loadFirstTime() throws IOException {

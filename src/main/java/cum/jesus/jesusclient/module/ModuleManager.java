@@ -5,7 +5,10 @@ import cum.jesus.jesusclient.events.KeyInputEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.module.modules.combat.Cum;
+import cum.jesus.jesusclient.module.modules.combat.KillAura;
+import cum.jesus.jesusclient.module.modules.combat.Reach;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.module.modules.render.NoBlind;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ public class ModuleManager {
     public boolean addModules() {
         addModule(new Gui());
         addModule(new Cum());
+        addModule(KillAura.INSTANCE);
+        addModule(Reach.INSTANCE);
+        addModule(NoBlind.INSTANCE);
 
         return true;
     }
