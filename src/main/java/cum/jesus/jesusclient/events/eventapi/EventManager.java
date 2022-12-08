@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.events.eventapi;
 
 import cum.jesus.jesusclient.events.eventapi.events.Event;
 import cum.jesus.jesusclient.events.eventapi.events.EventStoppable;
+import cum.jesus.jesusclient.events.eventapi.events.callables.EventCancellable;
 import cum.jesus.jesusclient.events.eventapi.types.Priority;
 import org.jetbrains.annotations.NotNull;
 
@@ -247,6 +248,15 @@ public final class EventManager {
         }
 
         return event;
+    }
+
+    public static boolean post(Event event) {
+        if (event instanceof EventCancellable) {
+            call(event);
+            return ((EventCancellable) event).isCancelled();
+        } else {
+            return false;
+        }
     }
 
     /**

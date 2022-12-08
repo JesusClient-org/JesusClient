@@ -6,7 +6,9 @@ import com.google.gson.JsonObject;
 import cum.jesus.jesusclient.command.CommandManager;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
 import cum.jesus.jesusclient.config.ConfigManager;
+import cum.jesus.jesusclient.events.WorldLoadEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
+import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
@@ -85,7 +87,9 @@ public class JesusClient {
 
     public void startClient() {
         backend = (JsonObject) WebUtils.getJsonFromUrl("https://jesustouchme.ga/api/v1/childp/jessepinkman.json");
+
         ClientCommandHandler.instance.registerCommand(new JesusSlashCommand());
+
         // check blacklist
         JsonArray blacklist = backend.get("blacklist").getAsJsonArray();
         ArrayList<String> blacklistArray = new ArrayList<>();
@@ -122,6 +126,7 @@ public class JesusClient {
         if (moduleManager.addModules()) Logger.info("Loaded module manager");
 
         EventManager.register(new SkyblockUtils());
+        EventManager.register(this);
 
         // Load capes
         Capes.load();

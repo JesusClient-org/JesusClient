@@ -15,6 +15,8 @@ public abstract class Command {
     private String[] args;
     private boolean premiumOnly;
 
+    private boolean devOnly;
+
     public Command(String name, String help, int minArgs, int maxArgs, String[] alias, String[] args) {
         this.name = name;
         this.help = help;
@@ -50,6 +52,10 @@ public abstract class Command {
 
     public boolean isPremiumOnly() {
         return premiumOnly;
+    }
+
+    public boolean isDevOnly() {
+        return devOnly;
     }
 
     public void setArgs(String[] args) {

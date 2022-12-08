@@ -14,7 +14,10 @@
     "client.entity.EntityPlayerSPAccessor",
     "client.entity.MixinAbstractClientPlayer",
     "client.entity.MixinEntityPlayerSP",
+    "client.gui.MixinGuiIngame",
+    "client.multiplayer.MixinWorldClient",
     "client.network.MixinNetHandlerPlayClient",
-    "client.renderer.MixinEntityRenderer"
+    "client.renderer.MixinEntityRenderer",
+    "client.renderer.MixinItemRenderer"
   ]
 }

@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.module.modules.combat;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.MotionUpdateEvent;
+import cum.jesus.jesusclient.events.WorldLoadEvent;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.events.eventapi.types.Priority;
@@ -18,6 +19,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.WorldEvent;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -98,14 +100,26 @@ public class KillAura extends Module {
         if ((JesusClient.mc.currentScreen instanceof net.minecraft.client.gui.inventory.GuiContainer && !gui.getObject()) || JesusClient.mc.theWorld == null)
             return null;
         List<Entity> validTargets = (List<Entity>)JesusClient.mc.theWorld.getLoadedEntityList().stream().filter(entity -> entity instanceof EntityLivingBase).filter(entity -> isValid((EntityLivingBase)entity)).sorted(Comparator.comparingDouble(e -> e.getDistanceToEntity((Entity)JesusClient.mc.thePlayer))).collect(Collectors.toList());
-        String[] modes = mode.getModes();
-        if ("Health".equals(modes)) { // Health
-            validTargets.sort(Comparator.comparingDouble(e -> ((EntityLivingBase) e).getHealth()));
-        } else if ("Hurt".equals(modes)) { // Hurt
-            validTargets.sort(Comparator.comparing(e -> Integer.valueOf(((EntityLivingBase) e).hurtTime)));
-        } else if ("Hp reverse".equals(modes)) { // HP Reverse
-            validTargets.sort(Comparator.<Entity>comparingDouble(e -> ((EntityLivingBase) e).getHealth()).reversed());
+        //String[] modes = mode.getModes();
+        //if ("Health".equals(modes)) { // Health
+        //    validTargets.sort(Comparator.comparingDouble(e -> ((EntityLivingBase) e).getHealth()));
+        //} else if ("Hurt".equals(modes)) { // Hurt
+        //    validTargets.sort(Comparator.comparing(e -> Integer.valueOf(((EntityLivingBase) e).hurtTime)));
+        //} else if ("Hp reverse".equals(modes)) { // HP Reverse
+        //    validTargets.sort(Comparator.<Entity>comparingDouble(e -> ((EntityLivingBase) e).getHealth()).reversed());
+        //}
+
+        switch (mode.getObject()) {
+            case 1: // Health
+                validTargets.sort(Comparator.comparingDouble(e -> ((EntityLivingBase)e).getHealth()));
+                break;
+            case 2: // Hurt
+                validTargets.sort(Comparator.comparing(e -> Integer.valueOf(((EntityLivingBase)e).hurtTime)));
+                break;
+            case 3: // HP Reverse
+                validTargets.sort(Comparator.<Entity>comparingDouble(e -> ((EntityLivingBase)e).getHealth()).reversed());
         }
+
         Iterator<Entity> iterator = validTargets.iterator();
         if (iterator.hasNext()) {
             Entity entity = iterator.next();
@@ -124,5 +138,11 @@ public class KillAura extends Module {
         return !(entity instanceof net.minecraft.entity.passive.EntityVillager);
     }
 
+    @EventTarget
+    public void onWorldLoad(WorldLoadEvent event) {
+        if (isToggled() && toggleOnLoad.getObject()) {
+            toggle();
 
+        }
+    }
 }

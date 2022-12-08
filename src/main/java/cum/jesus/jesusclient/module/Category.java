@@ -1,7 +1,7 @@
 package cum.jesus.jesusclient.module;
 
 public enum Category {
-    COMBAT("Combat"), SKYBLOCK("Skyblock"), SELF("Self"), RENDER("Render"), FUNNY("Funny"), OTHER("Other");
+    COMBAT("Combat"), SKYBLOCK("Skyblock"), SELF("Self"), RENDER("Render"), MOVEMENT("Movement"), OTHER("Other");
 
     private String name;
 
