@@ -4,7 +4,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 import net.minecraft.client.Minecraft;
 
-public abstract class Command {
+public abstract class  Command {
     protected final Minecraft mc = Minecraft.getMinecraft();
 
     private final String name;
@@ -13,9 +13,6 @@ public abstract class Command {
     private final int maxArgs;
     private final String[] alias;
     private String[] args;
-    private boolean premiumOnly;
-
-    private boolean devOnly;
 
     public Command(String name, String help, int minArgs, int maxArgs, String[] alias, String[] args) {
         this.name = name;
@@ -51,11 +48,11 @@ public abstract class Command {
     }
 
     public boolean isPremiumOnly() {
-        return premiumOnly;
+        return false;
     }
 
     public boolean isDevOnly() {
-        return devOnly;
+        return false;
     }
 
     public void setArgs(String[] args) {

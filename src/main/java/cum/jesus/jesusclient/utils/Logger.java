@@ -3,6 +3,8 @@ package cum.jesus.jesusclient.utils;
 import cum.jesus.jesusclient.JesusClient;
 import jline.internal.Preconditions;
 import jline.internal.TestAccessible;
+import net.minecraft.launchwrapper.Launch;
+
 import java.io.PrintStream;
 
 /*
@@ -67,7 +69,9 @@ public final class Logger {
     }
 
     public static void debug(Object... messages) {
-        log(Level.DEBUG, messages);
+        if(JesusClient.devMode) {
+            log(Level.DEBUG, messages);
+        }
     }
 
     public static void info(Object... messages) {

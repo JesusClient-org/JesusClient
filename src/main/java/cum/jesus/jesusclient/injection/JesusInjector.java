@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixins;
 
 import java.util.Map;
 
+@IFMLLoadingPlugin.Name("Jesus Cummer")
 public class JesusInjector implements IFMLLoadingPlugin {
     public JesusInjector() {
         MixinBootstrap.init();

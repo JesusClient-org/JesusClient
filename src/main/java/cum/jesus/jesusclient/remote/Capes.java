@@ -34,7 +34,7 @@ public class Capes {
         capeDir.mkdirs();
 
         try {
-            JsonObject json = (JsonObject) WebUtils.getJsonFromUrl("https://jesustouchme.ga/api/v1/cape/capedata/capedata.json");
+            JsonObject json = (JsonObject) WebUtils.getJson("https://jesustouchme.ga/api/v1/cape/capedata/capedata.json");
             JsonObject jsonCapes = json.get("capes").getAsJsonObject();
             JsonObject jsonOwners = json.get("owners").getAsJsonObject();
 

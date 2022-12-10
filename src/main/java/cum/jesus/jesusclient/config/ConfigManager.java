@@ -83,14 +83,11 @@ public class ConfigManager {
 
                     JsonElement clientVersion = metadata.get("clientVersion");
 
-                    if (clientVersion != null && clientVersion.isJsonPrimitive() && ((JsonPrimitive) clientVersion).isNumber()) {
-                        double version = clientVersion.getAsDouble();
+                    if (clientVersion != null && clientVersion.isJsonPrimitive() && ((JsonPrimitive) clientVersion).isString()) {
+                        String version = clientVersion.getAsString();
 
-                        if (version > JesusClient.CLIENT_VERSION_NUMBER) {
-                            backupReasons.add("Version number of save file (" + version + ") is higher than " + JesusClient.CLIENT_VERSION_NUMBER);
-                        }
-                        if (version < JesusClient.CLIENT_VERSION_NUMBER) {
-                            backupReasons.add("Version number of save file (" + version + ") is lower than " + JesusClient.CLIENT_VERSION_NUMBER);
+                        if (!version.equals(JesusClient.CLIENT_VERSION_NUMBER)) {
+                            metadata.addProperty("clientVersion", JesusClient.CLIENT_VERSION_NUMBER);
                         }
                     } else {
                         backupReasons.add("'clientVersion' object is not valid.");

@@ -3,12 +3,11 @@ package cum.jesus.jesusclient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.sun.jna.platform.win32.Kernel32;
 import cum.jesus.jesusclient.command.CommandManager;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
 import cum.jesus.jesusclient.config.ConfigManager;
-import cum.jesus.jesusclient.events.WorldLoadEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
-import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
@@ -17,23 +16,20 @@ import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.SkyblockUtils;
 import cum.jesus.jesusclient.utils.WebUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ForgeModContainer;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class JesusClient {
@@ -42,7 +38,7 @@ public class JesusClient {
     public static final String CLIENT_NAME = "Jesus Client";
     @NotNull
     public static final String CLIENT_AUTHOR = "JesusTouchMe";
-    public static final double CLIENT_VERSION_NUMBER = 0.1;
+    public static final String CLIENT_VERSION_NUMBER = "2.0";
     @NotNull
     public static String CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-DEV";
     @NotNull
@@ -55,6 +51,10 @@ public class JesusClient {
     public static String uuid = mc.getSession().getProfile().getId().toString();
     public static String compactUUID = uuid.replace("-","");
     public static String ssid = RandomStringUtils.random(mc.getSession().getSessionID().length(), true, true);
+
+    public static boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+    public static String backendUrl = "http://127.0.0.1:6969";
 
     public static JsonObject backend;
 
@@ -86,7 +86,7 @@ public class JesusClient {
     }
 
     public void startClient() {
-        backend = (JsonObject) WebUtils.getJsonFromUrl("https://jesustouchme.ga/api/v1/childp/jessepinkman.json");
+        backend = (JsonObject) WebUtils.getJson("https://jesustouchme.ga/api/v1/childp/jessepinkman.json");
 
         ClientCommandHandler.instance.registerCommand(new JesusSlashCommand());
 
@@ -109,7 +109,7 @@ public class JesusClient {
         moduleManager = new ModuleManager();
 
         CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
-        Display.setTitle(CLIENT_NAME + " v" + CLIENT_VERSION);
+        Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION);
 
         // loading file manager
         try {
@@ -126,7 +126,6 @@ public class JesusClient {
         if (moduleManager.addModules()) Logger.info("Loaded module manager");
 
         EventManager.register(new SkyblockUtils());
-        EventManager.register(this);
 
         // Load capes
         Capes.load();

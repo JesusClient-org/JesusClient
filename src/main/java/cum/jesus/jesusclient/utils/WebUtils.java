@@ -2,6 +2,8 @@ package cum.jesus.jesusclient.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,8 +18,20 @@ public class WebUtils {
         if (!file.exists()) Files.copy(new URL(link).openStream(), file.toPath());
     }
 
-    public static JsonElement getJsonFromUrl(String jsonUrl) {
+    public static JsonElement getJson(String jsonUrl) {
         return (new JsonParser()).parse(Objects.requireNonNull(getInputStream(jsonUrl)));
+    }
+
+    public static String getString(String url) throws IOException {
+        InputStreamReader input = getInputStream(url);
+        BufferedReader websiteText = new BufferedReader(input);
+        StringBuilder sb = new StringBuilder();
+
+        String inputLine;
+        while ((inputLine = websiteText.readLine()) != null)
+            sb.append(inputLine);
+
+        return sb.toString();
     }
 
     public static InputStreamReader getInputStream(String url) {

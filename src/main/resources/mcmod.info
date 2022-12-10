@@ -1,16 +1,18 @@
 [
-{
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "JesusTouchMe best gamer",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "https://niggafart.com",
-  "updateUrl": "",
-  "authorList": ["JesusTouchMe"],
-  "credits": "india",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "sk1er_fullscreen",
+    "name": "Sk1er Fullscreen",
+    "description": "A good windowed fullscreen mod.",
+    "version": "2.0",
+    "mcversion": "1.8.9",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Sk1er"
+    ],
+    "credits": "All the other terrible ones that didn't work",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]

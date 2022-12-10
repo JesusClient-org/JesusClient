@@ -8,6 +8,7 @@ import cum.jesus.jesusclient.module.modules.combat.AntiKB;
 import cum.jesus.jesusclient.module.modules.combat.Cum;
 import cum.jesus.jesusclient.module.modules.combat.KillAura;
 import cum.jesus.jesusclient.module.modules.combat.Reach;
+import cum.jesus.jesusclient.module.modules.movement.BHop;
 import cum.jesus.jesusclient.module.modules.movement.Flight;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 import cum.jesus.jesusclient.module.modules.render.NoBlind;
@@ -34,6 +35,7 @@ public class ModuleManager {
 
         // movement
         addModule(new Flight());
+        addModule(new BHop());
 
         // render
         addModule(new Gui());

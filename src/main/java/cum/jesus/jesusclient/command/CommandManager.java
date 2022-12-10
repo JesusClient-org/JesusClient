@@ -2,10 +2,9 @@ package cum.jesus.jesusclient.command;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.Premium;
-import cum.jesus.jesusclient.command.commands.DiscordCommand;
-import cum.jesus.jesusclient.command.commands.HelpCommand;
-import cum.jesus.jesusclient.command.commands.JesusCommand;
-import cum.jesus.jesusclient.command.commands.VClipCommand;
+import cum.jesus.jesusclient.command.commands.*;
+import cum.jesus.jesusclient.command.commands.dev.CloseMinecraftDevCommand;
+import cum.jesus.jesusclient.command.commands.dev.HttpDevCommand;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 
@@ -23,10 +22,15 @@ public class CommandManager {
         addCommand(new DiscordCommand());
         addCommand(new VClipCommand());
 
+        // dev commands
+        addCommand(new CloseMinecraftDevCommand());
+        addCommand(new HttpDevCommand());
+
         return true;
     }
 
     public void addCommand(Command c) {
+        if (c.isDevOnly() && !JesusClient.devMode) return;
         this.commandList.add(c);
         EventManager.register(c);
     }
