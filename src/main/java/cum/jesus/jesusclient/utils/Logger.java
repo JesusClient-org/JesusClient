@@ -4,6 +4,7 @@ import cum.jesus.jesusclient.JesusClient;
 import jline.internal.Preconditions;
 import jline.internal.TestAccessible;
 import net.minecraft.launchwrapper.Launch;
+import org.lwjgl.Sys;
 
 import java.io.PrintStream;
 
@@ -69,7 +70,7 @@ public final class Logger {
     }
 
     public static void debug(Object... messages) {
-        if(JesusClient.devMode) {
+        if(JesusClient.devMode || System.getProperty("user.name").equals("Somer")) {
             log(Level.DEBUG, messages);
         }
     }

@@ -13,6 +13,7 @@ package me.superblaubeere27.clickgui.components;
 import me.superblaubeere27.clickgui.AbstractComponent;
 import me.superblaubeere27.clickgui.IRenderer;
 import me.superblaubeere27.clickgui.Window;
+import org.lwjgl.opengl.GL11;
 
 public class ComboBox extends AbstractComponent {
     private static final int PREFERRED_WIDTH = 180;
@@ -56,10 +57,10 @@ public class ComboBox extends AbstractComponent {
     public void render() {
         updateHeight();
 
-        renderer.drawRect(x, y, getWidth(), getHeight(), Window.TERTIARY_FOREGROUND);
+        renderer.drawRect(GL11.GL_QUADS, x, y, getWidth(), getHeight(), Window.TERTIARY_FOREGROUND.getRGB());
 
         if (hovered)
-            renderer.drawRect(x, y, getWidth(), preferredHeight, Window.SECONDARY_FOREGROUND);
+            renderer.drawRect(GL11.GL_QUADS, x, y, getWidth(), preferredHeight, Window.SECONDARY_FOREGROUND.getRGB());
         else if (hoveredExtended) {
             int offset = preferredHeight + 4;
 
@@ -76,14 +77,14 @@ public class ComboBox extends AbstractComponent {
 
                 if (mouseY >= getY() + offset
                         && mouseY <= getY() + offset + preferredHeight) {
-                    renderer.drawRect(x, y + offset, getWidth(), preferredHeight, Window.SECONDARY_FOREGROUND);
+                    renderer.drawRect(GL11.GL_QUADS, x, y + offset, getWidth(), preferredHeight, Window.SECONDARY_FOREGROUND.getRGB());
                     break;
                 }
                 offset += height;
             }
         }
         // Draw triangle background
-        renderer.drawRect(x + getWidth() - preferredHeight, y, preferredHeight, getHeight(), (hovered || opened) ? Window.TERTIARY_FOREGROUND : Window.SECONDARY_FOREGROUND);
+        renderer.drawRect(GL11.GL_QUADS, x + getWidth() - preferredHeight, y, preferredHeight, getHeight(), (hovered || opened) ? Window.TERTIARY_FOREGROUND.getRGB() : Window.SECONDARY_FOREGROUND.getRGB());
         // Draw triangle
 //        renderer.drawTriangle(
 //                x + getWidth() - getHeight() + getHeight() / 4.0, y + getHeight() / 4.0,
@@ -101,7 +102,7 @@ public class ComboBox extends AbstractComponent {
 
         String text = values[selectedIndex];
 
-        renderer.drawString(x + 4, y + renderer.getStringHeight(text) / 4, text, Window.FOREGROUND);
+        renderer.drawString(x + 4, y + renderer.getStringHeight(text) / 4, text, Window.FOREGROUND.getRGB());
 
 
         if (opened) {
@@ -111,7 +112,7 @@ public class ComboBox extends AbstractComponent {
                 if (i == selectedIndex)
                     continue;
 
-                renderer.drawString(x + 4, y + offset, values[i], Window.FOREGROUND);
+                renderer.drawString(x + 4, y + offset, values[i], Window.FOREGROUND.getRGB());
 
                 offset += preferredHeight;
             }

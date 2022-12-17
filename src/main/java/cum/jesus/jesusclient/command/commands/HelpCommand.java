@@ -4,12 +4,26 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HelpCommand extends Command {
     public HelpCommand() {
-        super("help", "This message", 0, 1, new String[] {"Specific command"});
+        super("help", "This message");
     }
 
     @Override
+    public void run(String alias, String[] args) {
+
+    }
+
+    @Override
+    public List<String> autoComplete(int arg, String[] args) {
+        return new ArrayList<>();
+
+    }
+
+    /*@Override
     public void onCall(String[] args) {
         if (args == null) {
             JesusClient.INSTANCE.commandManager.sort();
@@ -50,5 +64,5 @@ public class HelpCommand extends Command {
                 }
             }
         }
-    }
+    }*/
 }

@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.gui.clickgui;
+package cum.jesus.jesusclient.module.modules.render;
 
 import cum.jesus.jesusclient.utils.RenderUtils;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
@@ -11,10 +11,10 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.glDepthMask;
 import static org.lwjgl.opengl.GL41.glClearDepthf;
 
-public class BoringRenderThingy implements IRenderer {
+public class HudRenderer implements IRenderer {
     private GlyphPageFontRenderer renderer;
 
-    public BoringRenderThingy(GlyphPageFontRenderer renderer) {
+    public HudRenderer(GlyphPageFontRenderer renderer) {
         this.renderer = renderer;
     }
 

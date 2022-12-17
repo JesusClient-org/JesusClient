@@ -24,10 +24,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class ClickGui extends GuiScreen {
     public static ClickGui INSTANCE = new ClickGui();
@@ -42,7 +40,7 @@ public class ClickGui extends GuiScreen {
         consolas = GlyphPageFontRenderer.create("Consolas", 15, false, false, false);
         renderer = new BoringRenderThingy(consolas);
 
-        window = new Window(JesusClient.CLIENT_NAME, 50, 50, 900, 400);
+        window = new Window(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION, 50, 50, 900, 400);
 
         Pane conentPane = new me.superblaubeere27.clickgui.components.ScrollPane(renderer, new me.superblaubeere27.clickgui.layout.GridLayout(1));
 
@@ -50,6 +48,13 @@ public class ClickGui extends GuiScreen {
 
         HashMap<Category, List<Module>> moduleCategoryMap = new HashMap<>();
         categoryPaneMap = new HashMap<>();
+
+        moduleCategoryMap.put(Category.COMBAT, new ArrayList<>());
+        moduleCategoryMap.put(Category.SKYBLOCK, new ArrayList<>());
+        moduleCategoryMap.put(Category.SELF, new ArrayList<>());
+        moduleCategoryMap.put(Category.RENDER, new ArrayList<>());
+        moduleCategoryMap.put(Category.MOVEMENT, new ArrayList<>());
+        moduleCategoryMap.put(Category.OTHER, new ArrayList<>());
 
         for (Module module : JesusClient.INSTANCE.moduleManager.getModules()) {
             if (!moduleCategoryMap.containsKey(module.getCategory())) {
@@ -133,7 +138,7 @@ public class ClickGui extends GuiScreen {
 
                             Slider cb;
 
-                            Slider.NumberType type = Slider.NumberType.DECIMAL;
+                            Slider.NumberType type = Slider.NumberType.DOUBLE_DECIMAL;
 
                             if (value.getObject() instanceof Integer) {
                                 type = Slider.NumberType.INTEGER;
@@ -141,6 +146,8 @@ public class ClickGui extends GuiScreen {
                                 type = Slider.NumberType.TIME;
                             } else if (value.getObject() instanceof Float && ((NumberSetting) value).getMin().intValue() == 0 && ((NumberSetting) value).getMax().intValue() == 100) {
                                 type = Slider.NumberType.PERCENT;
+                            } else if (value.getObject() instanceof Float) {
+                                type = Slider.NumberType.DECIMAL;
                             }
 
                             settingPane.addComponent(cb = new Slider(renderer, ((Number) value.getObject()).doubleValue(), ((NumberSetting) value).getMin().doubleValue(), ((NumberSetting) value).getMax().doubleValue(), type));
@@ -183,13 +190,6 @@ public class ClickGui extends GuiScreen {
 
         spoilerPane = new Pane(renderer, new GridLayout(1));
 
-
-        for (Category moduleCategory : categoryPaneMap.keySet()) {
-            Button button;
-            buttonPane.addComponent(button = new me.superblaubeere27.clickgui.components.Button(renderer, moduleCategory.toString()));
-            button.setOnClickListener(() -> setCurrentCategory(moduleCategory));
-        }
-
         conentPane.addComponent(buttonPane);
 
         int maxWidth = Integer.MIN_VALUE;
@@ -198,7 +198,7 @@ public class ClickGui extends GuiScreen {
             maxWidth = Math.max(maxWidth, pane.getWidth());
         }
 
-        window.setWidth(28 + maxWidth);
+        window.setWidth(30 + maxWidth);
 
         for (Spoiler spoiler : spoilers) {
             spoiler.preferredWidth = maxWidth;
@@ -207,6 +207,15 @@ public class ClickGui extends GuiScreen {
 
         spoilerPane.setWidth(maxWidth);
         buttonPane.setWidth(maxWidth);
+
+        List<Category> keySet = new ArrayList(categoryPaneMap.keySet());
+        Collections.sort(keySet);
+
+        for (Category moduleCategory : keySet) {
+            Button button;
+            buttonPane.addComponent(button = new me.superblaubeere27.clickgui.components.Button(renderer, moduleCategory.toString(), maxWidth/3-10, 22));
+            button.setOnClickListener(() -> setCurrentCategory(moduleCategory));
+        }
 
         conentPane.addComponent(spoilerPane);
 

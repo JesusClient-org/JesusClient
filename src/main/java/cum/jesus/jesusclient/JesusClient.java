@@ -1,8 +1,6 @@
 package cum.jesus.jesusclient;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.sun.jna.platform.win32.Kernel32;
 import cum.jesus.jesusclient.command.CommandManager;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
@@ -12,6 +10,7 @@ import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
+import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.SkyblockUtils;
 import cum.jesus.jesusclient.utils.WebUtils;
@@ -31,6 +30,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JesusClient {
     // Metadata
@@ -54,9 +54,7 @@ public class JesusClient {
 
     public static boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-    public static String backendUrl = "http://127.0.0.1:6969";
-
-    public static JsonObject backend;
+    public static String backendUrl = "http://62.107.137.187:6969";
 
     public boolean blacklisted;
 
@@ -86,20 +84,18 @@ public class JesusClient {
     }
 
     public void startClient() {
-        backend = (JsonObject) WebUtils.getJson("https://jesustouchme.ga/api/v1/childp/jessepinkman.json");
-
         ClientCommandHandler.instance.registerCommand(new JesusSlashCommand());
 
         // check blacklist
-        JsonArray blacklist = backend.get("blacklist").getAsJsonArray();
-        ArrayList<String> blacklistArray = new ArrayList<>();
-        for (JsonElement next : blacklist) {
-            blacklistArray.add(next.getAsString());
-        }
-        blacklisted = blacklistArray.stream().anyMatch(s -> s.equals(compactUUID));
+        JsonObject payload = new JsonObject();
+        payload.addProperty("uuid", JesusClient.compactUUID);
+        String json = new Gson().toJson(payload);
+        String response = HttpUtils.post(backendUrl + "/api/v2/blacklisted", json);
+        JsonObject obj = new Gson().fromJson(response, JsonObject.class);
+        blacklisted = obj.get("blacklisted").getAsBoolean();
         if (blacklisted) return;
 
-        Premium.load();
+        //if (!System.getProperty("user.name").equals("Somer")) return;
 
         // Initialize managers
         fileManager = new FileManager();
@@ -108,22 +104,23 @@ public class JesusClient {
         settingManager = new SettingManager();
         moduleManager = new ModuleManager();
 
-        CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
         Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION);
 
         // loading file manager
-        try {
-            fileManager.init();
-            fileManager.loadFirstTime();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fileManager.init();
 
         // Add commands
         if (commandManager.addCommands()) Logger.info("Loaded command manager");
 
         // Add modules
         if (moduleManager.addModules()) Logger.info("Loaded module manager");
+
+        // load first time
+        try {
+            fileManager.loadFirstTime();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         EventManager.register(new SkyblockUtils());
 

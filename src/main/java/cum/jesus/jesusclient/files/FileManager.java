@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.files;
 
 import com.google.common.io.Files;
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.module.modules.render.Hud;
 import cum.jesus.jesusclient.utils.Logger;
 import net.minecraft.launchwrapper.ITweaker;
 
@@ -65,6 +66,7 @@ public class FileManager {
 
         if (firstTime) {
             Logger.info("first time");
+            //JesusClient.INSTANCE.moduleManager.getModule(Hud.class).setToggled(true);
             //noinspection ResultOfMethodCallIgnored
             firstTimeFile.createNewFile();
             PrintWriter writer = new PrintWriter(firstTimeFile);

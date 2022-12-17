@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class Flight extends Module {
     public static Flight INSTANCE = new Flight();
 
-    public NumberSetting<Float> flySpeed = new NumberSetting<>("Flight Speed", 1.0f, 0.1f, 5.0f);
+    public NumberSetting<Double> flySpeed = new NumberSetting<>("Flight Speed", 1.0D, 0.1D, 5.0D);
 
     public Flight() {
         super("Flight", "Makes you fly", Category.MOVEMENT);
@@ -43,7 +43,7 @@ public class Flight extends Module {
             }
 
             if(mc.gameSettings.keyBindForward.isPressed()) {
-                mc.thePlayer.capabilities.setFlySpeed(flySpeed.getObject()/10);
+                mc.thePlayer.capabilities.setFlySpeed((float) (flySpeed.getObject()/10));
             }
         }
     }

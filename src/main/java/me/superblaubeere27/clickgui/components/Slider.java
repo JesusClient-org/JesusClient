@@ -14,6 +14,7 @@ import me.superblaubeere27.clickgui.AbstractComponent;
 import me.superblaubeere27.clickgui.IRenderer;
 import me.superblaubeere27.clickgui.Window;
 import me.superblaubeere27.clickgui.utils.Utils;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -56,18 +57,18 @@ public class Slider extends AbstractComponent {
 
     @Override
     public void render() {
-        renderer.drawRect(x, y, getWidth(), getHeight(), (hovered || changing) ? Window.SECONDARY_FOREGROUND : Window.TERTIARY_FOREGROUND);
+        renderer.drawRect(GL11.GL_QUADS, x, y, getWidth(), getHeight(), (hovered || changing) ? Window.SECONDARY_FOREGROUND.getRGB() : Window.TERTIARY_FOREGROUND.getRGB());
         renderer.drawOutline(x, y, getWidth(), getHeight(), 1.0f, (hovered || changing) ? Window.SECONDARY_OUTLINE : Window.SECONDARY_FOREGROUND);
 
         int sliderWidth = 4;
 
         double sliderPos = (value - minValue) / (maxValue - minValue) * (getWidth() - sliderWidth);
 
-        renderer.drawRect(x + sliderPos, y + 2, sliderWidth, getHeight() - 3, (hovered || changing) ? Window.TERTIARY_FOREGROUND : Window.SECONDARY_FOREGROUND);
+        renderer.drawRect(GL11.GL_QUADS, x + sliderPos, y + 2, sliderWidth, getHeight() - 3, (hovered || changing) ? Window.TERTIARY_FOREGROUND.getRGB() : Window.SECONDARY_FOREGROUND.getRGB());
 
         String text = numberType.getFormatter().apply(value);
 
-        renderer.drawString(x + getWidth() / 2 - renderer.getStringWidth(text) / 2, y + renderer.getStringHeight(text) / 4, text, Window.FOREGROUND);
+        renderer.drawString(x + getWidth() / 2 - renderer.getStringWidth(text) / 2, y + renderer.getStringHeight(text) / 4, text, Window.FOREGROUND.getRGB());
     }
 
     @Override
@@ -145,9 +146,10 @@ public class Slider extends AbstractComponent {
     }
 
     public enum NumberType {
-        PERCENT(number -> String.format(Locale.ENGLISH, "%.1f%%", number.floatValue())),
+        PERCENT(number -> String.format(Locale.ENGLISH, "%.0f%%", number.floatValue())),
         TIME(number -> Utils.formatTime(number.longValue())),
-        DECIMAL(number -> String.format(Locale.ENGLISH, "%.4f", number.floatValue())),
+        DOUBLE_DECIMAL(number -> String.format(Locale.ENGLISH, "%.2f", number.floatValue())),
+        DECIMAL(number -> String.format(Locale.ENGLISH, "%.1f", number.floatValue())),
         INTEGER(number -> Long.toString(number.longValue()));
 
         private Function<Number, String> formatter;

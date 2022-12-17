@@ -47,11 +47,11 @@ public class KillAura extends Module {
 
     public BooleanSetting block = new BooleanSetting("Block", false);
 
-    public NumberSetting<Double> range = new NumberSetting<>("Reach", 3.0D, 2.0D, 6.0D);
+    public NumberSetting<Float> range = new NumberSetting<>("Reach", 3.0f, 2.0f, 6.0f);
 
-    public NumberSetting<Double> rotationRange = new NumberSetting<>("Rotation range", 3.0D, 2.0D, 6.0D);
+    public NumberSetting<Float> rotationRange = new NumberSetting<>("Rotation range", 3.0f, 2.0f, 6.0f);
 
-    public NumberSetting<Double> fov = new NumberSetting<>("Fov", 360.0D, 30.0D, 360.0D);
+    public NumberSetting<Float> fov = new NumberSetting<>("Fov", 360.0f, 30.0f, 360.0f);
 
     public ModeSetting mode = new ModeSetting("Sorting", "Distance", "Distance", "Health", "Hurt", "Hp reverse");
 

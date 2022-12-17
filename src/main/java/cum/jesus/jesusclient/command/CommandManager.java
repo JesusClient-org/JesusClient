@@ -7,14 +7,117 @@ import cum.jesus.jesusclient.command.commands.dev.CloseMinecraftDevCommand;
 import cum.jesus.jesusclient.command.commands.dev.HttpDevCommand;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.Sys;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandManager {
+    @NotNull
     public List<Command> commandList = new ArrayList<>();
-    public List<Command> sortedCommandList = new ArrayList<>();
+
+    public boolean addCommands() {
+        // dev cmd
+        addCommand(new CloseMinecraftDevCommand());
+        addCommand(new HttpDevCommand());
+
+        addCommand(new DiscordCommand());
+        addCommand(new HelpCommand());
+        addCommand(new JesusCommand());
+        addCommand(new VClipCommand());
+
+        return true;
+    }
+
+    private void addCommand(Command c) {
+        if (c.isDevOnly() && !JesusClient.devMode) return;
+        commandList.add(c);
+        EventManager.register(c);
+    }
+
+    public List<Command> getCommandList() {
+        return this.commandList;
+    }
+
+    public Command getCommandByName(String name) {
+        for (Command command : this.commandList) {
+            if (command.getName().equalsIgnoreCase(name))
+                return command;
+            for (String alias : command.getAliases()) {
+                if (alias.equalsIgnoreCase(name))
+                    return command;
+            }
+        }
+        return null;
+    }
+
+    public boolean execute(@NotNull String string) {
+        String rawSex = string.substring(Gui.prefix.getObject().length());
+        String[] splittedStr = rawSex.split(" ");
+
+        if (splittedStr.length == 0) return false; // there is no command
+
+        String cmdName = splittedStr[0];
+
+        Command command = commandList.stream().filter(c -> c.matchCmdName(cmdName)).findFirst().orElse(null);
+
+        try {
+            if (command == null) { // cmd does not exist
+                JesusClient.sendPrefixMessage(cmdName + " is not a command. Run " + Gui.prefix.getObject() + "help for a list of the commands");
+                return false;
+            } else {
+                String[] args = new String[splittedStr.length - 1];
+
+                System.arraycopy(splittedStr, 1, args, 0, splittedStr.length - 1);
+
+                if (command.isPremiumOnly() && !Premium.isUserPremium()) { // non premium user running premiu command
+                    JesusClient.sendPrefixMessage("This command is only available to Jesus Client premium users");
+                    return false;
+                }
+
+                command.run(splittedStr[0], args);
+
+                return true; // the command is successfully run and also exists
+            }
+        } catch (CommandException e) {
+            JesusClient.sendPrefixMessage("§c" + e.getMessage());
+        }
+
+        return true;
+    }
+
+    public Collection<String> autoCompletion(@NotNull String currentCmd) {
+        String raw = currentCmd.substring(Gui.prefix.getObject().length());
+        String[] split = raw.split(" ");
+
+        List<String> womanRights = new ArrayList<>();
+
+        Command currCmd = split.length >= 1 ? commandList.stream().filter(c -> c.matchCmdName(split[0])).findFirst().orElse(null) : null;
+
+        if (split.length >= 2 || currCmd != null && currentCmd.endsWith(" ")) {
+            if (currCmd == null) return womanRights;
+
+            String[] args = new String[split.length - 1];
+
+            System.arraycopy(split, 1, args, 0, split.length - 1);
+
+            List<String> autoCompleted = currCmd.autoComplete(args.length + (currentCmd.endsWith(" ") ? 1: 0), args);
+
+            return autoCompleted == null ? new ArrayList<>() : autoCompleted;
+        } else if (split.length == 1) {
+            for (Command c : commandList) womanRights.addAll(c.getNameAndAliases());
+
+            return womanRights.stream().map(str -> Gui.prefix.getObject() + str).filter(str -> str.toLowerCase().startsWith(currentCmd.toLowerCase())).collect(Collectors.toList());
+        }
+
+        return womanRights;
+    }
+
+    /*public List<Command> sortedCommandList = new ArrayList<>();
 
     public boolean addCommands() {
         addCommand(new HelpCommand());
@@ -72,5 +175,5 @@ public class CommandManager {
 
     public void sort() {
         this.sortedCommandList.sort(Comparator.comparing(Command::getName));
-    }
+    }*/
 }

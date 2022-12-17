@@ -13,6 +13,7 @@ package me.superblaubeere27.clickgui.components;
 import me.superblaubeere27.clickgui.AbstractComponent;
 import me.superblaubeere27.clickgui.IRenderer;
 import me.superblaubeere27.clickgui.Window;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -39,17 +40,17 @@ public class CheckBox extends AbstractComponent {
 
     @Override
     public void render() {
-        renderer.drawRect(x, y, preferredHeight, preferredHeight, hovered ? Window.SECONDARY_FOREGROUND : Window.TERTIARY_FOREGROUND);
+        renderer.drawRect(GL11.GL_QUADS, x, y, preferredHeight, preferredHeight, hovered ? Window.SECONDARY_FOREGROUND.getRGB() : Window.TERTIARY_FOREGROUND.getRGB());
 
         if (selected) {
             Color color = hovered ? Window.TERTIARY_FOREGROUND : Window.SECONDARY_FOREGROUND;
 
-            renderer.drawRect(x + 2, y + 3, preferredHeight - 5, preferredHeight - 5, new Color(color.getRed(), color.getGreen(), color.getBlue()));
+            renderer.drawRect(GL11.GL_QUADS, x + 2, y + 3, preferredHeight - 5, preferredHeight - 5, new Color(color.getRed(), color.getGreen(), color.getBlue()).getRGB());
         }
 
         renderer.drawOutline(x, y, preferredHeight, preferredHeight, 1.0f, hovered ? Window.SECONDARY_OUTLINE : Window.SECONDARY_FOREGROUND);
 
-        renderer.drawString(x + preferredHeight + preferredHeight / 4, y + renderer.getStringHeight(title) / 4, title, Window.FOREGROUND);
+        renderer.drawString(x + preferredHeight + preferredHeight / 4, y + renderer.getStringHeight(title) / 4, title, Window.FOREGROUND.getRGB());
     }
 
     @Override

@@ -13,6 +13,7 @@ package me.superblaubeere27.clickgui.components;
 import me.superblaubeere27.clickgui.AbstractComponent;
 import me.superblaubeere27.clickgui.IRenderer;
 import me.superblaubeere27.clickgui.Window;
+import org.lwjgl.opengl.GL11;
 
 public class Spoiler extends AbstractComponent {
     private static final int PREFERRED_HEIGHT = 28;
@@ -41,11 +42,11 @@ public class Spoiler extends AbstractComponent {
 
     @Override
     public void render() {
-        if (hovered) renderer.drawRect(x, y, getWidth(), preferredHeight, Window.SECONDARY_FOREGROUND);
+        if (hovered) renderer.drawRect(GL11.GL_QUADS, x, y, getWidth(), preferredHeight, Window.SECONDARY_FOREGROUND.getRGB());
 
         renderer.drawOutline(x, y, getWidth(), preferredHeight, 1.0f, Window.SECONDARY_FOREGROUND);
 
-        renderer.drawString(x + getWidth() / 2 - renderer.getStringWidth(title) / 2, y + renderer.getStringHeight(title) / 4, title, Window.FOREGROUND);
+        renderer.drawString(x + getWidth() / 2 - renderer.getStringWidth(title) / 2, y + renderer.getStringHeight(title) / 4, title, Window.FOREGROUND.getRGB());
 
         if (opened) {
             updateBounds();

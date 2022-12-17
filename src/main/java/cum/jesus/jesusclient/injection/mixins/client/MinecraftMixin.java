@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.injection.mixins.client;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.Premium;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.KeyInputEvent;
@@ -40,6 +41,14 @@ public class MinecraftMixin {
             EventManager.call(new KeyInputEvent(Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey()));
 
         EventManager.call(new GameTickEvent());
+    }
+
+    @Inject(method = "createDisplay", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setTitle(Ljava/lang/String;)V", shift = At.Shift.AFTER))
+    private void setScreenTitle(CallbackInfo ci) {
+        Premium.load();
+
+        JesusClient.CLIENT_VERSION = JesusClient.CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
+        Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION);
     }
 
     @Inject(method = "startGame", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;ingameGUI:Lnet/minecraft/client/gui/GuiIngame;", shift = At.Shift.AFTER))

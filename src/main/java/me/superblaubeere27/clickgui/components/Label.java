@@ -38,7 +38,7 @@ public class Label extends AbstractComponent {
 //        glDepthMask(true);
 //        glDepthFunc(GL_EQUAL);
 
-        renderer.drawString(x, y, text, Window.FOREGROUND);
+        renderer.drawString(x, y, text, Window.FOREGROUND.getRGB());
 
 //        glDisable(GL_DEPTH_TEST);
     }

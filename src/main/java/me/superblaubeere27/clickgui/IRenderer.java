@@ -14,13 +14,13 @@ import java.awt.*;
 
 public interface IRenderer {
 
-    void drawRect(double x, double y, double w, double h, Color c);
+    void drawRect(int mode, double x, double y, double w, double h, int c);
 
     void drawOutline(double x, double y, double w, double h, float lineWidth, Color c);
 
     void setColor(Color c);
 
-    void drawString(int x, int y, String text, Color color);
+    void drawString(int x, int y, String text, int color);
 
     int getStringWidth(String str);
 

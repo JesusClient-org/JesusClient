@@ -1,8 +1,10 @@
 package cum.jesus.jesusclient.remote;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.WebUtils;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -34,7 +36,9 @@ public class Capes {
         capeDir.mkdirs();
 
         try {
-            JsonObject json = (JsonObject) WebUtils.getJson("https://jesustouchme.ga/api/v1/cape/capedata/capedata.json");
+            String capeJson = HttpUtils.get(JesusClient.backendUrl + "/api/v2/capedata");
+
+            JsonObject json = new Gson().fromJson(capeJson, JsonObject.class);
             JsonObject jsonCapes = json.get("capes").getAsJsonObject();
             JsonObject jsonOwners = json.get("owners").getAsJsonObject();
 

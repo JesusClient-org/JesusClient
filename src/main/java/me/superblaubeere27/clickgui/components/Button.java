@@ -13,6 +13,7 @@ package me.superblaubeere27.clickgui.components;
 import me.superblaubeere27.clickgui.AbstractComponent;
 import me.superblaubeere27.clickgui.IRenderer;
 import me.superblaubeere27.clickgui.Window;
+import org.lwjgl.opengl.GL11;
 
 public class Button extends AbstractComponent {
     private static final int PREFERRED_WIDTH = 180;
@@ -39,10 +40,10 @@ public class Button extends AbstractComponent {
 
     @Override
     public void render() {
-        renderer.drawRect(x, y, getWidth(), getHeight(), hovered ? Window.SECONDARY_FOREGROUND : Window.TERTIARY_FOREGROUND);
+        renderer.drawRect(GL11.GL_QUADS, x, y, getWidth(), getHeight(), hovered ? Window.SECONDARY_FOREGROUND.getRGB() : Window.TERTIARY_FOREGROUND.getRGB());
         renderer.drawOutline(x, y, getWidth(), getHeight(), 1.0f, hovered ? Window.SECONDARY_OUTLINE : Window.SECONDARY_FOREGROUND);
 
-        renderer.drawString(x + getWidth() / 2 - renderer.getStringWidth(title) / 2, y + renderer.getStringHeight(title) / 4, title, Window.FOREGROUND);
+        renderer.drawString(x + getWidth() / 2 - renderer.getStringWidth(title) / 2, y + renderer.getStringHeight(title) / 4, title, Window.FOREGROUND.getRGB());
     }
 
     @Override

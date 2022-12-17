@@ -4,6 +4,7 @@ import cum.jesus.jesusclient.gui.clickgui.ClickGui;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.settings.BooleanSetting;
+import cum.jesus.jesusclient.module.settings.NumberSetting;
 import cum.jesus.jesusclient.module.settings.StringSetting;
 import cum.jesus.jesusclient.utils.Logger;
 import org.lwjgl.input.Keyboard;
@@ -20,7 +21,7 @@ public class Gui extends Module {
     @Override
     protected void onEnable() {
         mc.displayGuiScreen(ClickGui.INSTANCE);
-        toggle();
+        setToggled(false);
     }
 
     @Override

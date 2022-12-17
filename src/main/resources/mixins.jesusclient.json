@@ -11,9 +11,11 @@
     "entity.player.MixinEntityPlayer"
   ],
   "client": [
+    "accessors.MinecraftAccessor",
     "client.entity.EntityPlayerSPAccessor",
     "client.entity.MixinAbstractClientPlayer",
     "client.entity.MixinEntityPlayerSP",
+    "client.gui.MixinGuiChat",
     "client.gui.MixinGuiIngame",
     "client.multiplayer.MixinWorldClient",
     "client.network.MixinNetHandlerPlayClient",

@@ -8,6 +8,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
+/**
+ * Creates a slider setting in the module. The slider type depends on the Number type set
+ *
+ * <blockquote><pre>
+ * Integer = regular whole number
+ * Float with 0 min and 100 max = percent
+ * Any other Float = single decimal
+ * Double = double decimal
+ * Long = time in ms
+ * </blockquote></pre>
+*/
+
 public class NumberSetting<T extends Number> extends Setting<T> {
     private T min;
     private T max;

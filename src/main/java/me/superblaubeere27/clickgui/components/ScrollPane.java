@@ -14,6 +14,7 @@ import me.superblaubeere27.clickgui.AbstractComponent;
 import me.superblaubeere27.clickgui.IRenderer;
 import me.superblaubeere27.clickgui.Window;
 import me.superblaubeere27.clickgui.layout.ILayoutManager;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -44,7 +45,7 @@ public class ScrollPane extends Pane {
     public void render() {
         renderer.initMask();
 
-        renderer.drawRect(x, y, getWidth(), getHeight(), Color.white);
+        renderer.drawRect(GL11.GL_QUADS, x, y, getWidth(), getHeight(), Color.white.getRGB());
 
         renderer.useMask();
 
@@ -58,7 +59,7 @@ public class ScrollPane extends Pane {
             int sliderHeight = (int) (getHeight() / (double) realHeight * (double) getHeight());
             int sliderWidth = 3;
 
-            renderer.drawRect(x + getWidth() - sliderWidth, y + (getHeight() - sliderHeight) * (scrollOffset / (double) maxY), sliderWidth, sliderHeight, Window.SECONDARY_OUTLINE);
+            renderer.drawRect(GL11.GL_QUADS, x + getWidth() - sliderWidth, y + (getHeight() - sliderHeight) * (scrollOffset / (double) maxY), sliderWidth, sliderHeight, Window.SECONDARY_OUTLINE.getRGB());
         }
     }
 

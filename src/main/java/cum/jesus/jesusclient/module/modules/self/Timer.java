@@ -4,6 +4,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.gui.clickgui.ClickGui;
+import cum.jesus.jesusclient.injection.mixins.accessors.MinecraftAccessor;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.settings.NumberSetting;
@@ -30,7 +31,7 @@ public class Timer extends Module {
     }
 
     public static net.minecraft.util.Timer getTimer() {
-        return (net.minecraft.util.Timer) ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), new String[] { "timer", "field_71428_T" });
+        return ((MinecraftAccessor)mc).getTimer();
     }
 
     public static void resetTimer() {

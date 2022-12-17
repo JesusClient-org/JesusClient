@@ -1,11 +1,12 @@
 package cum.jesus.jesusclient;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
+import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class Premium {
     private static boolean userPremium;
@@ -13,24 +14,14 @@ public class Premium {
     private static String verType;
 
     public static void load() {
-        JsonArray whitelist = JesusClient.backend.get("whitelist").getAsJsonArray();
-        ArrayList<String> whitelistArray = new ArrayList<>();
+        String url = JesusClient.backendUrl + "/api/v2/oldpremium";
+        JsonObject payload = new JsonObject();
+        payload.addProperty("uuid", JesusClient.compactUUID);
+        String json = new Gson().toJson(payload);
+        String response = HttpUtils.post(url, json);
+        JsonObject obj = new Gson().fromJson(response, JsonObject.class);
 
-        for (JsonElement next : whitelist) {
-            whitelistArray.add(next.getAsString());
-        }
-
-        boolean uuidInList = whitelistArray.stream().anyMatch(s -> s.equals(JesusClient.compactUUID));
-
-        if (uuidInList || JesusClient.username.equals("Jesus")) {
-            userPremium = true;
-
-            Logger.info("Using premium version. Enjoy");
-        } else {
-            userPremium = false;
-
-            Logger.info("Using free/public version");
-        }
+        userPremium = obj.get("premium").getAsBoolean() || JesusClient.username.equals("Jesus");
     }
 
     public static boolean isUserPremium() {
@@ -38,6 +29,6 @@ public class Premium {
     }
 
     public static String getVerType() {
-        return userPremium ? "PREMIUM" : "PUBLIC";
+        return userPremium ? "PREMIUM" : "FREE";
     }
 }

@@ -11,6 +11,7 @@ import cum.jesus.jesusclient.module.modules.combat.Reach;
 import cum.jesus.jesusclient.module.modules.movement.BHop;
 import cum.jesus.jesusclient.module.modules.movement.Flight;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.module.modules.render.Hud;
 import cum.jesus.jesusclient.module.modules.render.NoBlind;
 import cum.jesus.jesusclient.module.modules.self.Timer;
 import org.jetbrains.annotations.NotNull;
@@ -38,11 +39,14 @@ public class ModuleManager {
         addModule(new BHop());
 
         // render
-        addModule(new Gui());
         addModule(NoBlind.INSTANCE);
 
         // self
         addModule(new Timer());
+
+
+        addModule(new Gui());
+        addModule(new Hud());
 
         return true;
     }

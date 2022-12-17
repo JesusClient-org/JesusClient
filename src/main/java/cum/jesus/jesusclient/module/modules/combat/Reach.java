@@ -6,7 +6,7 @@ import cum.jesus.jesusclient.module.settings.NumberSetting;
 
 public class Reach extends Module {
     public static Reach INSTANCE = new Reach();
-    public static NumberSetting<Double> reachAmount = new NumberSetting<>("Reach amount", 3.0D, 2.0D, 4.5D);
+    public static NumberSetting<Float> reachAmount = new NumberSetting<>("Reach amount", 3.0f, 2.0f, 4.5f);
 
     public Reach() {
         super("Reach", "Hits entities from further away", Category.COMBAT);

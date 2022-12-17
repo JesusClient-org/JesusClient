@@ -26,7 +26,7 @@ public class RenderUtils {
         GL11.glColor4b((byte) r, (byte) g, (byte) b, (byte) a);
     }
 
-    public static void drawRect(int mode, int left, int top, int right, int bottom, int color) {
+    public static void drawRect(int glFlag, int left, int top, int right, int bottom, int color) {
         if (left < right) {
             int i = left;
             left = right;
@@ -39,21 +39,21 @@ public class RenderUtils {
             bottom = j;
         }
 
-        float f3 = (color >> 24 & 0xFF) / 255.0F;
-        float f = (color >> 16 & 0xFF) / 255.0F;
-        float f1 = (color >> 8 & 0xFF) / 255.0F;
-        float f2 = (color & 0xFF) / 255.0F;
+        float f3 = (float) (color >> 24 & 255) / 255.0F;
+        float f = (float) (color >> 16 & 255) / 255.0F;
+        float f1 = (float) (color >> 8 & 255) / 255.0F;
+        float f2 = (float) (color & 255) / 255.0F;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(mode, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(left, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, top, 0.0D).endVertex();
-        worldrenderer.pos(left, top, 0.0D).endVertex();
+        worldrenderer.begin(glFlag, DefaultVertexFormats.POSITION);
+        worldrenderer.pos((double) left, (double) bottom, 0.0D).endVertex();
+        worldrenderer.pos((double) right, (double) bottom, 0.0D).endVertex();
+        worldrenderer.pos((double) right, (double) top, 0.0D).endVertex();
+        worldrenderer.pos((double) left, (double) top, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
