@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
-import cum.jesus.jesusclient.utils.WebUtils;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 

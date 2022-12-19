@@ -24,12 +24,21 @@ public class NumberSetting<T extends Number> extends Setting<T> {
     private T min;
     private T max;
 
+    public NumberSetting(String name, T defaultVal, @NotNull T min, @NotNull T max, boolean premium) {
+        this(name, defaultVal, min, max, null, premium);
+    }
+
     public NumberSetting(String name, T defaultVal, @NotNull T min, @NotNull T max) {
         this(name, defaultVal, min, max, null);
     }
 
+    public NumberSetting(String name, T defaultVal, @NotNull T min, @NotNull T max, @Nullable Predicate<T> validator, boolean premium) {
+        super(name, defaultVal, validator == null ? val -> val.doubleValue() >= min.doubleValue() && val.doubleValue() <= max.doubleValue() : validator.and(val -> val.doubleValue() >= min.doubleValue() && val.doubleValue() <= max.doubleValue()), premium);
+        this.min = min;
+        this.max = max;
+    }
     public NumberSetting(String name, T defaultVal, @NotNull T min, @NotNull T max, @Nullable Predicate<T> validator) {
-        super(name, defaultVal, validator == null ? val -> val.doubleValue() >= min.doubleValue() && val.doubleValue() <= max.doubleValue() : validator.and(val -> val.doubleValue() >= min.doubleValue() && val.doubleValue() <= max.doubleValue()));
+        super(name, defaultVal, validator == null ? val -> val.doubleValue() >= min.doubleValue() && val.doubleValue() <= max.doubleValue() : validator.and(val -> val.doubleValue() >= min.doubleValue() && val.doubleValue() <= max.doubleValue()), false);
         this.min = min;
         this.max = max;
     }

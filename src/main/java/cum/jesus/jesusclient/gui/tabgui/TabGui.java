@@ -24,7 +24,7 @@ public class TabGui<T> { //TODO make it look better
     @NotNull
     static Color BACKGROUND = new Color(0, 0, 0, 175);
     @NotNull
-    static Color BORDER = new Color(0, 0, 0, 255);
+    static Color BORDER = new Color(0, 0, 0, 175);
     @NotNull
     static int SELECTED = Hud.lgbtMode.getObject() ? Hud.lgbt(0) : new Color(200, 0, 0, 200).getRGB();
     static Color FOREGROUND = Color.white;
@@ -94,7 +94,6 @@ public class TabGui<T> { //TODO make it look better
         width += 6;
 
         drawRect(GL_QUADS, 0, 0, width, height, BACKGROUND.getRGB());
-
 
         int offset = 2;
 

@@ -10,12 +10,23 @@ import java.util.function.Predicate;
 public class ModeSetting extends Setting<Integer> {
     private String[] modes;
 
+    public ModeSetting(String name, String defaultVal, boolean premium, String... modes) {
+        this(name, defaultVal, null, premium, modes);
+    }
+
     public ModeSetting(String name, String defaultVal, String... modes) {
         this(name, defaultVal, null, modes);
     }
 
+    public ModeSetting(String name, String defaultVal, Predicate<Integer> validator, boolean premium, String... modes) {
+        super(name, 0, validator, premium);
+        this.modes = modes;
+
+        setObject(defaultVal);
+    }
+
     public ModeSetting(String name, String defaultVal, Predicate<Integer> validator, String... modes) {
-        super(name, 0, validator);
+        super(name, 0, validator, false);
         this.modes = modes;
 
         setObject(defaultVal);

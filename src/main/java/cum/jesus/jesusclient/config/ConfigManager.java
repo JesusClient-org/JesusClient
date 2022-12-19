@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.Premium;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.settings.Setting;
 import cum.jesus.jesusclient.utils.Logger;
@@ -163,6 +164,7 @@ public class ConfigManager {
 
                     for (Setting value : values) {
                         try {
+                            if (value.isPremiumOnly() && !Premium.isUserPremium()) return;
                             value.fromJsonObject(valueObject);
                         } catch (Exception e) {
                             backupReasons.add("Error while applying 'values/" + stringJsonElementEntry.getKey() + "' " + e.toString());

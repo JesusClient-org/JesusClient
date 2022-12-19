@@ -8,14 +8,15 @@ public abstract class Setting<T> {
     private String name;
     private T object;
     private T defaultVal;
-
+    private boolean premiumOnly;
     private Predicate<T> validator;
 
-    Setting(String name, T defaultVal, Predicate<T> validator) {
+    Setting(String name, T defaultVal, Predicate<T> validator, boolean premiumOnly) {
         this.name = name;
         this.object = defaultVal;
         this.defaultVal = defaultVal;
         this.validator = validator;
+        this.premiumOnly = premiumOnly;
     }
 
     public abstract void addToJsonObject(JsonObject obj);
@@ -44,5 +45,9 @@ public abstract class Setting<T> {
 
     public Object getDefault() {
         return defaultVal;
+    }
+
+    public boolean isPremiumOnly() {
+        return premiumOnly;
     }
 }

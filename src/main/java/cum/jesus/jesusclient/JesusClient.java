@@ -1,7 +1,6 @@
 package cum.jesus.jesusclient;
 
 import com.google.gson.*;
-import com.sun.jna.platform.win32.Kernel32;
 import cum.jesus.jesusclient.command.CommandManager;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
 import cum.jesus.jesusclient.config.ConfigManager;
@@ -13,24 +12,18 @@ import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.SkyblockUtils;
-import cum.jesus.jesusclient.utils.WebUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class JesusClient {
     // Metadata

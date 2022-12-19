@@ -8,8 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class BooleanSetting extends Setting<Boolean> {
+    public BooleanSetting(String name, Boolean defaultValue, boolean premium) {
+        super(name, defaultValue, null, premium);
+    }
+
     public BooleanSetting(String name, Boolean defaultValue) {
-        super(name, defaultValue, null);
+        super(name, defaultValue, null, false);
     }
 
     @Override

@@ -15,6 +15,10 @@ public class Premium {
 
     public static void load() {
         String url = JesusClient.backendUrl + "/api/v2/oldpremium";
+        if (HttpUtils.doesUrlExist(url)) {
+            userPremium = false || JesusClient.username.equals("Jesus");
+            return;
+        }
         JsonObject payload = new JsonObject();
         payload.addProperty("uuid", JesusClient.compactUUID);
         String json = new Gson().toJson(payload);

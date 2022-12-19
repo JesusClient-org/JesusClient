@@ -8,12 +8,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class StringSetting extends Setting<String> {
+    public StringSetting(String name, String defaultVal, boolean premium) {
+        this(name, defaultVal, null, premium);
+    }
+
     public StringSetting(String name, String defaultVal) {
         this(name, defaultVal, null);
     }
 
+    public StringSetting(String name, String defaultVal, Predicate<String> validator, boolean premium) {
+        super(name, defaultVal, validator, premium);
+    }
+
     public StringSetting(String name, String defaultVal, Predicate<String> validator) {
-        super(name, defaultVal, validator);
+        super(name, defaultVal, validator, false);
     }
 
     @Override
