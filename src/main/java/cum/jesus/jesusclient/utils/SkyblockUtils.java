@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.utils;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.command.commands.dev.DevToolsCommand;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
@@ -43,7 +44,7 @@ public class SkyblockUtils {
         if (event.getEventType() != EventType.POST) return;
 
         if (JesusClient.mc.theWorld != null) {
-            inDungeon = (hasLine("Cleared") || hasLine("Start"));
+            inDungeon = (hasLine("Cleared") || hasLine("Start")) || DevToolsCommand.forceDungeon;
             onSkyblock = isOnSkyBlock();
             onPrivateIsland = hasLine("Your Island");
         }
@@ -99,6 +100,8 @@ public class SkyblockUtils {
     }
 
     public static boolean isOnSkyBlock() {
+        if (DevToolsCommand.forceSkyblock) return true;
+
         try {
             ScoreObjective titleObjective = mc.thePlayer.getWorldScoreboard().getObjectiveInDisplaySlot(1);
             if (mc.thePlayer.getWorldScoreboard().getObjectiveInDisplaySlot(0) != null)

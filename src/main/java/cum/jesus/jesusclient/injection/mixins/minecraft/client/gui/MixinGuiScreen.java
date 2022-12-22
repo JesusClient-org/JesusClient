@@ -1,9 +1,15 @@
 package cum.jesus.jesusclient.injection.mixins.minecraft.client.gui;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.events.ChatEvent;
+import cum.jesus.jesusclient.events.DrawBackgroundEvent;
+import cum.jesus.jesusclient.events.eventapi.EventManager;
+import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,6 +25,8 @@ public class MixinGuiScreen {
     public void sendChatMessage(String msg, boolean addToChat, CallbackInfo ci) {
         if (JesusClient.INSTANCE.blacklisted) return;
 
+        IChatComponent component = new ChatComponentText(msg);
+
         if (msg.startsWith(Gui.prefix.getObject()) && msg.length() > 1) {
             if (JesusClient.INSTANCE.commandManager.execute(msg)) {
                 this.mc.ingameGUI.getChatGUI().addToSentMessages(msg);
@@ -26,5 +34,15 @@ public class MixinGuiScreen {
 
             ci.cancel();
         }
+
+        ChatEvent event = new ChatEvent(EventType.SEND, component);
+        EventManager.call(event);
+
+        if (event.isCancelled()) ci.cancel();
+    }
+
+    @Inject(method = "drawDefaultBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;drawWorldBackground(I)V", shift = At.Shift.AFTER))
+    private void drawBackground(CallbackInfo ci) {
+        EventManager.call(new DrawBackgroundEvent(this.mc.currentScreen));
     }
 }

@@ -45,15 +45,15 @@ public abstract class MixinNetHandlerPlayClient {
 
     @Inject(method = "handleChat", at = @At(value = "HEAD"), cancellable = true)
     private void handleChat(S02PacketChat chatPacket, CallbackInfo ci) {
-        IChatComponent msg = handleChatEvent(chatPacket.getType(), chatPacket.getChatComponent());
+        IChatComponent msg = handleChatEvent(chatPacket.getChatComponent());
 
         if (msg == null) {
             ci.cancel();
         }
     }
 
-    private IChatComponent handleChatEvent(byte type, IChatComponent message) {
-        ChatEvent event = new ChatEvent(EventType.RECIEVE, message, type);
+    private IChatComponent handleChatEvent(IChatComponent message) {
+        ChatEvent event = new ChatEvent(EventType.RECIEVE, message);
         EventManager.call(event);
 
         return event.isCancelled() ? null : event.getMessage();

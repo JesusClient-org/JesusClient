@@ -20,7 +20,7 @@ public class ApiKey extends Module {
     @EventTarget
     public void chat(ChatEvent event) {
         if (event.getEventType() != EventType.RECIEVE) return;
-        if (!Utils.onHypixel && event.getType() == (byte)2) return;
+        if (!Utils.onHypixel) return;
 
         String formatted = event.getMessage().getFormattedText();
         String unformatted = event.getMessage().getUnformattedText();

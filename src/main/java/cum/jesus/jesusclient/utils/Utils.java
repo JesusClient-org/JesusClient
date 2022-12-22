@@ -27,6 +27,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static cum.jesus.jesusclient.JesusClient.mc;
+
 public class Utils {
     public static boolean onHypixel = false;
 
@@ -97,23 +99,23 @@ public class Utils {
     }
 
     public static void throwSlot(int slot) {
-        ItemStack curInSlot = JesusClient.mc.thePlayer.inventory.getStackInSlot(slot);
+        ItemStack curInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
         if (curInSlot != null)
             if (curInSlot.getDisplayName().contains("Snowball")) {
                 int ss = curInSlot.stackSize;
                 for (int i = 0; i < ss; i++) {
-                    JesusClient.mc.thePlayer.inventory.currentItem = slot;
-                    JesusClient.mc.playerController.sendUseItem((EntityPlayer)JesusClient.mc.thePlayer, (World)JesusClient.mc.theWorld, JesusClient.mc.thePlayer.inventory.getStackInSlot(slot));
+                    mc.thePlayer.inventory.currentItem = slot;
+                    mc.playerController.sendUseItem((EntityPlayer) mc.thePlayer, (World) mc.theWorld, mc.thePlayer.inventory.getStackInSlot(slot));
                 }
             } else {
-                JesusClient.mc.thePlayer.inventory.currentItem = slot;
-                JesusClient.mc.playerController.sendUseItem((EntityPlayer)JesusClient.mc.thePlayer, (World)JesusClient.mc.theWorld, JesusClient.mc.thePlayer.inventory.getStackInSlot(slot));
+                mc.thePlayer.inventory.currentItem = slot;
+                mc.playerController.sendUseItem((EntityPlayer) mc.thePlayer, (World) mc.theWorld, mc.thePlayer.inventory.getStackInSlot(slot));
             }
     }
 
     public static int getAvailableHotbarSlot(String name) {
         for (int i = 0; i < 9; i++) {
-            ItemStack is = JesusClient.mc.thePlayer.inventory.getStackInSlot(i);
+            ItemStack is = mc.thePlayer.inventory.getStackInSlot(i);
             if (is == null || is.getDisplayName().contains(name))
                 return i;
         }
@@ -123,10 +125,15 @@ public class Utils {
     public static java.util.List<Integer> getAllSlots(int throwSlot, String name) {
         List<Integer> ret = new ArrayList<>();
         for (int i = 9; i < 44; i++) {
-            ItemStack is = ((Slot)JesusClient.mc.thePlayer.inventoryContainer.inventorySlots.get(i)).getStack();
+            ItemStack is = ((Slot) mc.thePlayer.inventoryContainer.inventorySlots.get(i)).getStack();
             if (is != null && is.getDisplayName().contains(name) && i - 36 != throwSlot)
                 ret.add(Integer.valueOf(i));
         }
         return ret;
+    }
+
+    public static String getInventoryName() {
+        if(mc.thePlayer == null || mc.theWorld == null) return "null";
+        return mc.thePlayer.openContainer.inventorySlots.get(0).inventory.getName();
     }
 }

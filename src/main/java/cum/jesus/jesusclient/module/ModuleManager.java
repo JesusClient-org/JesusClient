@@ -10,13 +10,12 @@ import cum.jesus.jesusclient.module.modules.combat.KillAura;
 import cum.jesus.jesusclient.module.modules.combat.Reach;
 import cum.jesus.jesusclient.module.modules.movement.BHop;
 import cum.jesus.jesusclient.module.modules.movement.Flight;
-import cum.jesus.jesusclient.module.modules.render.Gui;
-import cum.jesus.jesusclient.module.modules.render.Hud;
-import cum.jesus.jesusclient.module.modules.render.NoBlind;
-import cum.jesus.jesusclient.module.modules.render.NoSlimes;
+import cum.jesus.jesusclient.module.modules.render.*;
 import cum.jesus.jesusclient.module.modules.self.SessionProtection;
 import cum.jesus.jesusclient.module.modules.self.Timer;
 import cum.jesus.jesusclient.module.modules.skyblock.ApiKey;
+import cum.jesus.jesusclient.module.modules.skyblock.AutoReady;
+import cum.jesus.jesusclient.module.modules.skyblock.TerminalSolver;
 import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +40,8 @@ public class ModuleManager {
 
             //skyblock
             addModule(new ApiKey());
+            addModule(new AutoReady());
+            addModule(new TerminalSolver());
 
             // movement
             addModule(new Flight());
@@ -49,6 +50,7 @@ public class ModuleManager {
             // render
             addModule(NoBlind.INSTANCE);
             addModule(NoSlimes.INSTANCE);
+            addModule(new RevealHiddenMobs());
 
             // self
             addModule(new Timer());
