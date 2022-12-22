@@ -250,15 +250,6 @@ public final class EventManager {
         return event;
     }
 
-    public static boolean post(Event event) {
-        if (event instanceof EventCancellable) {
-            call(event);
-            return ((EventCancellable) event).isCancelled();
-        } else {
-            return false;
-        }
-    }
-
     /**
      * Invokes a MethodData when an Event call is made.
      *

@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient.module.modules.render;
 
+import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.gui.clickgui.ClickGui;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
@@ -20,7 +21,7 @@ public class Gui extends Module {
 
     @Override
     protected void onEnable() {
-        mc.displayGuiScreen(ClickGui.INSTANCE);
+        JesusClient.display = ClickGui.INSTANCE;
         setToggled(false);
     }
 

@@ -4,22 +4,27 @@
   "refmap": "mixins.jesusclient.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "client.MinecraftMixin",
-    "client.gui.MixinGuiScreen",
-    "entity.MixinEntity",
-    "entity.MixinEntityLivingBase",
-    "entity.player.MixinEntityPlayer"
+    "minecraft.client.MinecraftMixin",
+    "minecraft.client.gui.MixinGuiScreen",
+    "minecraft.entity.MixinEntity",
+    "minecraft.entity.MixinEntityLivingBase",
+    "minecraft.entity.player.MixinEntityPlayer",
+    "minecraft.network.MixinNetworkManager",
+    "minecraft.world.MixinWorld",
+    "minecraftforge.fml.common.network.handshake.MixinNetworkDispatcher"
   ],
   "client": [
-    "accessors.MinecraftAccessor",
-    "client.entity.EntityPlayerSPAccessor",
-    "client.entity.MixinAbstractClientPlayer",
-    "client.entity.MixinEntityPlayerSP",
-    "client.gui.MixinGuiChat",
-    "client.gui.MixinGuiIngame",
-    "client.multiplayer.MixinWorldClient",
-    "client.network.MixinNetHandlerPlayClient",
-    "client.renderer.MixinEntityRenderer",
-    "client.renderer.MixinItemRenderer"
+    "minecraft.client.MinecraftAccessor",
+    "minecraft.client.entity.EntityPlayerSPAccessor",
+    "minecraft.client.entity.MixinAbstractClientPlayer",
+    "minecraft.client.entity.MixinEntityPlayerSP",
+    "minecraft.client.gui.MixinGuiChat",
+    "minecraft.client.gui.MixinGuiIngame",
+    "minecraft.client.multiplayer.MixinWorldClient",
+    "minecraft.client.network.MixinNetHandlerPlayClient",
+    "minecraft.client.renderer.MixinEntityRenderer",
+    "minecraft.client.renderer.MixinItemRenderer",
+    "minecraft.client.renderer.entity.MixinRender",
+    "minecraft.client.renderer.entity.MixinRendererLivingEntity"
   ]
 }

@@ -1,13 +1,14 @@
 package cum.jesus.jesusclient.gui.clickgui;
 
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.Premium;
+import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.settings.BooleanSetting;
 import cum.jesus.jesusclient.module.settings.ModeSetting;
 import cum.jesus.jesusclient.module.settings.NumberSetting;
 import cum.jesus.jesusclient.module.settings.Setting;
+import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.Utils;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import me.superblaubeere27.clickgui.IRenderer;
@@ -15,7 +16,6 @@ import me.superblaubeere27.clickgui.Window;
 import me.superblaubeere27.clickgui.components.*;
 import me.superblaubeere27.clickgui.components.Button;
 import me.superblaubeere27.clickgui.components.Label;
-import me.superblaubeere27.clickgui.components.ScrollPane;
 import me.superblaubeere27.clickgui.layout.GridLayout;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
@@ -86,7 +86,7 @@ public class ClickGui extends GuiScreen {
 
                         if (module.isPremiumFeature() && !Premium.isUserPremium()) {
                             module.setToggled(false);
-                            JesusClient.sendPrefixMessage("This feature is only available to Jesus Client premium users");
+                            ChatUtils.sendPrefixMessage("This feature is only available to Jesus Client premium users");
                         }
 
                         return true;

@@ -6,6 +6,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.command.CommandException;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 
@@ -28,7 +29,7 @@ public class HttpDevCommand extends Command {
 
         if (args[0].equalsIgnoreCase("get")) {
             (new Thread(() -> {
-                JesusClient.sendPrefixMessage(HttpUtils.get(args[1]));
+                ChatUtils.sendPrefixMessage(HttpUtils.get(args[1]));
             }, "JesusClient-http-get-devcmd")).start();
         } else if (args[0].equalsIgnoreCase("post")) {
             (new Thread(() -> {
@@ -43,7 +44,7 @@ public class HttpDevCommand extends Command {
                 }
                 String jsonData = builder.toString();
 
-                JesusClient.sendPrefixMessage(HttpUtils.post(args[1], jsonData));
+                ChatUtils.sendPrefixMessage(HttpUtils.post(args[1], jsonData));
             }, "JesusClient-http-post-devcmd")).start();
         } else {
             throw new CommandException("Usage: " + Gui.prefix.getObject() + alias + "<get/post> [<url>] [jsonData]");
@@ -58,19 +59,5 @@ public class HttpDevCommand extends Command {
     @Override
     public boolean isDevOnly() {
         return true;
-    }
-
-    public void onCall(String[] args) {
-        String type = args[1];
-        String url = args[2];
-        if (type.equals("get")) {
-            (new Thread(() -> {
-                JesusClient.sendPrefixMessage(HttpUtils.get(url));
-            })).start();
-        } else if (type.equals("post")) {
-            (new Thread(() -> {
-                JesusClient.sendPrefixMessage(HttpUtils.post(url, args[3]));
-            })).start();
-        }
     }
 }

@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.module;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.Utils;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -78,7 +79,7 @@ public abstract class Module {
             onEnable();
 
             if (!Gui.hideNotifs.getObject() && shouldNotify()) {
-                JesusClient.sendPrefixMessage(Utils.getColouredBoolean(state) + " " + getName());
+                ChatUtils.sendPrefixMessage(Utils.getColouredBoolean(state) + " " + getName());
             }
 
         } else {
@@ -87,7 +88,7 @@ public abstract class Module {
             onDisable();
 
             if (!Gui.hideNotifs.getObject() && shouldNotify()){
-                JesusClient.sendPrefixMessage(Utils.getColouredBoolean(state) + " " + getName());
+                ChatUtils.sendPrefixMessage(Utils.getColouredBoolean(state) + " " + getName());
             }
         }
     }

@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.command.commands;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.utils.ChatUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -24,9 +25,9 @@ public class JesusSlashCommand extends CommandBase {
 
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (JesusClient.INSTANCE.blacklisted)
-            JesusClient.sendPrefixMessage("you're black");
+            ChatUtils.sendPrefixMessage("you're black");
         else
-            JesusClient.sendPrefixMessage("the command is " + Gui.prefix.getObject() + "jesus");
+            ChatUtils.sendPrefixMessage("the command is " + Gui.prefix.getObject() + "jesus");
     }
 
     @Override

@@ -4,18 +4,18 @@ import com.google.gson.*;
 import cum.jesus.jesusclient.command.CommandManager;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
 import cum.jesus.jesusclient.config.ConfigManager;
+import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
+import cum.jesus.jesusclient.events.eventapi.EventTarget;
+import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
-import cum.jesus.jesusclient.utils.HttpUtils;
-import cum.jesus.jesusclient.utils.Logger;
-import cum.jesus.jesusclient.utils.SkyblockUtils;
+import cum.jesus.jesusclient.utils.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.ClientCommandHandler;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +48,8 @@ public class JesusClient {
     public static boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
     public static String backendUrl = "http://62.107.137.187:6969";
+
+    public static GuiScreen display = null;
 
     public boolean blacklisted;
 
@@ -97,7 +99,7 @@ public class JesusClient {
         settingManager = new SettingManager();
         moduleManager = new ModuleManager();
 
-        Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION);
+        Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION + " - Minecraft 1.8.9");
 
         // loading file manager
         fileManager.init();
@@ -116,6 +118,8 @@ public class JesusClient {
         }
 
         EventManager.register(new SkyblockUtils());
+        EventManager.register(new Utils());
+        EventManager.register(this);
 
         // Load capes
         Capes.load();
@@ -136,11 +140,18 @@ public class JesusClient {
         }
     }
 
-    public static void sendMessage(Object message) {
-        mc.thePlayer.addChatMessage((IChatComponent)new ChatComponentText(message.toString()));
-    }
-
-    public static void sendPrefixMessage(Object message) {
-        mc.thePlayer.addChatMessage((IChatComponent)new ChatComponentText("\u00A78[\u00A74Jesus Client\u00A78] \u00A77" + message));
+    @EventTarget
+    public void tick(GameTickEvent event) {
+        if (event.getEventType() != EventType.PRE) return;
+        if (mc.thePlayer == null || mc.theWorld == null)
+            return;
+        if (display != null) {
+            try {
+                mc.displayGuiScreen(display);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            display = null;
+        }
     }
 }

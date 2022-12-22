@@ -6,7 +6,7 @@ import cum.jesus.jesusclient.events.WorldLoadEvent;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.events.eventapi.types.Priority;
-import cum.jesus.jesusclient.injection.mixins.client.entity.EntityPlayerSPAccessor;
+import cum.jesus.jesusclient.injection.mixins.minecraft.client.entity.EntityPlayerSPAccessor;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.settings.BooleanSetting;
@@ -19,7 +19,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.WorldEvent;
 
 import java.util.Comparator;
 import java.util.Iterator;

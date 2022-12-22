@@ -1,18 +1,20 @@
 package cum.jesus.jesusclient.command;
 
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.Premium;
+import cum.jesus.jesusclient.command.commands.dev.DevToolsCommand;
+import cum.jesus.jesusclient.command.commands.premium.SpamWebhookPremiumCommand;
+import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.command.commands.*;
 import cum.jesus.jesusclient.command.commands.dev.CloseMinecraftDevCommand;
 import cum.jesus.jesusclient.command.commands.dev.HttpDevCommand;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.utils.ChatUtils;
+import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,14 +23,24 @@ public class CommandManager {
     public List<Command> commandList = new ArrayList<>();
 
     public boolean addCommands() {
-        // dev cmd
-        addCommand(new CloseMinecraftDevCommand());
-        addCommand(new HttpDevCommand());
+        try {
+            // dev cmd
+            addCommand(new CloseMinecraftDevCommand());
+            addCommand(new HttpDevCommand());
+            addCommand(new DevToolsCommand());
 
-        addCommand(new DiscordCommand());
-        addCommand(new HelpCommand());
-        addCommand(new JesusCommand());
-        addCommand(new VClipCommand());
+            // premium cmd
+            addCommand(new SpamWebhookPremiumCommand());
+
+            addCommand(new DiscordCommand());
+            addCommand(new HelpCommand());
+            addCommand(new JesusCommand());
+            addCommand(new VClipCommand());
+        } catch (Exception e) {
+            Logger.error("Error while loading command manager: " + e.getMessage() + "\n");
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
     }
@@ -67,7 +79,7 @@ public class CommandManager {
 
         try {
             if (command == null) { // cmd does not exist
-                JesusClient.sendPrefixMessage(cmdName + " is not a command. Run " + Gui.prefix.getObject() + "help for a list of the commands");
+                ChatUtils.sendPrefixMessage(cmdName + " is not a command. Run " + Gui.prefix.getObject() + "help for a list of the commands");
                 return false;
             } else {
                 String[] args = new String[splittedStr.length - 1];
@@ -75,7 +87,7 @@ public class CommandManager {
                 System.arraycopy(splittedStr, 1, args, 0, splittedStr.length - 1);
 
                 if (command.isPremiumOnly() && !Premium.isUserPremium()) { // non premium user running premiu command
-                    JesusClient.sendPrefixMessage("This command is only available to Jesus Client premium users");
+                    ChatUtils.sendPrefixMessage("This command is only available to Jesus Client premium users");
                     return false;
                 }
 
@@ -84,7 +96,7 @@ public class CommandManager {
                 return true; // the command is successfully run and also exists
             }
         } catch (CommandException e) {
-            JesusClient.sendPrefixMessage("§c" + e.getMessage());
+            ChatUtils.sendPrefixMessage("§c" + e.getMessage());
         }
 
         return true;

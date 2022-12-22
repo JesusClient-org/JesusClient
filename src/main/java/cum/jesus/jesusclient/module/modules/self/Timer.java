@@ -3,16 +3,13 @@ package cum.jesus.jesusclient.module.modules.self;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
+import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.gui.clickgui.ClickGui;
-import cum.jesus.jesusclient.injection.mixins.accessors.MinecraftAccessor;
+import cum.jesus.jesusclient.injection.mixins.minecraft.client.MinecraftAccessor;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.settings.NumberSetting;
-import cum.jesus.jesusclient.utils.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class Timer extends Module {
     public NumberSetting<Float> multiplier = new NumberSetting<>("Timer multiplier", 1.0f, 0.1f, 5.0f);
@@ -23,6 +20,8 @@ public class Timer extends Module {
 
     @EventTarget
     public void onTick(GameTickEvent e) {
+        if (e.getEventType() != EventType.PRE) return;
+
         if (isToggled() && JesusClient.mc.currentScreen != (GuiScreen) ClickGui.INSTANCE) {
             (getTimer()).timerSpeed = multiplier.getObject();
         } else {

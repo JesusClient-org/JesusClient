@@ -5,6 +5,7 @@ import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.gui.clickgui.ClickGui;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import net.minecraft.entity.monster.EntitySlime;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class JesusCommand extends Command {
 
     @Override
     public void run(String alias, @NotNull String[] args) {
-        Module mod = JesusClient.INSTANCE.moduleManager.getModule(Gui.class);
-        mod.toggle();
+        Module gui = JesusClient.INSTANCE.moduleManager.getModule(Gui.class);
+        gui.setToggled(true);
     }
 
     @Override

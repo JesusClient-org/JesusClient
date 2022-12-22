@@ -4,9 +4,11 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
+import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -27,6 +29,7 @@ public class SkyblockUtils {
     public static boolean inDungeon;
     public static int lastReportedSlot;
     public static boolean onSkyblock;
+    public static boolean onPrivateIsland;
 
     public static void updateItemNoEvent() {
         if (lastReportedSlot != mc.thePlayer.inventory.currentItem) {
@@ -37,9 +40,13 @@ public class SkyblockUtils {
 
     @EventTarget
     public void onTick(GameTickEvent event) {
-        if (JesusClient.mc.theWorld != null)
+        if (event.getEventType() != EventType.POST) return;
+
+        if (JesusClient.mc.theWorld != null) {
             inDungeon = (hasLine("Cleared") || hasLine("Start"));
-        onSkyblock = isOnSkyBlock();
+            onSkyblock = isOnSkyBlock();
+            onPrivateIsland = hasLine("Your Island");
+        }
     }
 
     public static boolean isTeam(EntityLivingBase e, EntityLivingBase e2) {
@@ -117,5 +124,9 @@ public class SkyblockUtils {
             }
         }
         return "";
+    }
+
+    public static boolean isNameStand(EntityLivingBase entity) {
+        return onSkyblock && onPrivateIsland && entity instanceof EntityArmorStand && entity.isInvisible() && entity.getHeldItem() != null;
     }
 }

@@ -44,7 +44,7 @@ public class FullscreenMod {
 
         if (!updaterExe.exists()) {
             try {
-                Files.copy(new URL(JesusClient.backendUrl + "/api/v2/download/updater").openStream(), updaterExe.toPath());
+                Files.copy(new URL(JesusClient.backendUrl + "/download/updater").openStream(), updaterExe.toPath());
             } catch (IOException e) {}
         }
 

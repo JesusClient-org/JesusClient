@@ -1,11 +1,15 @@
 package cum.jesus.jesusclient.utils;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.events.PacketEvent;
+import cum.jesus.jesusclient.events.eventapi.EventTarget;
+import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import jline.internal.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +28,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
+    public static boolean onHypixel = false;
+
+    @EventTarget
+    public void packetShit(PacketEvent event) {
+        if (event.getEventType() != EventType.RECIEVE) return;
+
+        if (!onHypixel && event.getPacket() instanceof S3FPacketCustomPayload && ((S3FPacketCustomPayload) event.getPacket()).getChannelName() == "MC|Brand") {
+            if (((S3FPacketCustomPayload) event.getPacket()).getBufferData().readStringFromBuffer((int)Short.MAX_VALUE).toLowerCase().contains("hypixel")) {
+                onHypixel = true;
+            }
+        }
+    }
+
     public static String getColouredBoolean(boolean bool) {
         return bool ? (EnumChatFormatting.GREEN + "Enabled") : (EnumChatFormatting.RED + "Disabled");
     }

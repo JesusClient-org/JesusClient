@@ -1,7 +1,7 @@
 package cum.jesus.jesusclient.utils;
 
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.injection.mixins.client.entity.EntityPlayerSPAccessor;
+import cum.jesus.jesusclient.injection.mixins.minecraft.client.entity.EntityPlayerSPAccessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;

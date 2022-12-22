@@ -13,7 +13,11 @@ import cum.jesus.jesusclient.module.modules.movement.Flight;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 import cum.jesus.jesusclient.module.modules.render.Hud;
 import cum.jesus.jesusclient.module.modules.render.NoBlind;
+import cum.jesus.jesusclient.module.modules.render.NoSlimes;
+import cum.jesus.jesusclient.module.modules.self.SessionProtection;
 import cum.jesus.jesusclient.module.modules.self.Timer;
+import cum.jesus.jesusclient.module.modules.skyblock.ApiKey;
+import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,25 +32,36 @@ public class ModuleManager {
     }
 
     public boolean addModules() {
-        // combat
-        addModule(new Cum());
-        addModule(KillAura.INSTANCE);
-        addModule(Reach.INSTANCE);
-        addModule(AntiKB.INSTANCE);
+        try {
+            // combat
+            addModule(new Cum());
+            addModule(KillAura.INSTANCE);
+            addModule(Reach.INSTANCE);
+            addModule(AntiKB.INSTANCE);
 
-        // movement
-        addModule(new Flight());
-        addModule(new BHop());
+            //skyblock
+            addModule(new ApiKey());
 
-        // render
-        addModule(NoBlind.INSTANCE);
+            // movement
+            addModule(new Flight());
+            addModule(new BHop());
 
-        // self
-        addModule(new Timer());
+            // render
+            addModule(NoBlind.INSTANCE);
+            addModule(NoSlimes.INSTANCE);
 
+            // self
+            addModule(new Timer());
+            addModule(new SessionProtection());
 
-        addModule(new Gui());
-        addModule(new Hud());
+            // hud shit (has to be added last for modulelist reasons)
+            addModule(new Gui());
+            addModule(new Hud());
+        } catch (Exception e) {
+            Logger.error("Error while loading module manager: " + e.getMessage() + "\n");
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
     }
