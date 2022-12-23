@@ -12,6 +12,7 @@ import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
+import cum.jesus.jesusclient.scripting.ScriptManager;
 import cum.jesus.jesusclient.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -73,6 +74,7 @@ public class JesusClient {
     public CommandManager commandManager;
     public SettingManager settingManager;
     public ModuleManager moduleManager;
+    public ScriptManager scriptManager;
 
     public JesusClient() {
         INSTANCE = this;
@@ -98,11 +100,14 @@ public class JesusClient {
         commandManager = new CommandManager();
         settingManager = new SettingManager();
         moduleManager = new ModuleManager();
+        scriptManager = new ScriptManager();
 
         Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION + " - Minecraft 1.8.9");
 
         // loading file manager
         fileManager.init();
+
+        fileManager.loadScripts();
 
         // Add commands
         if (commandManager.addCommands()) Logger.info("Loaded command manager");

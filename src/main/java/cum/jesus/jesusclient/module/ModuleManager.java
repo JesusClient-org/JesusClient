@@ -16,6 +16,7 @@ import cum.jesus.jesusclient.module.modules.self.Timer;
 import cum.jesus.jesusclient.module.modules.skyblock.ApiKey;
 import cum.jesus.jesusclient.module.modules.skyblock.AutoReady;
 import cum.jesus.jesusclient.module.modules.skyblock.TerminalSolver;
+import cum.jesus.jesusclient.scripting.ScriptModule;
 import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,5 +92,9 @@ public class ModuleManager {
     @EventTarget
     private void onKey(@NotNull KeyInputEvent event) {
         for (Module module : modules) if (module.getKeybind() == event.getKey()) module.setToggled(!module.isToggled());
+    }
+
+    public void addScriptModule(ScriptModule module) {
+        addModule(module);
     }
 }

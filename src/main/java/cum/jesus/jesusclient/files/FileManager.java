@@ -1,6 +1,10 @@
 package cum.jesus.jesusclient.files;
 
 import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.modules.render.Hud;
 import cum.jesus.jesusclient.utils.Logger;
@@ -18,6 +22,7 @@ public class FileManager {
     public final File clientDir = new File(JesusClient.INSTANCE.mc.mcDataDir, JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""));
     public final File backupDir = new File(clientDir, "config-backups");
     public final File cacheDir = new File(clientDir, "CACHE");
+    public final File scriptDir = new File(clientDir, "scripts");
 
     public final File configFile = new File(clientDir, "jesusconfig.json");
     private final File firstTimeFile = new File(clientDir, "firsttime.txt");
@@ -26,7 +31,7 @@ public class FileManager {
         if (!configFile.exists() && !configFile.createNewFile())
             throw new IOException("Failed to create config file");
 
-        Files.write(JesusClient.INSTANCE.configManager.toJsonObject().toString().getBytes(StandardCharsets.UTF_8), configFile);
+        Files.write(formatJson(JesusClient.INSTANCE.configManager.toJsonObject().toString()).getBytes(StandardCharsets.UTF_8), configFile);
     }
 
     public void init() {
@@ -72,6 +77,38 @@ public class FileManager {
             PrintWriter writer = new PrintWriter(firstTimeFile);
             writer.println("this file is for checking if this is your first time using jesus client (if it exists it's not your first time)");
             writer.close();
+        }
+    }
+
+    /**
+     * Convert a JSON string to pretty print version
+     * @param jsonString
+     * @return
+     */
+    public static String formatJson(String jsonString) {
+        JsonParser parser = new JsonParser();
+        JsonObject json = parser.parse(jsonString).getAsJsonObject();
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = gson.toJson(json);
+
+        return prettyJson;
+    }
+
+    public void loadScripts() {
+        if (!scriptDir.exists()) scriptDir.mkdirs();
+
+        File[] files = scriptDir.listFiles(pathname -> pathname.getName().endsWith("zip") || pathname.getName().endsWith("cbs"));
+
+        if (files != null) {
+            for (File file : files) {
+                try {
+                    JesusClient.INSTANCE.scriptManager.load(file);
+                } catch (Exception e) {
+                    Logger.error("Failed to load script " + file.getName());
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
