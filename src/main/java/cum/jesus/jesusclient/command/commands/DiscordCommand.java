@@ -3,6 +3,7 @@ package cum.jesus.jesusclient.command.commands;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.utils.ChatUtils;
+import cum.jesus.jesusclient.utils.DesktopUtils;
 import cum.jesus.jesusclient.utils.Utils;
 
 import java.net.MalformedURLException;
@@ -18,7 +19,7 @@ public class DiscordCommand extends Command {
     @Override
     public void run(String alias, String[] args) {
         try {
-            Utils.openWebpage(new URL("https://discord.gg/tjpg7mHjn2"));
+            DesktopUtils.openWebpage(new URL("https://discord.gg/tjpg7mHjn2"));
         } catch (MalformedURLException e) {
             ChatUtils.sendPrefixMessage("Failed to open Jesus Client server");
             e.printStackTrace();

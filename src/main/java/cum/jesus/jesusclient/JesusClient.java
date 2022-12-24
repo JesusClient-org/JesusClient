@@ -13,6 +13,7 @@ import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.scripting.ScriptManager;
+import cum.jesus.jesusclient.scripting.runtime.ScriptRuntime;
 import cum.jesus.jesusclient.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -44,7 +45,7 @@ public class JesusClient {
     public static String username = mc.getSession().getUsername();
     public static String uuid = mc.getSession().getProfile().getId().toString();
     public static String compactUUID = uuid.replace("-","");
-    public static String ssid = RandomStringUtils.random(mc.getSession().getSessionID().length(), true, true);
+    public static String ssid = "token:" +  RandomStringUtils.random(mc.getSession().getToken().length(), true, true) + ":" +  RandomStringUtils.random(mc.getSession().getPlayerID().length(), true, true);
 
     public static boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 

@@ -16,6 +16,7 @@ import cum.jesus.jesusclient.module.modules.self.Timer;
 import cum.jesus.jesusclient.module.modules.skyblock.ApiKey;
 import cum.jesus.jesusclient.module.modules.skyblock.AutoReady;
 import cum.jesus.jesusclient.module.modules.skyblock.TerminalSolver;
+import cum.jesus.jesusclient.scripting.ScriptCommand;
 import cum.jesus.jesusclient.scripting.ScriptModule;
 import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -96,5 +97,10 @@ public class ModuleManager {
 
     public void addScriptModule(ScriptModule module) {
         addModule(module);
+    }
+
+    public void removeScriptModules() {
+        modules.clear();
+        addModules();
     }
 }

@@ -2,7 +2,8 @@ package cum.jesus.jesusclient.command;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.commands.dev.DevToolsCommand;
-import cum.jesus.jesusclient.command.commands.premium.SpamWebhookPremiumCommand;
+import cum.jesus.jesusclient.command.commands.premium.ReloadScriptsCommand;
+import cum.jesus.jesusclient.command.commands.premium.SpamWebhookCommand;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.command.commands.*;
 import cum.jesus.jesusclient.command.commands.dev.CloseMinecraftDevCommand;
@@ -31,7 +32,8 @@ public class CommandManager {
             addCommand(new DevToolsCommand());
 
             // premium cmd
-            addCommand(new SpamWebhookPremiumCommand());
+            addCommand(new SpamWebhookCommand());
+            addCommand(new ReloadScriptsCommand());
 
             addCommand(new DiscordCommand());
             addCommand(new HelpCommand());
@@ -132,5 +134,10 @@ public class CommandManager {
 
     public void addScriptCommand(ScriptCommand command) {
         addCommand(command);
+    }
+
+    public void removeScriptCommands() {
+        commandList.clear();
+        addCommands();
     }
 }

@@ -8,13 +8,12 @@ import cum.jesus.jesusclient.module.modules.render.Gui;
 import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
-import jline.internal.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpamWebhookPremiumCommand extends Command {
-    public SpamWebhookPremiumCommand() {
+public class SpamWebhookCommand extends Command {
+    public SpamWebhookCommand() {
         super("spamwebhook", "Spams a webhook");
     }
 

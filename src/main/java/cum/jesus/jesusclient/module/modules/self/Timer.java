@@ -36,6 +36,6 @@ public class Timer extends Module {
     public static void resetTimer() {
         try {
             (getTimer()).timerSpeed = 1.0f;
-        } catch (NullPointerException nullPointerException) {}
+        } catch (NullPointerException ignored) {}
     }
 }

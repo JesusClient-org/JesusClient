@@ -2,8 +2,6 @@ package cum.jesus.jesusclient.scripting;
 
 import cum.jesus.jesusclient.events.*;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
-import cum.jesus.jesusclient.module.Category;
-import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.scripting.runtime.events.ScriptChatEvent;
 import cum.jesus.jesusclient.scripting.runtime.events.ScriptGameTickEvent;
 import cum.jesus.jesusclient.scripting.runtime.events.ScriptKeyInputEvent;
@@ -13,46 +11,24 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-public class ScriptModule extends Module {
+public class ScriptIndex {
     private ScriptEngine engine;
-
-    ScriptModule(String name, String desc, Category category) {
-        super(name, desc, category);
-    }
 
     public void setScriptEngine(ScriptEngine scriptEngine) {
         engine = scriptEngine;
     }
 
-    @Override
-    public void onEnable() {
+    public void scriptLoad() {
         try {
-            ((Invocable)engine).invokeFunction("onEnable");
+            ((Invocable)engine).invokeFunction("scriptLoad");
         } catch (NoSuchMethodException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onDisable() {
-        try {
-            ((Invocable)engine).invokeFunction("onDisable");
-        } catch (NoSuchMethodException ignored) {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean isPremiumFeature() {
-        return true;
     }
 
     @EventTarget
     public void onChat(ChatEvent event) {
-        if (!isToggled()) return;
-
         ScriptChatEvent ev = new ScriptChatEvent(event.getEventType(), event.getMessage().getFormattedText(), event.getMessage().getUnformattedText());
 
         try {
@@ -65,8 +41,6 @@ public class ScriptModule extends Module {
 
     @EventTarget
     public void onRender2D(Render2DEvent event) {
-        if (!isToggled()) return;
-
         try {
             ((Invocable)engine).invokeFunction("onRender2D");
         } catch (ScriptException e) {
@@ -77,8 +51,6 @@ public class ScriptModule extends Module {
 
     @EventTarget
     public void onGameTick(GameTickEvent event) {
-        if (!isToggled()) return;
-
         ScriptGameTickEvent ev = new ScriptGameTickEvent(event.getEventType());
 
         try {
@@ -91,8 +63,6 @@ public class ScriptModule extends Module {
 
     @EventTarget
     public void onMotionUpdate(MotionUpdateEvent event) {
-        if (!isToggled()) return;
-
         ScriptMotionUpdateEvent ev = new ScriptMotionUpdateEvent(event.getEventType(), event.getX(), event.getY(), event.getZ(), event.getYaw(), event.getPitch(), event.isOnGround());
 
         try {
@@ -107,8 +77,6 @@ public class ScriptModule extends Module {
 
     @EventTarget
     public void onKeyInput(KeyInputEvent event) {
-        if (!isToggled()) return;
-
         ScriptKeyInputEvent ev = new ScriptKeyInputEvent(event.getKey());
 
         try {
@@ -121,8 +89,6 @@ public class ScriptModule extends Module {
 
     @EventTarget
     public void onWorldLoad(WorldLoadEvent event) {
-        if (!isToggled()) return;
-
         try {
             ((Invocable)engine).invokeFunction("onWorldLoad");
         } catch (NoSuchMethodException ignored) {

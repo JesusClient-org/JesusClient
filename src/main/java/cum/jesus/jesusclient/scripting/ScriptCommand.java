@@ -46,4 +46,9 @@ public class ScriptCommand extends Command {
 
         return temp;
     }
+
+    @Override
+    public boolean isPremiumOnly() {
+        return true;
+    }
 }
