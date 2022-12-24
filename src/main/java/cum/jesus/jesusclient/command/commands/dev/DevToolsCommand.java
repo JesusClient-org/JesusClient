@@ -21,7 +21,7 @@ public class DevToolsCommand extends Command {
     @Override
     public void run(String alias, String[] args) {
         if (!args[0].equalsIgnoreCase("force") || args.length != 3)
-            throw new CommandException("Usage: " + Gui.prefix.getObject() + alias + " force [<devtool>] <true/false>");
+            throw new CommandException("Usage: " + Gui.prefix.getObject() + alias + "force [<devtool>] <true/false>");
 
         switch (args[1].toLowerCase()) {
             case "dungeon":

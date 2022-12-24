@@ -2,18 +2,23 @@ package cum.jesus.jesusclient.injection.mixins.minecraft.client;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
+import cum.jesus.jesusclient.injection.interfaces.IMixinMinecraft;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.KeyInputEvent;
+import cum.jesus.jesusclient.utils.DesktopUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.main.GameConfiguration;
+import net.minecraft.util.Session;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,9 +26,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin({Minecraft.class})
 @SideOnly(Side.CLIENT)
-public class MinecraftMixin {
+public class MixinMinecraft implements IMixinMinecraft {
     @Shadow
     public GuiScreen currentScreen;
+
+    @Shadow
+    @Mutable
+    @Final
+    private Session session;
+
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void minecraftConstructor(GameConfiguration gameConfig, CallbackInfo ci) {
@@ -62,5 +73,15 @@ public class MinecraftMixin {
     @Inject(method = "shutdown", at = @At("HEAD"))
     private void onShutdown(CallbackInfo ci) {
         JesusClient.INSTANCE.stopClient();
+    }
+
+    @Override
+    public Session getSession() {
+        return session;
+    }
+
+    @Override
+    public void setSession(Session session) {
+        this.session = session;
     }
 }

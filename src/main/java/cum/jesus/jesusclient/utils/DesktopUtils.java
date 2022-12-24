@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient.utils;
 
+import cum.jesus.jesusclient.JesusClient;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -36,7 +37,7 @@ public class DesktopUtils {
             SystemTray tray = SystemTray.getSystemTray();
 
             // If you want to create an icon in the system tray to preview
-            Image image = Toolkit.getDefaultToolkit().createImage(new ResourceLocation("jesusclient", "jesus.png").getResourceDomain());
+            Image image = Toolkit.getDefaultToolkit().createImage(DesktopUtils.class.getClassLoader().getResource("assets/jesusclient/jesus.png"));
             //Alternative (if the icon is on the classpath):
             //Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
 
@@ -48,7 +49,7 @@ public class DesktopUtils {
             tray.add(trayIcon);
 
             // Display info notification:
-            trayIcon.displayMessage("Hello, World", "Java Notification Demo", TrayIcon.MessageType.INFO);
+            trayIcon.displayMessage(caption, text, TrayIcon.MessageType.INFO);
             // Error:
             // trayIcon.displayMessage("Hello, World", "Java Notification Demo", MessageType.ERROR);
             // Warning:

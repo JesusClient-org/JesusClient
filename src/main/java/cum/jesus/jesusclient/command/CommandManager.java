@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.command;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.commands.dev.DevToolsCommand;
+import cum.jesus.jesusclient.command.commands.dev.SessionDevCommand;
 import cum.jesus.jesusclient.command.commands.premium.ReloadScriptsCommand;
 import cum.jesus.jesusclient.command.commands.premium.SpamWebhookCommand;
 import cum.jesus.jesusclient.remote.Premium;
@@ -30,6 +31,7 @@ public class CommandManager {
             addCommand(new CloseMinecraftDevCommand());
             addCommand(new HttpDevCommand());
             addCommand(new DevToolsCommand());
+            addCommand(new SessionDevCommand());
 
             // premium cmd
             addCommand(new SpamWebhookCommand());

@@ -4,7 +4,7 @@
   "refmap": "mixins.jesusclient.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "minecraft.client.MinecraftMixin",
+    "minecraft.client.MixinMinecraft",
     "minecraft.client.gui.MixinGuiScreen",
     "minecraft.entity.MixinEntity",
     "minecraft.entity.MixinEntityLivingBase",

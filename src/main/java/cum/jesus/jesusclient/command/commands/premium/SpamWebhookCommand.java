@@ -20,7 +20,7 @@ public class SpamWebhookCommand extends Command {
     @Override
     public void run(String alias, String[] args) {
         if (args.length < 3)
-            throw new CommandException("Usage: " + Gui.prefix.getObject() + alias + " [<url>] [<amount>] [<message>]");
+            throw new CommandException("Usage: " + Gui.prefix.getObject() + alias + "[<url>] [<amount>] [<message>]");
 
         if (!args[0].startsWith("https://discord.com/"))
             throw new CommandException("The provided url is not a Discord url");

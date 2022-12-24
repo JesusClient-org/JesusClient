@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.scripting.runtime.jesusclient;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.scripting.runtime.jesusclient.utils.WrapperChatUtils;
+import cum.jesus.jesusclient.scripting.runtime.jesusclient.utils.WrapperDesktopUtils;
 import cum.jesus.jesusclient.scripting.runtime.jesusclient.utils.WrapperHttpUtils;
 import cum.jesus.jesusclient.scripting.runtime.jesusclient.utils.WrapperLogger;
 
@@ -20,6 +21,10 @@ public class WrapperJesusClient {
 
     public WrapperHttpUtils getHttpUtils() {
         return new WrapperHttpUtils();
+    }
+
+    public WrapperDesktopUtils getDesktopUtils() {
+        return new WrapperDesktopUtils();
     }
 
     public void activateDevMode() {

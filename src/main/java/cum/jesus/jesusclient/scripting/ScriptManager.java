@@ -28,7 +28,7 @@ public class ScriptManager {
             "var Logger = JesusClient.getLogger();\n" +
             "var ChatUtils = JesusClient.getChatUtils();\n" +
             "var HttpUtils = JesusClient.getHttpUtils();\n" +
-            "";
+            "var DesktopUtils = JesusClient.getDesktopUtils();\n";
     private ScriptEngine engine;
 
     public ScriptManager() {
