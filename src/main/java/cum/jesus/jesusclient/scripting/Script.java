@@ -51,7 +51,5 @@ public class Script {
         for (ScriptCommand command : commands) {
             JesusClient.INSTANCE.commandManager.addScriptCommand(command);
         }
-
-        index.scriptLoad();
     }
 }

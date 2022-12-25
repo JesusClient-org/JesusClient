@@ -13,7 +13,6 @@ import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.scripting.ScriptManager;
-import cum.jesus.jesusclient.scripting.runtime.ScriptRuntime;
 import cum.jesus.jesusclient.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

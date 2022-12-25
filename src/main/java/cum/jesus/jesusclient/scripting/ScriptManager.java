@@ -5,9 +5,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.gui.clickgui.BoringRenderThingy;
 import cum.jesus.jesusclient.module.Category;
-import cum.jesus.jesusclient.scripting.runtime.ScriptRuntime;
-import cum.jesus.jesusclient.utils.Logger;
+import cum.jesus.jesusclient.scripting.runtime.deobfedutils.*;
+import cum.jesus.jesusclient.utils.*;
+import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
+import jdk.internal.dynalink.beans.StaticClass;
+import me.superblaubeere27.clickgui.IRenderer;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -17,40 +22,51 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class ScriptManager {
-    private static final String scriptHeader = "var runtime = Java.type('" + ScriptRuntime.class.getCanonicalName() + "');\n" +
-            "var mc = runtime.getMinecraft();\n" +
-            "var JesusClient = runtime.getJesusClient();\n" +
-            "var Logger = JesusClient.getLogger();\n" +
-            "var ChatUtils = JesusClient.getChatUtils();\n" +
-            "var HttpUtils = JesusClient.getHttpUtils();\n" +
-            "var DesktopUtils = JesusClient.getDesktopUtils();\n";
-    private ScriptEngine engine;
+    private ScriptEngine scriptEngine;
 
     public ScriptManager() {
         newScript();
     }
 
     public void newScript() {
-        engine = new ScriptEngineManager().getEngineByName("nashorn");
+        scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
 
-        if (engine == null) return;
+        GlyphPageFontRenderer consolas = GlyphPageFontRenderer.create("Consolas", 15, false, false, false);
+        IRenderer renderer = new BoringRenderThingy(consolas);
+
+        // global instances
+        scriptEngine.put("mc", JesusClient.mc);
+        scriptEngine.put("moduleManager", JesusClient.INSTANCE.moduleManager);
+        scriptEngine.put("basicFont", consolas);
+        scriptEngine.put("basicRenderer", renderer);
+
+        // global classes
+        scriptEngine.put("Logger", StaticClass.forClass(ScriptLogger.class));
+        scriptEngine.put("ChatUtils", StaticClass.forClass(ScriptChatUtils.class));
+        scriptEngine.put("DesktopUtils", StaticClass.forClass(ScriptDesktopUtils.class));
+        scriptEngine.put("HttpUtils", StaticClass.forClass(ScriptHttpUtils.class));
+        scriptEngine.put("RenderUtils", StaticClass.forClass(ScriptRenderUtils.class));
+
+        // global functions
+
+
+        if (scriptEngine == null) return;
 
         try {
-            engine.eval(scriptHeader);
+            scriptEngine.eval("Logger.info('Loaded new Script Engine');");
         } catch (ScriptException e) {
             e.printStackTrace();
         }
     }
 
     public Object eval(String script) throws ScriptException {
-        if (engine == null) return "Failed to initialize engine";
+        if (scriptEngine == null) return "Failed to initialize engine";
 
-        return engine.eval(script);
+        return scriptEngine.eval(script);
     }
 
     public Script load(File scriptFile) {
@@ -68,6 +84,7 @@ public class ScriptManager {
             String scriptName;
             String scriptDesc;
             String scriptVer;
+            String[] scriptAuthors;
             String scriptIndex;
 
             //<editor-fold desc="Metadata">
@@ -91,6 +108,12 @@ public class ScriptManager {
 
                 if (element.isJsonPrimitive()) scriptVer = element.getAsString();
                 else throw new RuntimeException("'version' is not valid");
+
+                if (!manifest.has("authors")) throw new RuntimeException("Manifest does not contain 'authors'");
+                element = manifest.get("authors");
+
+                if (element.isJsonArray()) scriptAuthors = new Gson().fromJson(element.getAsJsonArray(), String[].class);
+                else throw new RuntimeException("'authors' is not valid");
 
                 if (!manifest.has("index")) throw new RuntimeException("Manifest does not contain 'index'");
                 element = manifest.get("index");
@@ -142,6 +165,7 @@ public class ScriptManager {
         String name;
         String desc;
         String cat;
+        String[] settings;
         String indexFile;
 
         //<editor-fold desc="Metadata">
@@ -199,12 +223,11 @@ public class ScriptManager {
             throw new RuntimeException(e);
         }
 
-        content = scriptHeader + content;
-
-        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
+        if (content.contains("cum.jesus.jesusclient")) throw new RuntimeException("Attempted use of 'cum.jesus.jesusclient' Java package");
+        if (content.contains("getSessionID") || content.contains("getToken")) throw new RuntimeException("Fuck ratters");
 
         try {
-            scriptEngine.eval(content.replace("const","var").replace("let","var"));
+            scriptEngine.eval(content);
         } catch (ScriptException e) {
             throw new RuntimeException("Failed to compile script", e);
         }
@@ -272,9 +295,8 @@ public class ScriptManager {
             throw new RuntimeException(e);
         }
 
-        content = scriptHeader + content;
-
-        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
+        if (content.contains("cum.jesus.jesusclient")) throw new RuntimeException("Attempted use of 'cum.jesus.jesusclient' Java package");
+        if (content.contains("getSessionID") || content.contains("getToken")) throw new RuntimeException("Fuck ratters");
 
         try {
             scriptEngine.eval(content);
@@ -287,6 +309,7 @@ public class ScriptManager {
         return command;
     }
 
+    //todo: make it do more
     private ScriptIndex loadIndex(String indexFile, ZipFile file) {
         ScriptIndex index = new ScriptIndex();
         ZipEntry entry = file.getEntry(indexFile);
@@ -301,9 +324,9 @@ public class ScriptManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        indexContent = scriptHeader + indexContent;
 
-        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
+        if (indexContent.contains("cum.jesus.jesusclient")) throw new RuntimeException("Attempted use of 'cum.jesus.jesusclient' Java package");
+        if (indexContent.contains("getSessionID") || indexContent.contains("getToken")) throw new RuntimeException("Fuck ratters");
 
         try {
             scriptEngine.eval(indexContent);

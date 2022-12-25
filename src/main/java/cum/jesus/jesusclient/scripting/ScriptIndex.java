@@ -2,10 +2,7 @@ package cum.jesus.jesusclient.scripting;
 
 import cum.jesus.jesusclient.events.*;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
-import cum.jesus.jesusclient.scripting.runtime.events.ScriptChatEvent;
-import cum.jesus.jesusclient.scripting.runtime.events.ScriptGameTickEvent;
-import cum.jesus.jesusclient.scripting.runtime.events.ScriptKeyInputEvent;
-import cum.jesus.jesusclient.scripting.runtime.events.ScriptMotionUpdateEvent;
+import cum.jesus.jesusclient.scripting.runtime.events.*;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -16,15 +13,6 @@ public class ScriptIndex {
 
     public void setScriptEngine(ScriptEngine scriptEngine) {
         engine = scriptEngine;
-    }
-
-    public void scriptLoad() {
-        try {
-            ((Invocable)engine).invokeFunction("scriptLoad");
-        } catch (NoSuchMethodException ignored) {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @EventTarget
@@ -81,6 +69,18 @@ public class ScriptIndex {
 
         try {
             ((Invocable)engine).invokeFunction("onKeyInput", ev);
+        } catch (NoSuchMethodException ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventTarget
+    public void onPacket(PacketEvent event) {
+        ScriptPacketEvent ev = new ScriptPacketEvent(event.getEventType(), event.getPacket());
+
+        try {
+            ((Invocable)engine).invokeFunction("onPacket", ev);
         } catch (NoSuchMethodException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
