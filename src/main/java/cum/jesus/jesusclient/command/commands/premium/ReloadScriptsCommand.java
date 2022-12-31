@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ReloadScriptsCommand extends Command {
     public ReloadScriptsCommand() {
-        super("reloadscripts", "Reloads scripts");
+        super("reloadscripts", "Reloads scripts", "reload");
     }
 
     @Override

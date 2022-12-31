@@ -7,7 +7,6 @@ import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.KeyInputEvent;
-import cum.jesus.jesusclient.utils.DesktopUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.main.GameConfiguration;

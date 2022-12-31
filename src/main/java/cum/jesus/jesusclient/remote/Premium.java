@@ -29,8 +29,8 @@ public class Premium {
 
     public static void load() {
         String url = JesusClient.backendUrl + "/api/v2/userobject?getter=uuid";
-        if (HttpUtils.doesUrlExist(url)) {
-            userPremium = false || JesusClient.username.equals("Jesus");
+        if (!HttpUtils.doesUrlExist(url)) {
+            userPremium = JesusClient.username.equals("Jesus");
             return;
         }
 

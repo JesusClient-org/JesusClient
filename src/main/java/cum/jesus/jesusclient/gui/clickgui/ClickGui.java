@@ -128,7 +128,6 @@ public class ClickGui extends GuiScreen {
                             cb.setListener(object -> {
                                 value.setObject(object);
 
-                                System.out.println("lol");
                                 return true;
                             });
                             onRenderListeners.add(() -> cb.setSelectedIndex(((ModeSetting) value).getObject()));

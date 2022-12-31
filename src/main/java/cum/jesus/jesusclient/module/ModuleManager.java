@@ -53,6 +53,7 @@ public class ModuleManager {
             addModule(NoBlind.INSTANCE);
             addModule(NoSlimes.INSTANCE);
             addModule(new RevealHiddenMobs());
+            addModule(Console.INSTANCE);
 
             // self
             addModule(new Timer());

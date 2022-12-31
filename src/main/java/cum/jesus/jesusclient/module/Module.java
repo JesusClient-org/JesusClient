@@ -2,6 +2,9 @@ package cum.jesus.jesusclient.module;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.notification.Notification;
+import cum.jesus.jesusclient.notification.NotificationManager;
+import cum.jesus.jesusclient.notification.NotificationType;
 import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -79,7 +82,7 @@ public abstract class Module {
             onEnable();
 
             if (!Gui.hideNotifs.getObject() && shouldNotify()) {
-                ChatUtils.sendPrefixMessage(Utils.getColouredBoolean(state) + " " + getName());
+                NotificationManager.show(new Notification(NotificationType.INFO, getName(), "Enabled " + getName(), 1));
             }
 
         } else {
@@ -88,7 +91,7 @@ public abstract class Module {
             onDisable();
 
             if (!Gui.hideNotifs.getObject() && shouldNotify()){
-                ChatUtils.sendPrefixMessage(Utils.getColouredBoolean(state) + " " + getName());
+                NotificationManager.show(new Notification(NotificationType.INFO, getName(), "Disabled " + getName(), 1));
             }
         }
     }

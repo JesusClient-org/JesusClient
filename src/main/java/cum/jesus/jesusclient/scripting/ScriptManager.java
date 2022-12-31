@@ -9,7 +9,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.gui.clickgui.BoringRenderThingy;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.scripting.runtime.deobfedutils.*;
-import cum.jesus.jesusclient.utils.*;
+import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import jdk.internal.dynalink.beans.StaticClass;
 import me.superblaubeere27.clickgui.IRenderer;

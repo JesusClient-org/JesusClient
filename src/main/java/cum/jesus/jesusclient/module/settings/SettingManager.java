@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient.module.settings;
 
+import cum.jesus.jesusclient.remote.Premium;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +26,8 @@ public class SettingManager {
                 final Object obj = field.get(object);
 
                 if (obj instanceof Setting) {
+                    if (((Setting<?>) obj).isPremiumOnly() && !Premium.isUserPremium()) continue;
+
                     values.add((Setting) obj);
                 }
             } catch (IllegalAccessException e) {

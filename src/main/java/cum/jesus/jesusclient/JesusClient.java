@@ -10,6 +10,7 @@ import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.module.ModuleManager;
+import cum.jesus.jesusclient.module.modules.render.Console;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.scripting.ScriptManager;
@@ -134,6 +135,10 @@ public class JesusClient {
 
     public void stopClient() {
         if (blacklisted) return;
+
+        if (Console.INSTANCE.isToggled()) {
+            cum.jesus.jesusclient.gui.externalconsole.Console.close();
+        }
 
         Logger.info("Stopping client");
 

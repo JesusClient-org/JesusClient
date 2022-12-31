@@ -11,6 +11,7 @@ import cum.jesus.jesusclient.gui.tabgui.TabGui;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.settings.BooleanSetting;
+import cum.jesus.jesusclient.notification.NotificationManager;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import me.superblaubeere27.clickgui.IRenderer;
 import me.superblaubeere27.clickgui.Window;
@@ -65,19 +66,12 @@ public class Hud extends Module {
 
         tabGui = new TabGui<>();
 
-        moduleCategoryMap.put(Category.COMBAT, new ArrayList<>());
-        moduleCategoryMap.put(Category.SKYBLOCK, new ArrayList<>());
-        moduleCategoryMap.put(Category.SELF, new ArrayList<>());
-        moduleCategoryMap.put(Category.RENDER, new ArrayList<>());
-        moduleCategoryMap.put(Category.MOVEMENT, new ArrayList<>());
-        moduleCategoryMap.put(Category.OTHER, new ArrayList<>());
-
         for (Module module : JesusClient.INSTANCE.moduleManager.getModules()) {
             if (!moduleCategoryMap.containsKey(module.getCategory())) {
                 moduleCategoryMap.put(module.getCategory(), new ArrayList<>());
             }
 
-            moduleCategoryMap.get(module.getCategory()).add(module);
+            if (!module.isHidden()) moduleCategoryMap.get(module.getCategory()).add(module);
         }
 
         moduleCategoryMap.entrySet().stream().sorted(Comparator.comparingInt(cat -> cat.getKey().toString().hashCode())).forEach(cat -> {
@@ -99,7 +93,10 @@ public class Hud extends Module {
 
     @EventTarget
     private void render2D(Render2DEvent event) {
+        NotificationManager.render();
+
         if (!isToggled()) return;
+
         fps.add(Minecraft.getDebugFPS());
         while (fps.size() > fpsStatLength) {
             fps.remove(0);
