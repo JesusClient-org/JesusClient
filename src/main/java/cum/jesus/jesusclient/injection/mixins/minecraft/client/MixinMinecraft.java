@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.injection.mixins.minecraft.client;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
+import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.injection.interfaces.IMixinMinecraft;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.events.GameTickEvent;
@@ -22,6 +23,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.net.URISyntaxException;
 
 @Mixin({Minecraft.class})
 @SideOnly(Side.CLIENT)
@@ -62,6 +65,17 @@ public class MixinMinecraft implements IMixinMinecraft {
 
         JesusClient.CLIENT_VERSION = JesusClient.CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
         Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION + " - Minecraft 1.8.9");
+    }
+
+    @Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/client/FMLClientHandler;beginMinecraftLoading(Lnet/minecraft/client/Minecraft;Ljava/util/List;Lnet/minecraft/client/resources/IReloadableResourceManager;)V", shift = At.Shift.BEFORE))
+    private void tryUpdate(CallbackInfo ci) {
+        //if (JesusClient.devMode) return;
+
+        try {
+            FileManager.doUpdater();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Inject(method = "startGame", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;ingameGUI:Lnet/minecraft/client/gui/GuiIngame;", shift = At.Shift.AFTER))

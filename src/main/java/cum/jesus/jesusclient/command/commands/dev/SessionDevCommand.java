@@ -21,7 +21,7 @@ public class SessionDevCommand extends Command {
 
     @Override
     public void run(String alias, String[] args) {
-        if (args.length != 1)
+        if (args.length < 1)
             throw new CommandException("Usage: " + Gui.prefix.getObject() + alias + "<get/getAsCliArgs/set> [<session>]");
 
         if (args[0].equalsIgnoreCase("get")) {

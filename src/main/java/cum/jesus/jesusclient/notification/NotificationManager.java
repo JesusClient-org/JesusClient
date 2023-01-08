@@ -15,6 +15,14 @@ public class NotificationManager {
         pending.add(notification);
     }
 
+    public static void clear() {
+        pending.clear();
+    }
+
+    public static void removeAll(String notif) {
+        pending.removeIf(n -> n.getTitle().equalsIgnoreCase(notif));
+    }
+
     public static void update() {
         if (current != null && !current.isShown()) {
             current = null;

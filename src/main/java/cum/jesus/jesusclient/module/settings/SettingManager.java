@@ -26,8 +26,6 @@ public class SettingManager {
                 final Object obj = field.get(object);
 
                 if (obj instanceof Setting) {
-                    if (((Setting<?>) obj).isPremiumOnly() && !Premium.isUserPremium()) continue;
-
                     values.add((Setting) obj);
                 }
             } catch (IllegalAccessException e) {

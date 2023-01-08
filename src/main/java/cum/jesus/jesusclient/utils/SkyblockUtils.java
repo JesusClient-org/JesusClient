@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkyblockUtils {
+    public static SkyblockUtils INSTANCE = new SkyblockUtils();
+
     public static boolean inBlood;
     private static Minecraft mc = Minecraft.getMinecraft();
     public static boolean inDungeon;

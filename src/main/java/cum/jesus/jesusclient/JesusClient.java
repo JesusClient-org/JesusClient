@@ -1,7 +1,9 @@
 package cum.jesus.jesusclient;
 
 import com.google.gson.*;
+import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.command.CommandManager;
+import cum.jesus.jesusclient.command.commands.EnableClientCommand;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
 import cum.jesus.jesusclient.config.ConfigManager;
 import cum.jesus.jesusclient.events.GameTickEvent;
@@ -9,14 +11,16 @@ import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.files.FileManager;
+import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.ModuleManager;
-import cum.jesus.jesusclient.module.modules.render.Console;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.scripting.ScriptManager;
 import cum.jesus.jesusclient.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -47,13 +51,14 @@ public class JesusClient {
     public static String compactUUID = uuid.replace("-","");
     public static String ssid = "token:" +  RandomStringUtils.random(mc.getSession().getToken().length(), true, true) + ":" +  RandomStringUtils.random(mc.getSession().getPlayerID().length(), true, true);
 
-    public static boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
-
     public static String backendUrl = "http://62.107.137.187:6969";
 
     public static GuiScreen display = null;
 
     public boolean blacklisted;
+    public static boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") || username.equals("JesusTouchMe");
+    public static boolean init;
+    public static boolean clientLoaded;
 
     static {
         List<Character> chars = new ArrayList<>();
@@ -78,13 +83,21 @@ public class JesusClient {
     public ScriptManager scriptManager;
 
     public JesusClient() {
+        init = false;
+        clientLoaded = false;
         INSTANCE = this;
     }
 
+    private ICommand slashCommand = new JesusSlashCommand();
+    private ICommand startCommand = new EnableClientCommand();
+
     public void startClient() {
-        ClientCommandHandler.instance.registerCommand(new JesusSlashCommand());
+        ClientCommandHandler.instance.registerCommand(slashCommand);
+        ClientCommandHandler.instance.getCommands().remove(startCommand.getCommandName());
 
         // check blacklist
+        if (!HttpUtils.doesUrlExist(backendUrl + "/api/v2/blacklisted")) return;
+
         JsonObject payload = new JsonObject();
         payload.addProperty("uuid", JesusClient.compactUUID);
         String json = new Gson().toJson(payload);
@@ -92,6 +105,8 @@ public class JesusClient {
         JsonObject obj = new Gson().fromJson(response, JsonObject.class);
         blacklisted = obj.get("blacklisted").getAsBoolean();
         if (blacklisted) return;
+
+        Launch.blackboard.forEach((string, object) -> { Logger.debug(string + ": " + object); });
 
         //if (!System.getProperty("user.name").equals("Somer")) return;
 
@@ -123,24 +138,21 @@ public class JesusClient {
             throw new RuntimeException(e);
         }
 
-        EventManager.register(new SkyblockUtils());
-        EventManager.register(new Utils());
+        EventManager.register(SkyblockUtils.INSTANCE);
+        EventManager.register(Utils.INSTANCE);
         EventManager.register(this);
 
         // Load capes
         Capes.load();
 
         configManager.load();
+
+        init = true;
+        clientLoaded = true;
     }
 
     public void stopClient() {
         if (blacklisted) return;
-
-        if (Console.INSTANCE.isToggled()) {
-            cum.jesus.jesusclient.gui.externalconsole.Console.close();
-        }
-
-        Logger.info("Stopping client");
 
         try {
             fileManager.save();
@@ -148,6 +160,52 @@ public class JesusClient {
             Logger.error("Failed to save config:");
             e.printStackTrace();
         }
+
+        clientLoaded = false;
+    }
+
+    public void unLoad() {
+        if (blacklisted) return;
+
+        try {
+            fileManager.save();
+        } catch (Exception e) {
+            Logger.error("Failed to save config:");
+            e.printStackTrace();
+        }
+
+        ClientCommandHandler.instance.getCommands().remove(slashCommand.getCommandName());
+
+        Logger.debug("Cleaning up...");
+        Display.setTitle("Minecraft 1.8.9");
+
+        for (Command c : commandManager.getCommandList()) {
+            EventManager.unregister(c);
+        }
+
+        for (Module m : moduleManager.getModules()) {
+            EventManager.unregister(m);
+        }
+
+        commandManager.removeCommands();
+        moduleManager.removeModules();
+
+        scriptManager.newScript();
+
+        EventManager.unregister(SkyblockUtils.INSTANCE);
+        EventManager.unregister(Utils.INSTANCE);
+        EventManager.unregister(this);
+
+        Capes.unload();
+
+        Logger.debug("Collecting garbage...");
+        System.gc();
+
+        Logger.info("Unloaded Jesus Client");
+
+        ClientCommandHandler.instance.registerCommand(startCommand);
+
+        clientLoaded = false;
     }
 
     @EventTarget

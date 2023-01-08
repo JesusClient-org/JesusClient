@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.function.Function;
+
 
 public class ScriptManager {
     private ScriptEngine scriptEngine;
@@ -52,7 +55,7 @@ public class ScriptManager {
         scriptEngine.put("RenderUtils", StaticClass.forClass(ScriptRenderUtils.class));
 
         // global functions
-
+        scriptEngine.put("setDevMode", new SetDevMode());
 
         if (scriptEngine == null) return;
 
@@ -123,7 +126,7 @@ public class ScriptManager {
             }
             //</editor-fold>
 
-            Script script = new Script(scriptName, scriptDesc, scriptVer, loadIndex(scriptIndex, zipFile));
+            Script script = new Script(scriptName, scriptDesc, scriptVer, scriptAuthors, loadIndex(scriptIndex, zipFile));
 
             if (manifest.has("modules")) {
                 JsonElement element = manifest.get("modules");
@@ -337,5 +340,12 @@ public class ScriptManager {
         index.setScriptEngine(scriptEngine);
 
         return index;
+    }
+
+    private class SetDevMode implements Consumer<Boolean> {
+        @Override
+        public void accept(Boolean b) {
+            JesusClient.devMode = b;
+        }
     }
 }

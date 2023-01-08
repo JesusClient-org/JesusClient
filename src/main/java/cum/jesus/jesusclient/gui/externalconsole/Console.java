@@ -1,10 +1,7 @@
 package cum.jesus.jesusclient.gui.externalconsole;
 
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.gui.externalconsole.cmd.Echo;
-import cum.jesus.jesusclient.gui.externalconsole.cmd.Exit;
-import cum.jesus.jesusclient.gui.externalconsole.cmd.Help;
-import cum.jesus.jesusclient.gui.externalconsole.cmd.Toggle;
+import cum.jesus.jesusclient.gui.externalconsole.cmd.*;
 
 import javax.swing.*;
 import javax.swing.text.Style;
@@ -21,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Console {
+    public static final double VERSION = 1.0;
+
     public static Console INSTANCE;
 
     public JFrame frame;
@@ -65,6 +64,8 @@ public class Console {
         addCommand(new Echo());
         addCommand(new Exit());
         addCommand(new Toggle());
+        addCommand(new ChatLogger());
+        addCommand(new Exec());
 
         addCommand(new Help());
 
@@ -78,7 +79,7 @@ public class Console {
         }
 
         frame = new JFrame();
-        frame.setTitle("Jesus Client Console");
+        frame.setTitle("Jesus Client Console v" + VERSION);
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/assets/jesusclient/jesus.png")));
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -89,7 +90,8 @@ public class Console {
 
         document = console.getStyledDocument();
 
-        println(JesusClient.CLIENT_NAME + " Console " + JesusClient.CLIENT_VERSION, false);
+        println(JesusClient.CLIENT_NAME + " Console " + VERSION, false);
+        println("", false);
 
         input = new JTextField();
         input.setEditable(true);

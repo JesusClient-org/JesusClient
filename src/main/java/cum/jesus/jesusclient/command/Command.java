@@ -57,4 +57,9 @@ public abstract class  Command {
     public String[] getAliases() {
         return aliases;
     }
+
+    @Override
+    public String toString() {
+        return name + " command";
+    }
 }

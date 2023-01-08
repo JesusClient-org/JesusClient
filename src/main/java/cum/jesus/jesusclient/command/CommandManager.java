@@ -1,14 +1,11 @@
 package cum.jesus.jesusclient.command;
 
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.command.commands.dev.DevToolsCommand;
-import cum.jesus.jesusclient.command.commands.dev.SessionDevCommand;
+import cum.jesus.jesusclient.command.commands.dev.*;
 import cum.jesus.jesusclient.command.commands.premium.ReloadScriptsCommand;
 import cum.jesus.jesusclient.command.commands.premium.SpamWebhookCommand;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.command.commands.*;
-import cum.jesus.jesusclient.command.commands.dev.CloseMinecraftDevCommand;
-import cum.jesus.jesusclient.command.commands.dev.HttpDevCommand;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.module.modules.render.Gui;
 import cum.jesus.jesusclient.scripting.ScriptCommand;
@@ -32,17 +29,34 @@ public class CommandManager {
             addCommand(new HttpDevCommand());
             addCommand(new DevToolsCommand());
             addCommand(new SessionDevCommand());
+            addCommand(new RestartClientCommand());
+            addCommand(new ScriptDevCommand());
 
             // premium cmd
             addCommand(new SpamWebhookCommand());
             addCommand(new ReloadScriptsCommand());
 
+            addCommand(new DisableClientCommand());
             addCommand(new DiscordCommand());
             addCommand(new HelpCommand());
             addCommand(new JesusCommand());
             addCommand(new VClipCommand());
         } catch (Exception e) {
             Logger.error("Error while loading command manager: " + e.getMessage() + "\n");
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeCommands() {
+        try {
+            for (Command c : commandList) {
+                EventManager.unregister(c);
+            }
+            commandList.clear();
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -102,6 +116,7 @@ public class CommandManager {
             }
         } catch (CommandException e) {
             ChatUtils.sendPrefixMessage("§c" + e.getMessage());
+            e.printStackTrace();
         }
 
         return true;

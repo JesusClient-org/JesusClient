@@ -4,11 +4,8 @@ import com.google.gson.Gson;
 import com.sun.jna.platform.win32.Kernel32;
 import cum.jesus.jesusclient.FullscreenMod;
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
-import jline.internal.Log;
-import net.minecraft.entity.player.EntityPlayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Updater {
     public static boolean shouldUpdate = false;
     public static Update update = null;
+
+    public static final File modDir = new File(JesusClient.INSTANCE.mc.mcDataDir + "/mods");
+    public static final File updaterExe = new File(JesusClient.INSTANCE.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "jesusupdat.exe");
 
     public static class Update {
         public String version;

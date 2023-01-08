@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.notification;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,6 +11,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.Sys;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Notification {
     private NotificationType type;
@@ -82,9 +85,21 @@ public class Notification {
 
         ScaledResolution res = new ScaledResolution(JesusClient.mc);
         double offset;
-        int width = 120;
+        int width = 130;
         int height = 30;
         long time = getTime();
+
+        //if (consolas.getStringWidth(message) > width) {
+        //    width = consolas.getStringWidth(message) + 8;
+        //}
+
+        String[] dum = message.split("\n");
+        for (String s : dum) {
+            if (consolas.getStringWidth(s) + 8 > width)
+                width = consolas.getStringWidth(s) + 12;
+
+            height += consolas.getFontHeight() + 2;
+        }
 
         if (time < fadeIn)
             offset = Math.tanh(time / (double)(fadeIn) * 3.0) * width;
@@ -99,15 +114,24 @@ public class Notification {
         if (type == NotificationType.ERROR) {
             int i = Math.max(0, Math.min(255, (int) (Math.sin(time / 100.0) * 255.0 / 2 + 127.5)));
             color = new Color(i, 0, 0, 220);
-            title = title + " - Error";
-        } else if (type == NotificationType.WARNING) {
-            title = title + " - Warn";
         }
 
         drawRect(res.getScaledWidth() - offset, res.getScaledHeight() - 5 - height, res.getScaledWidth(), res.getScaledHeight() - 5, color.getRGB());
         drawRect(res.getScaledWidth() - offset, res.getScaledHeight() - 5 - height, res.getScaledWidth() - offset + 4, res.getScaledHeight() - 5, color1.getRGB());
 
         consolasBold.drawString(title, (int) (res.getScaledWidth() - offset + 8), res.getScaledHeight() - 2 - height, Color.WHITE.getRGB(), false);
-        consolas.drawString(message, (int) (res.getScaledWidth() - offset + 8), res.getScaledHeight() - 15, Color.WHITE.getRGB(), false);
+        //consolas.drawString(message, (int) (res.getScaledWidth() - offset + 8), res.getScaledHeight() - 15, Color.WHITE.getRGB(), false);
+
+        Collections.reverse(Arrays.asList(dum));
+
+        int i = 20;
+        for (String s : dum) {
+            consolas.drawString(s, (int) (res.getScaledWidth() - offset + 8), res.getScaledHeight() - i, Color.WHITE.getRGB(), false);
+            i += consolas.getFontHeight() + 2;
+        }
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

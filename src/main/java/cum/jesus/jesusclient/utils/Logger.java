@@ -70,34 +70,70 @@ public final class Logger {
 
     public static void trace(Object... messages) {
         log(Level.TRACE, messages);
-        if (Console.INSTANCE.isToggled())
-            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println( "[" + JesusClient.CLIENT_NAME + " | " + Level.TRACE + "] " + Arrays.toString(messages), false);
+        if (Console.INSTANCE.isToggled()) {
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | " + Level.TRACE + "] ");
+
+            for (Object message : messages) {
+                s.append(message).append(" ");
+            }
+
+            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+        }
     }
 
     public static void debug(Object... messages) {
         if(JesusClient.devMode || System.getProperty("user.name").equals("Somer")) {
             log(Level.DEBUG, messages);
-            if (Console.INSTANCE.isToggled())
-                cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println( "[" + JesusClient.CLIENT_NAME + " | " + Level.DEBUG + "] " + Arrays.toString(messages), false);
+            if (Console.INSTANCE.isToggled()) {
+                StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | " + Level.DEBUG + "] ");
+
+                for (Object message : messages) {
+                    s.append(message).append(" ");
+                }
+
+                cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+            }
+
         }
     }
 
     public static void info(Object... messages) {
         log(Logger.Level.INFO, messages);
-        if (Console.INSTANCE.isToggled())
-            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println( "[" + JesusClient.CLIENT_NAME + " | " + Level.INFO + "] " + Arrays.toString(messages), false);
+        if (Console.INSTANCE.isToggled()) {
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | " + Level.INFO + "] ");
+
+            for (Object message : messages) {
+                s.append(message).append(" ");
+            }
+
+            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+        }
     }
 
     public static void warn(Object... messages) {
         log(Level.WARN, messages);
-        if (Console.INSTANCE.isToggled())
-            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println( "[" + JesusClient.CLIENT_NAME + " | " + Level.WARN + "] " + Arrays.toString(messages), false);
+        if (Console.INSTANCE.isToggled()) {
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | " + Level.WARN + "] ");
+
+            for (Object message : messages) {
+                s.append(message).append(" ");
+            }
+
+            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+        }
     }
 
     public static void error(Object... messages) {
         log(Level.ERROR, messages);
-        if (Console.INSTANCE.isToggled())
-            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println( "[" + JesusClient.CLIENT_NAME + " | " + Level.ERROR + "] " + Arrays.toString(messages), false);
+        if (Console.INSTANCE.isToggled()) {
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | " + Level.ERROR + "] ");
+
+            for (Object message : messages) {
+                s.append(message).append(" ");
+            }
+
+            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+        }
     }
 
     static {

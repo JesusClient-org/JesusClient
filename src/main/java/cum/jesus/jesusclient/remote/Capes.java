@@ -61,6 +61,11 @@ public class Capes {
         }
     }
 
+    public static void unload() {
+        capes.clear();
+        playerCapes.clear();
+    }
+
     private static ResourceLocation capeFromFile(String capeName, String capeUrl) {
         try {
             File file = new File(capeDir, capeName + ".png");

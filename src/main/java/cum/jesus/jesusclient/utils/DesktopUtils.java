@@ -1,8 +1,5 @@
 package cum.jesus.jesusclient.utils;
 
-import cum.jesus.jesusclient.JesusClient;
-import net.minecraft.util.ResourceLocation;
-
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -9,14 +9,16 @@ public class Script {
     private String name;
     private String description;
     private String version;
+    private String[] authors;
     private List<ScriptModule> modules = new ArrayList<>();
     private List<ScriptCommand> commands = new ArrayList<>();
     private ScriptIndex index;
 
-    public Script(String name, String description, String version, ScriptIndex index) {
+    public Script(String name, String description, String version, String[] authors, ScriptIndex index) {
         this.name = name;
         this.description = description;
         this.version = version;
+        this.authors = authors;
         this.index = index;
     }
 
@@ -30,6 +32,10 @@ public class Script {
 
     public String getVersion() {
         return version;
+    }
+
+    public String[] getAuthors() {
+        return authors;
     }
 
     public List<ScriptModule> getModules() {

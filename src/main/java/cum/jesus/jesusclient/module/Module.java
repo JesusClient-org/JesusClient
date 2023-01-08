@@ -5,6 +5,7 @@ import cum.jesus.jesusclient.module.modules.render.Gui;
 import cum.jesus.jesusclient.notification.Notification;
 import cum.jesus.jesusclient.notification.NotificationManager;
 import cum.jesus.jesusclient.notification.NotificationType;
+import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -76,6 +77,11 @@ public abstract class Module {
     }
 
     public void setToggled(boolean state) {
+        if (isPremiumFeature() && !Premium.isUserPremium()) {
+            this.toggled = false;
+            return;
+        }
+
         if (state) {
             this.toggled = true;
 
@@ -97,6 +103,11 @@ public abstract class Module {
     }
 
     public void setToggledNoNotif(boolean state) {
+        if (isPremiumFeature() && !Premium.isUserPremium()) {
+            this.toggled = false;
+            return;
+        }
+
         if (state) {
             this.toggled = true;
             onEnable();

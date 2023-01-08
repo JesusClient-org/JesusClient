@@ -13,6 +13,8 @@ import net.minecraft.launchwrapper.ITweaker;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +28,11 @@ public class FileManager {
 
     public final File configFile = new File(clientDir, "jesusconfig.json");
     private final File firstTimeFile = new File(clientDir, "firsttime.txt");
+
+    public static final File modDir = new File(JesusClient.INSTANCE.mc.mcDataDir + "/mods");
+    public static final File updaterExe = new File(JesusClient.INSTANCE.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "jesusupdat.exe");
+
+    public static File srcJar = null;
 
     public void save() throws Exception {
         if (!configFile.exists() && !configFile.createNewFile())
@@ -63,6 +70,17 @@ public class FileManager {
                 //noinspection ResultOfMethodCallIgnored
                 oldestFile.delete();
             }
+        }
+    }
+
+    public static void doUpdater() throws URISyntaxException {
+        srcJar = new File(JesusClient.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        Logger.debug(srcJar.getAbsolutePath());
+
+        if (!updaterExe.exists()) {
+            try {
+                java.nio.file.Files.copy(new URL(JesusClient.backendUrl + "/download/updater").openStream(), updaterExe.toPath());
+            } catch (IOException e) {}
         }
     }
 

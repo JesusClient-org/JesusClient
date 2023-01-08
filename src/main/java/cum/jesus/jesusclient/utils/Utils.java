@@ -30,6 +30,8 @@ import java.util.List;
 import static cum.jesus.jesusclient.JesusClient.mc;
 
 public class Utils {
+    public static Utils INSTANCE = new Utils();
+
     public static boolean onHypixel = false;
 
     @EventTarget

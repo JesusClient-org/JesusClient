@@ -43,19 +43,17 @@ public abstract class MixinNetHandlerPlayClient {
         if(AntiKB.handleEntityVelocity(packetIn)) ci.cancel();
     }
 
-    @Inject(method = "handleChat", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "handleChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketThreadUtil;checkThreadAndEnqueue(Lnet/minecraft/network/Packet;Lnet/minecraft/network/INetHandler;Lnet/minecraft/util/IThreadListener;)V", shift = At.Shift.AFTER), cancellable = true)
     private void handleChat(S02PacketChat chatPacket, CallbackInfo ci) {
-        IChatComponent msg = handleChatEvent(chatPacket.getChatComponent());
+        if (chatPacket.getType() != 2) {
+            ChatEvent event = new ChatEvent(EventType.RECIEVE, chatPacket.getChatComponent());
+            EventManager.call(event);
 
-        if (msg == null) {
-            ci.cancel();
+            IChatComponent msg = event.isCancelled() ? null : event.getMessage();
+
+            if (msg == null) {
+                ci.cancel();
+            }
         }
-    }
-
-    private IChatComponent handleChatEvent(IChatComponent message) {
-        ChatEvent event = new ChatEvent(EventType.RECIEVE, message);
-        EventManager.call(event);
-
-        return event.isCancelled() ? null : event.getMessage();
     }
  }

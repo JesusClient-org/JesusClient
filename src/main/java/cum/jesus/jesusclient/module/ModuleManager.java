@@ -16,6 +16,7 @@ import cum.jesus.jesusclient.module.modules.self.Timer;
 import cum.jesus.jesusclient.module.modules.skyblock.ApiKey;
 import cum.jesus.jesusclient.module.modules.skyblock.AutoReady;
 import cum.jesus.jesusclient.module.modules.skyblock.TerminalSolver;
+import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.scripting.ScriptCommand;
 import cum.jesus.jesusclient.scripting.ScriptModule;
 import cum.jesus.jesusclient.utils.Logger;
@@ -71,6 +72,20 @@ public class ModuleManager {
         return true;
     }
 
+    public boolean removeModules() {
+        try {
+            for (Module m : modules) {
+                EventManager.unregister(m);
+            }
+            modules.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
     private void addModule(@NotNull Module module) {
         modules.add(module);
         EventManager.register(module);
@@ -93,7 +108,15 @@ public class ModuleManager {
 
     @EventTarget
     private void onKey(@NotNull KeyInputEvent event) {
-        for (Module module : modules) if (module.getKeybind() == event.getKey()) module.setToggled(!module.isToggled());
+        for (Module module : modules) {
+            if (module.getKeybind() == event.getKey()) {
+                if (module.isPremiumFeature() && !Premium.isUserPremium()) {
+                    continue;
+                }
+
+                module.setToggled(!module.isToggled());
+            }
+        }
     }
 
     public void addScriptModule(ScriptModule module) {

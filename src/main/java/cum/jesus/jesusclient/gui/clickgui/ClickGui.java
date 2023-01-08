@@ -1,6 +1,9 @@
 package cum.jesus.jesusclient.gui.clickgui;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.notification.Notification;
+import cum.jesus.jesusclient.notification.NotificationManager;
+import cum.jesus.jesusclient.notification.NotificationType;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
@@ -49,12 +52,12 @@ public class ClickGui extends GuiScreen {
         HashMap<Category, List<Module>> moduleCategoryMap = new HashMap<>();
         categoryPaneMap = new HashMap<>();
 
-        moduleCategoryMap.put(Category.COMBAT, new ArrayList<>());
-        moduleCategoryMap.put(Category.SKYBLOCK, new ArrayList<>());
-        moduleCategoryMap.put(Category.SELF, new ArrayList<>());
-        moduleCategoryMap.put(Category.RENDER, new ArrayList<>());
-        moduleCategoryMap.put(Category.MOVEMENT, new ArrayList<>());
-        moduleCategoryMap.put(Category.OTHER, new ArrayList<>());
+        // moduleCategoryMap.put(Category.COMBAT, new ArrayList<>());
+        // moduleCategoryMap.put(Category.SKYBLOCK, new ArrayList<>());
+        // moduleCategoryMap.put(Category.SELF, new ArrayList<>());
+        // moduleCategoryMap.put(Category.RENDER, new ArrayList<>());
+        // moduleCategoryMap.put(Category.MOVEMENT, new ArrayList<>());
+        // moduleCategoryMap.put(Category.OTHER, new ArrayList<>());
 
         for (Module module : JesusClient.INSTANCE.moduleManager.getModules()) {
             if (!moduleCategoryMap.containsKey(module.getCategory())) {
@@ -82,13 +85,13 @@ public class ClickGui extends GuiScreen {
                     settingPane.addComponent(cb = new CheckBox(renderer, ""));
                     onRenderListeners.add(() -> cb.setSelected(module.isToggled()));
                     cb.setListener(val -> {
-                        module.setToggled(val);
-
                         if (module.isPremiumFeature() && !Premium.isUserPremium()) {
                             module.setToggled(false);
-                            ChatUtils.sendPrefixMessage("This feature is only available to Jesus Client premium users");
+                            NotificationManager.show(new Notification(NotificationType.ERROR, "Premium Only", "This feature is only available\nto Jesus Client premium users", 4));
+                            return true;
                         }
 
+                        module.setToggled(val);
                         return true;
                     });
                 }
@@ -116,7 +119,17 @@ public class ClickGui extends GuiScreen {
                             CheckBox cb;
 
                             settingPane.addComponent(cb = new CheckBox(renderer, ""));
-                            cb.setListener(value::setObject);
+                            cb.setListener(object -> {
+                                if (value.isPremiumOnly() && !Premium.isUserPremium()) {
+                                    value.setObject(value.getDefault());
+                                    NotificationManager.show(new Notification(NotificationType.ERROR, "Premium Only", "This setting is premium only", 3));
+                                    return true;
+                                }
+
+                                value.setObject(object);
+
+                                return true;
+                            });
                             onRenderListeners.add(() -> cb.setSelected(((BooleanSetting) value).getObject()));
                         }
                         if (value instanceof ModeSetting) {
@@ -126,6 +139,12 @@ public class ClickGui extends GuiScreen {
 
                             settingPane.addComponent(cb = new ComboBox(renderer, ((ModeSetting) value).getModes(), ((ModeSetting) value).getObject()));
                             cb.setListener(object -> {
+                                if (value.isPremiumOnly() && !Premium.isUserPremium()) {
+                                    value.setObject(value.getDefault());
+                                    NotificationManager.show(new Notification(NotificationType.ERROR, "Premium Only", "This setting is premium only", 3));
+                                    return true;
+                                }
+
                                 value.setObject(object);
 
                                 return true;
@@ -151,6 +170,13 @@ public class ClickGui extends GuiScreen {
 
                             settingPane.addComponent(cb = new Slider(renderer, ((Number) value.getObject()).doubleValue(), ((NumberSetting) value).getMin().doubleValue(), ((NumberSetting) value).getMax().doubleValue(), type));
                             cb.setListener(val -> {
+                                if (value.isPremiumOnly() && !Premium.isUserPremium()) {
+                                    value.setObject(value.getDefault());
+                                    NotificationManager.removeAll("Premium Only");
+                                    NotificationManager.show(new Notification(NotificationType.ERROR, "Premium Only", "This setting is premium only", 3));
+                                    return true;
+                                }
+
                                 if (value.getObject() instanceof Integer) {
                                     value.setObject(val.intValue());
                                 }
@@ -182,10 +208,7 @@ public class ClickGui extends GuiScreen {
             }
 
             categoryPaneMap.put(moduleCategoryListEntry.getKey(), spoilerPane);
-
-
         }
-
 
         spoilerPane = new Pane(renderer, new GridLayout(1));
 
@@ -197,7 +220,7 @@ public class ClickGui extends GuiScreen {
             maxWidth = Math.max(maxWidth, pane.getWidth());
         }
 
-        window.setWidth(30 + maxWidth);
+        window.setWidth(maxWidth + 30);
 
         for (Spoiler spoiler : spoilers) {
             spoiler.preferredWidth = maxWidth;
@@ -212,7 +235,7 @@ public class ClickGui extends GuiScreen {
 
         for (Category moduleCategory : keySet) {
             Button button;
-            buttonPane.addComponent(button = new me.superblaubeere27.clickgui.components.Button(renderer, moduleCategory.toString(), maxWidth/3-10, 22));
+            buttonPane.addComponent(button = new me.superblaubeere27.clickgui.components.Button(renderer, moduleCategory.toString(), buttonPane.getWidth()/3-10, 22));
             button.setOnClickListener(() -> setCurrentCategory(moduleCategory));
         }
 
