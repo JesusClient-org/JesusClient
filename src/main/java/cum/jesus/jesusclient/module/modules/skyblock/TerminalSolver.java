@@ -45,7 +45,7 @@ public class TerminalSolver extends Module {
     }
 
     public TerminalSolver() {
-        super("TerminalSolver", "Solves terminals", Category.SKYBLOCK);
+        super("Terminal Solver", "Solves terminals", Category.SKYBLOCK);
     }
 
     @EventTarget

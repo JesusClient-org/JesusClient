@@ -10,6 +10,7 @@ import cum.jesus.jesusclient.module.modules.combat.KillAura;
 import cum.jesus.jesusclient.module.modules.combat.Reach;
 import cum.jesus.jesusclient.module.modules.movement.BHop;
 import cum.jesus.jesusclient.module.modules.movement.Flight;
+import cum.jesus.jesusclient.module.modules.other.SelfDestruct;
 import cum.jesus.jesusclient.module.modules.render.*;
 import cum.jesus.jesusclient.module.modules.self.SessionProtection;
 import cum.jesus.jesusclient.module.modules.self.Timer;
@@ -60,25 +61,14 @@ public class ModuleManager {
             addModule(new Timer());
             addModule(new SessionProtection());
 
+            // other
+            addModule(new SelfDestruct());
+
             // hud shit (has to be added last for modulelist reasons)
             addModule(new Gui());
             addModule(new Hud());
         } catch (Exception e) {
             Logger.error("Error while loading module manager: " + e.getMessage() + "\n");
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean removeModules() {
-        try {
-            for (Module m : modules) {
-                EventManager.unregister(m);
-            }
-            modules.clear();
-        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -93,7 +83,7 @@ public class ModuleManager {
     }
 
     @NotNull
-    public static List<Module> getModules() {
+    public List<Module> getModules() {
         return modules;
     }
 
@@ -114,13 +104,14 @@ public class ModuleManager {
                     continue;
                 }
 
-                module.setToggled(!module.isToggled());
+                module.toggle();
             }
         }
     }
 
     public void addScriptModule(ScriptModule module) {
-        addModule(module);
+        modules.add(module);
+        EventManager.register(module);
     }
 
     public void removeScriptModules() {

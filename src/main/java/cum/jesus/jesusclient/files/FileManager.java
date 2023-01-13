@@ -7,17 +7,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.modules.render.Hud;
+import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.utils.Logger;
 import net.minecraft.launchwrapper.ITweaker;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileManager {
@@ -26,11 +30,11 @@ public class FileManager {
     public final File cacheDir = new File(clientDir, "CACHE");
     public final File scriptDir = new File(clientDir, "scripts");
 
-    public final File configFile = new File(clientDir, "jesusconfig.json");
-    private final File firstTimeFile = new File(clientDir, "firsttime.txt");
+    public final File configFile = new File(clientDir, "config.jesus");
+    private final File firstTimeFile = new File(clientDir, "firsttime.jesus");
 
-    public static final File modDir = new File(JesusClient.INSTANCE.mc.mcDataDir + "/mods");
-    public static final File updaterExe = new File(JesusClient.INSTANCE.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "jesusupdat.exe");
+    public static final File modDir = new File(JesusClient.mc.mcDataDir + "/mods");
+    public static final File updaterExe = new File(JesusClient.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "jesusupdat.exe");
 
     public static File srcJar = null;
 
@@ -73,14 +77,32 @@ public class FileManager {
         }
     }
 
-    public static void doUpdater() throws URISyntaxException {
-        srcJar = new File(JesusClient.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+    public static void doUpdater() {
+        srcJar = new File(Objects.requireNonNull(getPathJar()));
         Logger.debug(srcJar.getAbsolutePath());
 
         if (!updaterExe.exists()) {
             try {
                 java.nio.file.Files.copy(new URL(JesusClient.backendUrl + "/download/updater").openStream(), updaterExe.toPath());
             } catch (IOException e) {}
+        }
+    }
+
+    private static String getPathJar() {
+        try {
+            final URI jarUriPath =
+                    JesusClient.class.getResource(JesusClient.class.getSimpleName() + ".class").toURI();
+            String jarStringPath = jarUriPath.toString().replace("jar:", "");
+            String jarCleanPath  = Paths.get(new URI(jarStringPath)).toString();
+
+            if (jarCleanPath.toLowerCase().contains(".jar")) {
+                return jarCleanPath.substring(0, jarCleanPath.lastIndexOf(".jar") + 4);
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            Logger.error("Error getting JAR path.", e);
+            return null;
         }
     }
 
@@ -92,16 +114,14 @@ public class FileManager {
             //JesusClient.INSTANCE.moduleManager.getModule(Hud.class).setToggled(true);
             //noinspection ResultOfMethodCallIgnored
             firstTimeFile.createNewFile();
-            PrintWriter writer = new PrintWriter(firstTimeFile);
-            writer.println("this file is for checking if this is your first time using jesus client (if it exists it's not your first time)");
-            writer.close();
+            Files.write("this file will just indicate that you are not using jesus client for the first time".getBytes(StandardCharsets.UTF_8), firstTimeFile);
         }
     }
 
     /**
      * Convert a JSON string to pretty print version
      * @param jsonString
-     * @return
+     * @return A readable Json string
      */
     public static String formatJson(String jsonString) {
         JsonParser parser = new JsonParser();
@@ -114,6 +134,8 @@ public class FileManager {
     }
 
     public void loadScripts() {
+        if (!Premium.isUserPremium()) return;
+
         if (!scriptDir.exists()) scriptDir.mkdirs();
 
         File[] files = scriptDir.listFiles(pathname -> pathname.getName().endsWith("zip") || pathname.getName().endsWith("cbs"));

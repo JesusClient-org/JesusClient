@@ -2,8 +2,8 @@ package cum.jesus.jesusclient.remote;
 
 import com.google.gson.Gson;
 import com.sun.jna.platform.win32.Kernel32;
-import cum.jesus.jesusclient.FullscreenMod;
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.files.FileManager;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 
@@ -38,14 +38,14 @@ public class Updater {
             int pid = Kernel32.INSTANCE.GetCurrentProcessId();
             String currentVersion = JesusClient.CLIENT_VERSION_NUMBER;
             String newVersion = update.version;
-            String oldVersionJar = FullscreenMod.jarFile.getAbsolutePath();
+            String oldVersionJar = FileManager.srcJar.getAbsolutePath();
             Logger.debug(oldVersionJar);
-            String modPath = FullscreenMod.modDir.getAbsolutePath();
+            String modPath = FileManager.modDir.getAbsolutePath();
             Logger.debug(modPath);
             String newVersionDownloadUrl = update.download;
             String updateInfo = update.description != null ? update.description.replace(" ", "__") : "No description available for this update".replace(" ", "__");
 
-            execute(FullscreenMod.updaterExe.getAbsolutePath(), String.valueOf(pid), currentVersion, newVersion, oldVersionJar, modPath, newVersionDownloadUrl, updateInfo);
+            execute(FileManager.updaterExe.getAbsolutePath(), String.valueOf(pid), currentVersion, newVersion, oldVersionJar, modPath, newVersionDownloadUrl, updateInfo);
         }, "Jesus-Updater")).start();
     }
 

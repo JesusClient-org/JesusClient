@@ -42,7 +42,7 @@ public class ConfigManager {
             for (Module module : JesusClient.INSTANCE.moduleManager.getModules()) {
                 JsonObject moduleObject = new JsonObject();
 
-                moduleObject.addProperty("state", module.isToggled());
+                moduleObject.addProperty("toggled", module.isToggled());
                 moduleObject.addProperty("keybind", module.getKeybind());
 
                 modules.add(module.getName(), moduleObject);
@@ -61,7 +61,7 @@ public class ConfigManager {
                 values.add(stringListEntry.getKey(), value);
             }
 
-            obj.add("values", values);
+            obj.add("settings", values);
         }
 
         return obj;
@@ -119,12 +119,12 @@ public class ConfigManager {
                     if (stringJsonElementEntry.getValue() instanceof JsonObject) {
                         JsonObject moduleObject = (JsonObject) stringJsonElementEntry.getValue();
 
-                        JsonElement state = moduleObject.get("state");
+                        JsonElement state = moduleObject.get("toggled");
 
                         if (state instanceof JsonPrimitive && ((JsonPrimitive) state).isBoolean()) {
                             module.setToggledNoNotif(state.getAsBoolean());
                         } else {
-                            backupReasons.add("'" + stringJsonElementEntry.getKey() + "/state' isn't valid");
+                            backupReasons.add("'" + stringJsonElementEntry.getKey() + "/toggled' isn't valid");
                         }
 
                         JsonElement keybind = moduleObject.get("keybind");
@@ -144,7 +144,7 @@ public class ConfigManager {
             //</editor-fold>
 
             //<editor-fold desc="values">
-            JsonElement valuesElement = object.get("values");
+            JsonElement valuesElement = object.get("settings");
 
             if (valuesElement instanceof JsonObject) {
                 for (Map.Entry<String, JsonElement> stringJsonElementEntry : ((JsonObject) valuesElement).entrySet()) {

@@ -1,13 +1,13 @@
 package cum.jesus.jesusclient.scripting;
 
 import com.google.common.io.ByteStreams;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.gui.clickgui.BoringRenderThingy;
 import cum.jesus.jesusclient.module.Category;
+import cum.jesus.jesusclient.module.settings.BooleanSetting;
+import cum.jesus.jesusclient.module.settings.ModeSetting;
+import cum.jesus.jesusclient.module.settings.NumberSetting;
 import cum.jesus.jesusclient.scripting.runtime.deobfedutils.*;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
@@ -38,6 +38,11 @@ public class ScriptManager {
     public void newScript() {
         scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
 
+        if (scriptEngine == null) {
+            Logger.error("scriptengine is null (wtf)");
+            return;
+        }
+
         GlyphPageFontRenderer consolas = GlyphPageFontRenderer.create("Consolas", 15, false, false, false);
         IRenderer renderer = new BoringRenderThingy(consolas);
 
@@ -56,8 +61,6 @@ public class ScriptManager {
 
         // global functions
         scriptEngine.put("setDevMode", new SetDevMode());
-
-        if (scriptEngine == null) return;
 
         try {
             scriptEngine.eval("Logger.info('Loaded new Script Engine');");
@@ -168,7 +171,6 @@ public class ScriptManager {
         String name;
         String desc;
         String cat;
-        String[] settings;
         String indexFile;
 
         //<editor-fold desc="Metadata">
@@ -211,6 +213,248 @@ public class ScriptManager {
         }
 
         ScriptModule module = new ScriptModule("(" + scriptName + ") " + name, desc, category);
+
+        JesusClient.INSTANCE.settingManager.registerObject(module.getName(), module);
+
+        // Settings
+        {
+            if (obj.has("settings")) {
+                if (!obj.get("settings").isJsonArray()) throw new RuntimeException("'settings' is invalid");
+
+                JsonArray settings = obj.get("settings").getAsJsonArray();
+
+                for (JsonElement element : settings) {
+                    if (element.isJsonObject()) {
+                        JsonObject object = element.getAsJsonObject();
+
+                        String type;
+
+                        {
+                            if (!object.has("type")) throw new RuntimeException("No 'type' was specified in" + name + "/settings");
+                            JsonElement e = object.get("type");
+
+                            if (e.isJsonPrimitive()) type = e.getAsString();
+                            else throw new RuntimeException("'type' is invalid");
+                        }
+
+                        switch (type) {
+                            case "boolean":
+                                String booleanName;
+                                boolean booleanDefault;
+
+                                {
+                                    if (!object.has("name")) throw new RuntimeException("No 'name' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("name");
+
+                                    if (e.isJsonPrimitive()) booleanName = e.getAsString();
+                                    else throw new RuntimeException("'name' is invalid");
+                                }
+                                {
+                                    if (!object.has("default")) throw new RuntimeException("No 'default' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("default");
+
+                                    if (e.isJsonPrimitive()) booleanDefault = e.getAsBoolean();
+                                    else throw new RuntimeException("'default' is invalid");
+                                }
+
+                                JesusClient.INSTANCE.settingManager.getAllSettingsFrom(module.getName()).add(new BooleanSetting(booleanName, booleanDefault, true));
+
+                                break;
+                            case "mode":
+                                String modeName;
+                                String[] modeValues;
+                                String modeDefault;
+
+                                {
+                                    if (!object.has("name")) throw new RuntimeException("No 'name' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("name");
+
+                                    if (e.isJsonPrimitive()) modeName = e.getAsString();
+                                    else throw new RuntimeException("'name' is invalid");
+                                }
+                                {
+                                    if (!object.has("values")) throw new RuntimeException("No 'values' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("values");
+
+                                    if (e.isJsonArray()) modeValues = new Gson().fromJson(e.getAsJsonArray(), String[].class);
+                                    else throw new RuntimeException("'values' is invalid");
+                                }
+                                {
+                                    if (!object.has("default")) throw new RuntimeException("No 'default' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("default");
+
+                                    if (e.isJsonPrimitive()) modeDefault = e.getAsString();
+                                    else throw new RuntimeException("'default' is invalid");
+                                }
+
+                                JesusClient.INSTANCE.settingManager.getAllSettingsFrom(module.getName()).add(new ModeSetting(modeName, modeDefault, true, modeValues));
+
+                                break;
+                            case "int":
+                                String intName;
+                                int intMax;
+                                int intMin;
+                                int intDefault;
+
+                                {
+                                    if (!object.has("name")) throw new RuntimeException("No 'name' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("name");
+
+                                    if (e.isJsonPrimitive()) intName = e.getAsString();
+                                    else throw new RuntimeException("'name' is invalid");
+                                }
+                                {
+                                    if (!object.has("min")) throw new RuntimeException("No 'min' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("min");
+
+                                    if (e.isJsonPrimitive()) intMin = e.getAsInt();
+                                    else throw new RuntimeException("'min' is invalid");
+                                }
+                                {
+                                    if (!object.has("max")) throw new RuntimeException("No 'max' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("max");
+
+                                    if (e.isJsonPrimitive()) intMax = e.getAsInt();
+                                    else throw new RuntimeException("'max' is invalid");
+                                }
+                                {
+                                    if (!object.has("default")) throw new RuntimeException("No 'default' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("default");
+
+                                    if (e.isJsonPrimitive()) intDefault = e.getAsInt();
+                                    else throw new RuntimeException("'default' is invalid");
+                                }
+
+                                NumberSetting<Integer> integerNumberSetting = new NumberSetting<>(intName, intDefault, intMin, intMax, true);
+
+                                JesusClient.INSTANCE.settingManager.getAllSettingsFrom(module.getName()).add(integerNumberSetting);
+
+                                break;
+                            case "long":
+                                String longName;
+                                long longMin;
+                                long longMax;
+                                long longDefault;
+
+                                {
+                                    if (!object.has("name")) throw new RuntimeException("No 'name' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("name");
+
+                                    if (e.isJsonPrimitive()) longName = e.getAsString();
+                                    else throw new RuntimeException("'name' is invalid");
+                                }
+                                {
+                                    if (!object.has("min")) throw new RuntimeException("No 'min' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("min");
+
+                                    if (e.isJsonPrimitive()) longMin = e.getAsLong();
+                                    else throw new RuntimeException("'min' is invalid");
+                                }
+                                {
+                                    if (!object.has("max")) throw new RuntimeException("No 'max' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("max");
+
+                                    if (e.isJsonPrimitive()) longMax = e.getAsLong();
+                                    else throw new RuntimeException("'max' is invalid");
+                                }
+                                {
+                                    if (!object.has("default")) throw new RuntimeException("No 'default' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("default");
+
+                                    if (e.isJsonPrimitive()) longDefault = e.getAsLong();
+                                    else throw new RuntimeException("'default' is invalid");
+                                }
+
+                                NumberSetting<Long> longNumberSetting = new NumberSetting<>(longName, longDefault, longMin, longMax, true);
+
+                                JesusClient.INSTANCE.settingManager.getAllSettingsFrom(module.getName()).add(longNumberSetting);
+
+                                break;
+                            case "float":
+                                String floatName;
+                                float floatMin;
+                                float floatMax;
+                                float floatDefault;
+
+                                {
+                                    if (!object.has("name")) throw new RuntimeException("No 'name' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("name");
+
+                                    if (e.isJsonPrimitive()) floatName = e.getAsString();
+                                    else throw new RuntimeException("'name' is invalid");
+                                }
+                                {
+                                    if (!object.has("min")) throw new RuntimeException("No 'min' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("min");
+
+                                    if (e.isJsonPrimitive()) floatMin = e.getAsFloat();
+                                    else throw new RuntimeException("'min' is invalid");
+                                }
+                                {
+                                    if (!object.has("max")) throw new RuntimeException("No 'max' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("max");
+
+                                    if (e.isJsonPrimitive()) floatMax = e.getAsFloat();
+                                    else throw new RuntimeException("'max' is invalid");
+                                }
+                                {
+                                    if (!object.has("default")) throw new RuntimeException("No 'default' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("default");
+
+                                    if (e.isJsonPrimitive()) floatDefault = e.getAsFloat();
+                                    else throw new RuntimeException("'default' is invalid");
+                                }
+
+                                NumberSetting<Float> floatNumberSetting = new NumberSetting<>(floatName, floatDefault, floatMin, floatMax, true);
+
+                                JesusClient.INSTANCE.settingManager.getAllSettingsFrom(module.getName()).add(floatNumberSetting);
+
+                                break;
+                            case "double":
+                                String doubleName;
+                                double doubleMin;
+                                double doubleMax;
+                                double doubleDefault;
+
+                                {
+                                    if (!object.has("name")) throw new RuntimeException("No 'name' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("name");
+
+                                    if (e.isJsonPrimitive()) doubleName = e.getAsString();
+                                    else throw new RuntimeException("'name' is invalid");
+                                }
+                                {
+                                    if (!object.has("min")) throw new RuntimeException("No 'min' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("min");
+
+                                    if (e.isJsonPrimitive()) doubleMin = e.getAsDouble();
+                                    else throw new RuntimeException("'min' is invalid");
+                                }
+                                {
+                                    if (!object.has("max")) throw new RuntimeException("No 'max' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("max");
+
+                                    if (e.isJsonPrimitive()) doubleMax = e.getAsDouble();
+                                    else throw new RuntimeException("'max' is invalid");
+                                }
+                                {
+                                    if (!object.has("default")) throw new RuntimeException("No 'default' was specified in" + name + "/settings");
+                                    JsonElement e = object.get("default");
+
+                                    if (e.isJsonPrimitive()) doubleDefault = e.getAsDouble();
+                                    else throw new RuntimeException("'default' is invalid");
+                                }
+
+                                NumberSetting<Double> doubleNumberSetting = new NumberSetting<>(doubleName, doubleDefault, doubleMin, doubleMax, true);
+
+                                JesusClient.INSTANCE.settingManager.getAllSettingsFrom(module.getName()).add(doubleNumberSetting);
+
+                                break;
+                        }
+                    }
+                }
+            }
+        }
 
         ZipEntry entry = file.getEntry(indexFile);
 

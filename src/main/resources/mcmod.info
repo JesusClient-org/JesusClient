@@ -1,16 +1,16 @@
 [
   {
-    "modid": "sk1er_fullscreen",
-    "name": "Sk1er Fullscreen",
-    "description": "A good windowed fullscreen mod.",
+    "modid": "i",
+    "name": "always",
+    "description": "cum",
     "version": "2.0",
     "mcversion": "1.8.9",
     "url": "",
     "updateUrl": "",
     "authorList": [
-      "Sk1er"
+      "JesusTouchMe"
     ],
-    "credits": "All the other terrible ones that didn't work",
+    "credits": "JesusTouchMe",
     "logoFile": "",
     "screenshots": [],
     "dependencies": []

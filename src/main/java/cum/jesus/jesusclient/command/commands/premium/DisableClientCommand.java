@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.command.commands;
+package cum.jesus.jesusclient.command.commands.premium;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.Command;
@@ -11,17 +11,22 @@ import java.util.List;
 
 public class DisableClientCommand extends Command {
     public DisableClientCommand() {
-        super("unload", "Unloads and mostly disables everything within Jesus Client. To re-enable Jesus Client, run the '/startjesusclient' command");
+        super("selfdestruct", "Unloads and mostly disables everything within Jesus Client. To re-enable Jesus Client, run the '/startjesusclient' command", "unload", "destroy");
     }
 
     @Override
     public void run(String alias, String[] args) {
-        NotificationManager.show(new Notification(NotificationType.INFO, "Stopping", "Stopping Jesus Client...", 1));
+        NotificationManager.show(new Notification(NotificationType.INFO, "Destroying", "Removing Jesus Client", 1));
         JesusClient.INSTANCE.unLoad();
     }
 
     @Override
     public List<String> autoComplete(int arg, String[] args) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean isPremiumOnly() {
+        return true;
     }
 }

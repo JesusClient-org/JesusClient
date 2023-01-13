@@ -8,6 +8,7 @@ import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.KeyInputEvent;
+import cum.jesus.jesusclient.remote.Updater;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.main.GameConfiguration;
@@ -69,13 +70,10 @@ public class MixinMinecraft implements IMixinMinecraft {
 
     @Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/client/FMLClientHandler;beginMinecraftLoading(Lnet/minecraft/client/Minecraft;Ljava/util/List;Lnet/minecraft/client/resources/IReloadableResourceManager;)V", shift = At.Shift.BEFORE))
     private void tryUpdate(CallbackInfo ci) {
-        //if (JesusClient.devMode) return;
+        if (JesusClient.devMode) return;
 
-        try {
-            FileManager.doUpdater();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        FileManager.doUpdater();
+        Updater.loadUpdate();
     }
 
     @Inject(method = "startGame", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;ingameGUI:Lnet/minecraft/client/gui/GuiIngame;", shift = At.Shift.AFTER))
