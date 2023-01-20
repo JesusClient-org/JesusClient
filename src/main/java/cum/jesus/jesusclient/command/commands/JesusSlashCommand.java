@@ -8,6 +8,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class JesusSlashCommand extends CommandBase {
@@ -20,7 +21,7 @@ public class JesusSlashCommand extends CommandBase {
     }
 
     public List<String> getCommandAliases() {
-        return Arrays.asList("jesusclient");
+        return Collections.singletonList("jesusclient");
     }
 
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {

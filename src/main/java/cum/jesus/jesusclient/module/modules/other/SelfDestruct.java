@@ -9,11 +9,13 @@ public class SelfDestruct extends Module {
     public static BooleanSetting addLoadCommand = new BooleanSetting("Add reload command", true, true);
 
     public SelfDestruct() {
-        super("Self Destruct", "Destroys and almost completely removes Jesus Client from your game", Category.OTHER);
+        super("Self Destruct", "Destroys and almost completely removes Jesus Client from your game (sorta)", Category.OTHER);
     }
 
     @Override
     public void onEnable() {
+        mc.currentScreen = null;
+
         JesusClient.INSTANCE.unLoad();
     }
 }

@@ -129,6 +129,8 @@ public class ScriptManager {
             }
             //</editor-fold>
 
+            newScript();
+
             Script script = new Script(scriptName, scriptDesc, scriptVer, scriptAuthors, loadIndex(scriptIndex, zipFile));
 
             if (manifest.has("modules")) {
@@ -137,6 +139,7 @@ public class ScriptManager {
                 if (!element.isJsonArray()) throw new RuntimeException("'modules' has to be an array");
 
                 for (JsonElement jsonElement : element.getAsJsonArray()) {
+                    newScript();
                     ScriptModule module = loadModule(jsonElement, zipFile, scriptName);
                     script.getModules().add(module);
                 }
@@ -148,6 +151,7 @@ public class ScriptManager {
                 if (!element.isJsonArray()) throw new RuntimeException("'commands' has to be an array");
 
                 for (JsonElement jsonElement : element.getAsJsonArray()) {
+                    newScript();
                     ScriptCommand command = loadCommand(jsonElement, zipFile, scriptName);
                     script.getCommands().add(command);
                 }

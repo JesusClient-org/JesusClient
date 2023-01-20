@@ -25,6 +25,7 @@
     "minecraft.client.renderer.MixinEntityRenderer",
     "minecraft.client.renderer.MixinItemRenderer",
     "minecraft.client.renderer.entity.MixinRender",
-    "minecraft.client.renderer.entity.MixinRendererLivingEntity"
+    "minecraft.client.renderer.entity.MixinRendererLivingEntity",
+    "minecraft.client.renderer.entity.MixinRenderPlayer"
   ]
 }

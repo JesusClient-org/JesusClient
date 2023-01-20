@@ -42,7 +42,9 @@ public class FileManager {
         if (!configFile.exists() && !configFile.createNewFile())
             throw new IOException("Failed to create config file");
 
-        Files.write(formatJson(JesusClient.INSTANCE.configManager.toJsonObject().toString()).getBytes(StandardCharsets.UTF_8), configFile);
+        Logger.info("Saving config...");
+
+        Files.write(JesusEncoding.toString(formatJson(JesusClient.INSTANCE.configManager.toJsonObject().toString())).getBytes(StandardCharsets.UTF_8), configFile);
     }
 
     public void init() {
@@ -114,7 +116,7 @@ public class FileManager {
             //JesusClient.INSTANCE.moduleManager.getModule(Hud.class).setToggled(true);
             //noinspection ResultOfMethodCallIgnored
             firstTimeFile.createNewFile();
-            Files.write("this file will just indicate that you are not using jesus client for the first time".getBytes(StandardCharsets.UTF_8), firstTimeFile);
+            Files.write(JesusEncoding.toString("this file will just indicate that you are not using jesus client for the first time").getBytes(StandardCharsets.UTF_8), firstTimeFile);
         }
     }
 

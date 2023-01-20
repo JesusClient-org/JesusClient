@@ -10,6 +10,7 @@ import cum.jesus.jesusclient.module.modules.combat.KillAura;
 import cum.jesus.jesusclient.module.modules.combat.Reach;
 import cum.jesus.jesusclient.module.modules.movement.BHop;
 import cum.jesus.jesusclient.module.modules.movement.Flight;
+import cum.jesus.jesusclient.module.modules.other.MonkeyFlip;
 import cum.jesus.jesusclient.module.modules.other.SelfDestruct;
 import cum.jesus.jesusclient.module.modules.render.*;
 import cum.jesus.jesusclient.module.modules.self.SessionProtection;
@@ -56,6 +57,7 @@ public class ModuleManager {
             addModule(NoSlimes.INSTANCE);
             addModule(new RevealHiddenMobs());
             addModule(Console.INSTANCE);
+            addModule(PlayerScale.INSTANCE);
 
             // self
             addModule(new Timer());
@@ -63,6 +65,7 @@ public class ModuleManager {
 
             // other
             addModule(new SelfDestruct());
+            addModule(new MonkeyFlip());
 
             // hud shit (has to be added last for modulelist reasons)
             addModule(new Gui());

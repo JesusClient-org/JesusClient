@@ -1,14 +1,18 @@
 package cum.jesus.jesusclient.scripting;
 
+import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.*;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
+import cum.jesus.jesusclient.module.settings.Setting;
 import cum.jesus.jesusclient.scripting.runtime.events.*;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.util.List;
+import java.util.Objects;
 
 public class ScriptModule extends Module {
     private ScriptEngine engine;
@@ -19,6 +23,10 @@ public class ScriptModule extends Module {
 
     public void setScriptEngine(ScriptEngine scriptEngine) {
         engine = scriptEngine;
+
+        for (Setting setting : Objects.requireNonNull(JesusClient.INSTANCE.settingManager.getAllSettingsFrom(this.getName()))) {
+            engine.put("setting" + setting.getName().replace(" ", ""), setting);
+        }
     }
 
     @Override
