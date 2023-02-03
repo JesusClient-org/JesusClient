@@ -20,6 +20,7 @@
     "minecraft.client.entity.MixinEntityPlayerSP",
     "minecraft.client.gui.MixinGuiChat",
     "minecraft.client.gui.MixinGuiIngame",
+    "minecraft.client.gui.MixinGuiMainMenu",
     "minecraft.client.multiplayer.MixinWorldClient",
     "minecraft.client.network.MixinNetHandlerPlayClient",
     "minecraft.client.renderer.MixinEntityRenderer",

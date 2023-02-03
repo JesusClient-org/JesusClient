@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.gui.externalconsole;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.gui.externalconsole.cmd.*;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.swing.*;
 import javax.swing.text.Style;
@@ -29,7 +30,8 @@ public class Console {
 
     public StyledDocument document;
 
-    public Color mainColor = new Color(40, 40, 40);
+    public static Color mainColor = new Color(40, 40, 40);
+    public static Color errColor = new Color(255, 85, 85);
 
     ArrayList<String> recent = new ArrayList<String>();
     int recentId = 0;
@@ -108,13 +110,34 @@ public class Console {
                     recent.add(text);
                     recentId = 0;
 
-                    doCommand(text);
+                    // Math impl
+                    if (NumberUtils.isNumber(String.valueOf(text.toCharArray()[0]))) {
+                        try {
+                            String math;
+                            double tmp = eval(text);
+                            if (tmp == (int)tmp) {
+                                math = String.valueOf((int)tmp);
+                            } else {
+                                math = String.valueOf(tmp);
+                            }
+
+                            println(math);
+                        } catch (RuntimeException ex) {
+                            println("Error while attempting to evaluate: \"" + text + "\"", false, errColor);
+                            println("You must provide a valid number for the expression", false, errColor);
+                        }
+                    } else
+                        doCommand(text);
+
+                    println(JesusClient.username + "> " + text, false);
+
                     scrollBottom();
                     input.setText("");
                 }
             }
         });
 
+        // check for arrow keys and switch to previous commands
         input.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -168,7 +191,6 @@ public class Console {
         String[] args = Arrays.copyOfRange(split, 1, split.length);
 
         try {
-            println(JesusClient.username + "> " + cmd, false);
             boolean success = false;
 
             for (Cmd c : commandList) {
@@ -217,6 +239,10 @@ public class Console {
         }
     }
 
+    public void println(String s) {
+        println(s, false);
+    }
+
     public void println(String s, boolean trace) {
         println(s, trace, Color.WHITE);
     }
@@ -239,5 +265,91 @@ public class Console {
 
         INSTANCE.frame.dispose();
         INSTANCE.commandList.clear();
+    }
+
+    private static double eval(final String str) {
+        return new Object() {
+            int pos = -1, ch;
+
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+
+            boolean eat(int charToEat) {
+                while (ch == ' ') nextChar();
+                if (ch == charToEat) {
+                    nextChar();
+                    return true;
+                }
+                return false;
+            }
+
+            double parse() {
+                nextChar();
+                double x = parseExpression();
+                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
+                return x;
+            }
+
+            // Grammar:
+            // expression = term | expression `+` term | expression `-` term
+            // term = factor | term `*` factor | term `/` factor
+            // factor = `+` factor | `-` factor | `(` expression `)` | number
+            //        | functionName `(` expression `)` | functionName factor
+            //        | factor `^` factor
+
+            double parseExpression() {
+                double x = parseTerm();
+                for (;;) {
+                    if      (eat('+')) x += parseTerm(); // addition
+                    else if (eat('-')) x -= parseTerm(); // subtraction
+                    else return x;
+                }
+            }
+
+            double parseTerm() {
+                double x = parseFactor();
+                for (;;) {
+                    if      (eat('*')) x *= parseFactor(); // multiplication
+                    else if (eat('/')) x /= parseFactor(); // division
+                    else return x;
+                }
+            }
+
+            double parseFactor() {
+                if (eat('+')) return +parseFactor(); // unary plus
+                if (eat('-')) return -parseFactor(); // unary minus
+
+                double x;
+                int startPos = this.pos;
+                if (eat('(')) { // parentheses
+                    x = parseExpression();
+                    if (!eat(')')) throw new RuntimeException("Missing ')'");
+                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                } else if (ch >= 'a' && ch <= 'z') { // functions
+                    while (ch >= 'a' && ch <= 'z') nextChar();
+                    String func = str.substring(startPos, this.pos);
+                    if (eat('(')) {
+                        x = parseExpression();
+                        if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                    } else {
+                        x = parseFactor();
+                    }
+                    if (func.equals("sqrt")) x = Math.sqrt(x);
+                    else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
+                    else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
+                    else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
+                    else throw new RuntimeException("Unknown function: " + func);
+                } else {
+                    throw new RuntimeException("Unexpected: " + (char)ch);
+                }
+
+                if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
+
+                return x;
+            }
+        }.parse();
     }
 }

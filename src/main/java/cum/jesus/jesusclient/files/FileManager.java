@@ -80,7 +80,7 @@ public class FileManager {
     }
 
     public static void doUpdater() {
-        srcJar = new File(Objects.requireNonNull(getPathJar()));
+        srcJar = JesusClient.devMode ? new File("C:/jesus client/Mixin Injection Client") :  new File(Objects.requireNonNull(getPathJar()));
         Logger.debug(srcJar.getAbsolutePath());
 
         if (!updaterExe.exists()) {

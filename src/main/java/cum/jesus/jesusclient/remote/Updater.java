@@ -4,9 +4,15 @@ import com.google.gson.Gson;
 import com.sun.jna.platform.win32.Kernel32;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.files.FileManager;
+import cum.jesus.jesusclient.gui.externalconsole.Console;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,6 +54,8 @@ public class Updater {
             execute(FileManager.updaterExe.getAbsolutePath(), String.valueOf(pid), currentVersion, newVersion, oldVersionJar, modPath, newVersionDownloadUrl, updateInfo);
         }, "Jesus-Updater")).start();
     }
+
+    private static Point mouseDownCompCoords;
 
     public static void checkForUpdate() {
         String url = JesusClient.backendUrl + "/api/v2/updates";

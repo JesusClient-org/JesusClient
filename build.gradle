@@ -87,6 +87,8 @@ mixin {
 }
 
 shadowJar {
+    exclude('dummyThing')
+
     dependencies {
         include(dependency('org.spongepowered:mixin'))
         include(dependency('org.jetbrains:annotations'))
@@ -99,6 +101,7 @@ build.dependsOn(shadowJar)
 
 jar {
     manifest.attributes(
+            "Main-Class": "Test",
             "MixinConfigs": 'mixins.jesusclient.json',
             "TweakClass": 'org.spongepowered.asm.launch.MixinTweaker',
             "TweakOrder": 0,

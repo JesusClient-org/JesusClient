@@ -39,7 +39,7 @@ public class Toggle extends Cmd {
                 tmp.toggle();
                 Console.INSTANCE.println("Toggled " + tmp.getName(), false);
             } else {
-                Console.INSTANCE.println("Module '" + args[0] + "' couldn't be found", false, new Color(255, 85, 85));
+                Console.INSTANCE.println("Module '" + args[0] + "' couldn't be found", false, Console.errColor);
             }
         }
     }

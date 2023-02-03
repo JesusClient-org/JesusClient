@@ -11,22 +11,30 @@ import cum.jesus.jesusclient.scripting.runtime.events.*;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class ScriptModule extends Module {
     private ScriptEngine engine;
 
+    private HashMap<String, Setting> settingsMap;
+
     ScriptModule(String name, String desc, Category category) {
         super(name, desc, category);
     }
 
     public void setScriptEngine(ScriptEngine scriptEngine) {
+        if (settingsMap != null) settingsMap.clear();
         engine = scriptEngine;
 
+        settingsMap = new HashMap<>();
+
         for (Setting setting : Objects.requireNonNull(JesusClient.INSTANCE.settingManager.getAllSettingsFrom(this.getName()))) {
-            engine.put("setting" + setting.getName().replace(" ", ""), setting);
+            settingsMap.put(setting.getName(), setting);
         }
+
+        engine.put("settings", settingsMap);
     }
 
     @Override

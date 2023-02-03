@@ -8,13 +8,14 @@ import jline.internal.TestAccessible;
 import net.minecraft.launchwrapper.Launch;
 import org.lwjgl.Sys;
 
+import java.awt.*;
 import java.io.PrintStream;
 import java.util.Arrays;
 
-/*
-do not mind this
-i just didn't like how default log worked :troll:
-this just prints to the console
+/**
+* do not mind this
+* i just didn't like how default log worked :troll:
+* this just prints to the console
 */
 
 public final class Logger {
@@ -91,7 +92,7 @@ public final class Logger {
                     s.append(message).append(" ");
                 }
 
-                cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+                cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false, Color.GREEN);
             }
 
         }
@@ -119,7 +120,7 @@ public final class Logger {
                 s.append(message).append(" ");
             }
 
-            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false, new Color(255, 85, 85));
         }
     }
 
@@ -132,7 +133,7 @@ public final class Logger {
                 s.append(message).append(" ");
             }
 
-            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false);
+            cum.jesus.jesusclient.gui.externalconsole.Console.INSTANCE.println(s.toString(), false, new Color(255, 85, 85));
         }
     }
 
