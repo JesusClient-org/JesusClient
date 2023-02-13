@@ -1,11 +1,10 @@
 package cum.jesus.jesusclient.files;
 
-import cum.jesus.jesusclient.utils.DesktopUtils;
+import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.JesusClientNatives;
+import cum.jesus.jesusclient.utils.HttpUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,16 +12,13 @@ import java.util.List;
 
 public class JesusEncoding {
     private static HashMap<Character, String> translationMap = new HashMap<>();
-    private static File encoding;
 
     static {
-        try {
-            encoding = new File(JesusEncoding.class.getClassLoader().getResource("assets/jesusclient/encode.bin").toURI());
-        } catch (URISyntaxException ignored) {}
-
         List<String> tmp = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(encoding))) {
+        String res = HttpUtils.get(JesusClient.backendUrl + "/api/v2/encodingmap");
+
+        try (BufferedReader br = new BufferedReader(new StringReader(res))) {
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {
                 //contentBuilder.append(sCurrentLine).append("\n");

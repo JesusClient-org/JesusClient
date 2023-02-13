@@ -37,7 +37,7 @@ public class ScriptLogger {
 
     private static void log(Level level, Object... messages) {
         synchronized(output) {
-            output.format("[" + JesusClient.CLIENT_NAME + " | Script | %s] ", level);
+            output.format("[" + JesusClient.CLIENT_NAME + " (Script) | %s] ", level);
             for(int i = 0; i < messages.length; ++i) {
                 if (i + 1 == messages.length && messages[i] instanceof Throwable) {
                     output.println();
@@ -54,7 +54,7 @@ public class ScriptLogger {
     public static void trace(Object... messages) {
         log(Level.TRACE, messages);
         if (Console.INSTANCE.isToggled()) {
-            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | Script | " + Level.TRACE + "] ");
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " (Script) | " + Level.TRACE + "] ");
 
             for (Object message : messages) {
                 s.append(message).append(" ");
@@ -68,7 +68,7 @@ public class ScriptLogger {
         if(JesusClient.devMode || System.getProperty("user.name").equals("Somer")) {
             log(Level.DEBUG, messages);
             if (Console.INSTANCE.isToggled()) {
-                StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | Script | " + Level.DEBUG + "] ");
+                StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " (Script) | " + Level.DEBUG + "] ");
 
                 for (Object message : messages) {
                     s.append(message).append(" ");
@@ -83,7 +83,7 @@ public class ScriptLogger {
     public static void info(Object... messages) {
         log(Level.INFO, messages);
         if (Console.INSTANCE.isToggled()) {
-            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | Script | " + Level.INFO + "] ");
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " (Script) | " + Level.INFO + "] ");
 
             for (Object message : messages) {
                 s.append(message).append(" ");
@@ -96,7 +96,7 @@ public class ScriptLogger {
     public static void warn(Object... messages) {
         log(Level.WARN, messages);
         if (Console.INSTANCE.isToggled()) {
-            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | Script | " + Level.WARN + "] ");
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " (Script) | " + Level.WARN + "] ");
 
             for (Object message : messages) {
                 s.append(message).append(" ");
@@ -109,7 +109,7 @@ public class ScriptLogger {
     public static void error(Object... messages) {
         log(Level.ERROR, messages);
         if (Console.INSTANCE.isToggled()) {
-            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " | Script | " + Level.ERROR + "] ");
+            StringBuilder s = new StringBuilder("[" + JesusClient.CLIENT_NAME + " (Script) | " + Level.ERROR + "] ");
 
             for (Object message : messages) {
                 s.append(message).append(" ");

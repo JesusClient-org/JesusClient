@@ -56,7 +56,7 @@ public class HttpUtils {
             HttpEntity params = new StringEntity(jsonData);
             request.setEntity(params);
             request.setHeader("Content-Type", "application/json");
-            request.setHeader("User-Agent", "JesusClient-" + JesusClient.CLIENT_VERSION);
+            request.setHeader("user-agent", "JesusClient-" + JesusClient.CLIENT_VERSION);
             HttpResponse httpResponse = client.execute(request);
             response = EntityUtils.toString(httpResponse.getEntity());
         } catch(Exception ignored) {}

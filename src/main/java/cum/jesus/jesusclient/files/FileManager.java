@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileManager {
-    public final File clientDir = new File(JesusClient.INSTANCE.mc.mcDataDir, JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""));
+    public final File clientDir = new File(JesusClient.mc.mcDataDir, JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""));
     public final File backupDir = new File(clientDir, "config-backups");
     public final File cacheDir = new File(clientDir, "CACHE");
     public final File scriptDir = new File(clientDir, "scripts");
@@ -34,7 +34,10 @@ public class FileManager {
     private final File firstTimeFile = new File(clientDir, "firsttime.jesus");
 
     public static final File modDir = new File(JesusClient.mc.mcDataDir + "/mods");
-    public static final File updaterExe = new File(JesusClient.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "jesusupdat.exe");
+
+    // externals
+    public static File updaterExe = new File(JesusClient.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "up.exe");
+    public File cLibrary = new File(clientDir, "library.dll");
 
     public static File srcJar = null;
 
@@ -54,9 +57,20 @@ public class FileManager {
         backupDir.mkdirs();
 
         // download external needed assets
-        (new Thread(() -> {
+        Thread thread = new Thread(() -> {
+            try {
+                if (!cLibrary.exists()) java.nio.file.Files.copy(new URL(JesusClient.backendUrl + "/download/jesusclientlib").openStream(), cLibrary.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, "JesusClient-External-Downloader");
 
-        }, "JesusClient-Asset-Downloader")).start();
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         // delete the oldest backup if there's more than 25
         File[] backups = backupDir.listFiles();

@@ -12,10 +12,10 @@ import cum.jesus.jesusclient.scripting.runtime.deobfedutils.*;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import jdk.internal.dynalink.beans.StaticClass;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import me.superblaubeere27.clickgui.IRenderer;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.function.Function;
 
 
 public class ScriptManager {
@@ -36,12 +35,7 @@ public class ScriptManager {
     }
 
     public void newScript() {
-        scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
-
-        if (scriptEngine == null) {
-            Logger.error("scriptengine is null (wtf)");
-            return;
-        }
+        scriptEngine = new NashornScriptEngineFactory().getScriptEngine();
 
         GlyphPageFontRenderer consolas = GlyphPageFontRenderer.create("Consolas", 15, false, false, false);
         IRenderer renderer = new BoringRenderThingy(consolas);

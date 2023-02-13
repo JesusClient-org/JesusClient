@@ -18,6 +18,7 @@
     "minecraft.client.entity.EntityPlayerSPAccessor",
     "minecraft.client.entity.MixinAbstractClientPlayer",
     "minecraft.client.entity.MixinEntityPlayerSP",
+    "minecraft.client.gui.MixinFontRenderer",
     "minecraft.client.gui.MixinGuiChat",
     "minecraft.client.gui.MixinGuiIngame",
     "minecraft.client.gui.MixinGuiMainMenu",

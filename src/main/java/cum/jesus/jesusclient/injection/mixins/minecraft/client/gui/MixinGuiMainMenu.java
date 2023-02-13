@@ -17,6 +17,8 @@ public class MixinGuiMainMenu {
     public void initMainMenu(CallbackInfo ci) {
         if(Updater.update != null && !Updater.shouldUpdate) {
             splashText = "Jesus Client is outdated!";
+        } else {
+            splashText = "Jesus Client on top!";
         }
     }
 }
