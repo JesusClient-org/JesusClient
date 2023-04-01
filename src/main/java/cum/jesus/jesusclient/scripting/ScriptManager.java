@@ -57,7 +57,7 @@ public class ScriptManager {
         scriptEngine.put("setDevMode", new SetDevMode());
 
         try {
-            scriptEngine.eval("Logger.info('Loaded new Script Engine');");
+            scriptEngine.eval("2+2");
         } catch (ScriptException e) {
             e.printStackTrace();
         }
