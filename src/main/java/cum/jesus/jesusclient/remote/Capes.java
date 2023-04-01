@@ -6,18 +6,27 @@ import com.google.gson.JsonObject;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
+import cum.jesus.jesusclient.utils.slaves.WorkerPool;
+import cum.jesus.jesusclient.utils.slaves.jobs.DownloadJob;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Capes {
+    private static WorkerPool pool = new WorkerPool(4);
+    private static int id = 1;
+
     public static HashMap<String, String> playerCapes = new HashMap<>();
     public static HashMap<String, ResourceLocation> capes = new HashMap<>();
 
@@ -48,6 +57,8 @@ public class Capes {
                 Logger.info("Loading cape: " + name + " from cache");
 
                capes.put(name, capeFromFile(name, url));
+
+               id++;
             }
 
             for (Map.Entry<String, JsonElement> owner : jsonOwners.entrySet()) {
@@ -69,9 +80,24 @@ public class Capes {
     private static ResourceLocation capeFromFile(String capeName, String capeUrl) {
         try {
             File file = new File(capeDir, capeName + ".png");
-            if (!file.exists()) Files.copy(new URL(capeUrl).openStream(), file.toPath());
-
-            return JesusClient.mc.getTextureManager().getDynamicTextureLocation("jesusclient", new DynamicTexture(ImageIO.read(file)));
+            AtomicReference<ResourceLocation> rl = new AtomicReference<>();
+            if (!file.exists()) {
+                pool.queueJob(new DownloadJob(id, capeUrl, file, (texture) -> {
+                    JesusClient.mc.addScheduledTask(() -> {
+                        try {
+                            rl.set(JesusClient.mc.getTextureManager().getDynamicTextureLocation("jesusclient", texture));
+                        } catch (Exception e) {
+                            Logger.error("Failed to register dynamic texture: " + capeUrl);
+                            e.printStackTrace();
+                        }
+                    });
+                }));
+            } else {
+                BufferedImage image = ImageIO.read(file);
+                DynamicTexture texture = new DynamicTexture(image);
+                rl.set(JesusClient.mc.getTextureManager().getDynamicTextureLocation("jesusclient", texture));
+            }
+            return rl.get();
         } catch (IOException e) {
             Logger.error("Failed to load the funny cape");
             e.printStackTrace();

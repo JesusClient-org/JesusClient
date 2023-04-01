@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient.injection.mixins.minecraft.client.network;
 
+import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.ChatEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
@@ -35,16 +36,22 @@ public abstract class MixinNetHandlerPlayClient {
 
     @Inject(method = "handleExplosion", at = @At("RETURN"))
     private void handleExplosion(S27PacketExplosion packet, CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         AntiKB.handleExplosion(packet);
     }
 
     @Inject(method = "handleEntityVelocity", at = @At("HEAD"), cancellable = true)
     public void handleEntityVelocity(S12PacketEntityVelocity packetIn, CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         if(AntiKB.handleEntityVelocity(packetIn)) ci.cancel();
     }
 
     @Inject(method = "handleChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketThreadUtil;checkThreadAndEnqueue(Lnet/minecraft/network/Packet;Lnet/minecraft/network/INetHandler;Lnet/minecraft/util/IThreadListener;)V", shift = At.Shift.AFTER), cancellable = true)
     private void handleChat(S02PacketChat chatPacket, CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         if (chatPacket.getType() != 2) {
             ChatEvent event = new ChatEvent(EventType.RECIEVE, chatPacket.getChatComponent());
             EventManager.call(event);

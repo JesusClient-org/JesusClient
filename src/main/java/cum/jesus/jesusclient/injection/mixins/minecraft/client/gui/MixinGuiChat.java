@@ -30,6 +30,8 @@ public abstract class MixinGuiChat {
 
     @Inject(method = "sendAutocompleteRequest", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/NetHandlerPlayClient;addToSendQueue(Lnet/minecraft/network/Packet;)V", shift = At.Shift.BEFORE), cancellable = true)
     private void autoCompleteCmd(String cmd, String ignore, CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         if (cmd.startsWith(Gui.prefix.getObject())) {
             String[] ls = JesusClient.INSTANCE.commandManager.autoCompletion(cmd).toArray(new String[0]);
 

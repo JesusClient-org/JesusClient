@@ -27,25 +27,27 @@ public class Premium {
         }
     }
 
-    public static void load() {
+    public static void load() throws PremiumException {
         String url = JesusClient.backendUrl + "/api/v2/userobject?getter=uuid";
-        if (!HttpUtils.doesUrlExist(url)) {
-            userPremium = JesusClient.username.equals("Jesus");
-            return;
-        }
 
-        JsonObject payload = new JsonObject();
-        payload.addProperty("uuid", JesusClient.compactUUID);
-        String json = new Gson().toJson(payload);
-        String response = HttpUtils.post(url, json);
-        JsonObject temp = new Gson().fromJson(response, JsonObject.class);
+        try {
+            JsonObject payload = new JsonObject();
+            payload.addProperty("uuid", JesusClient.compactUUID);
+            String json = new Gson().toJson(payload);
+            String response = HttpUtils.post(url, json);
+            JsonObject temp = new Gson().fromJson(response, JsonObject.class);
 
-        userPremium = temp.get("premium").getAsBoolean() || JesusClient.username.equals("Jesus");
+            userPremium = temp.get("premium").getAsBoolean() || JesusClient.username.equals("Jesus");
 
-        if (userPremium) {
-            userInfo = new Gson().fromJson(response, PremiumUser.class);
+            if (userPremium) {
+                userInfo = new Gson().fromJson(response, PremiumUser.class);
 
-            Logger.debug(new Gson().toJson(userInfo));
+                Logger.debug(new Gson().toJson(userInfo));
+            }
+        } catch (Exception e) {
+            userPremium = false;
+            userInfo = new PremiumUser(null, null, null, false);
+            throw new PremiumException("An Exception has occurred while getting Premium information and you will be defaulted to free version. Sorry for any inconveniences caused by this", e);
         }
     }
 
@@ -55,5 +57,23 @@ public class Premium {
 
     public static String getVerType() {
         return userPremium ? "PREMIUM" : "FREE";
+    }
+
+    public static class PremiumException extends RuntimeException {
+        public PremiumException() {
+            super();
+        }
+
+        public PremiumException(String message) {
+            super(message);
+        }
+
+        public PremiumException(Throwable cause) {
+            super(cause);
+        }
+
+        public PremiumException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

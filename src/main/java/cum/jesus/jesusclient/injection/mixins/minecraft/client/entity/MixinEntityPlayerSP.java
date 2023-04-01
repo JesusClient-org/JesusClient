@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient.injection.mixins.minecraft.client.entity;
 
+import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.MotionUpdateEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
@@ -20,6 +21,8 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
     @Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"))
     private void onUpdateWalkingPlayerPre(CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         cachedX = posX;
         cachedY = posY;
         cachedZ = posZ;
@@ -41,6 +44,8 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
     @Inject(method = "onUpdateWalkingPlayer", at = @At("RETURN"))
     private void onUpdateWalkingPlayerPost(CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         posX = cachedX;
         posY = cachedY;
         posZ = cachedZ;

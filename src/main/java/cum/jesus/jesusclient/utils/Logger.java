@@ -18,7 +18,7 @@ import java.util.Arrays;
 * this just prints to the console
 */
 
-public final class Logger {
+public class Logger {
     public Logger() {
 
     }

@@ -1,43 +1,40 @@
 package cum.jesus.jesusclient.files;
 
 import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.module.modules.render.Hud;
+import cum.jesus.jesusclient.JesusClientNatives;
+import cum.jesus.jesusclient.NativeClassLoader;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.utils.Logger;
-import net.minecraft.launchwrapper.ITweaker;
+import org.lwjgl.Sys;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileManager {
     public final File clientDir = new File(JesusClient.mc.mcDataDir, JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""));
     public final File backupDir = new File(clientDir, "config-backups");
     public final File cacheDir = new File(clientDir, "CACHE");
+    public final File tmpDir = new File(cacheDir, "tmp");
     public final File scriptDir = new File(clientDir, "scripts");
 
     public final File configFile = new File(clientDir, "config.jesus");
+    public static final File clientInfoFile = new File(JesusClient.INSTANCE.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "client.json");
     private final File firstTimeFile = new File(clientDir, "firsttime.jesus");
 
     public static final File modDir = new File(JesusClient.mc.mcDataDir + "/mods");
 
     // externals
     public static File updaterExe = new File(JesusClient.mc.mcDataDir + "/" + JesusClient.CLIENT_NAME.toLowerCase().replace(" ", ""), "up.exe");
-    public File cLibrary = new File(clientDir, "library.dll");
+    public File map = new File(cacheDir, "map.bin");
 
     public static File srcJar = null;
 
@@ -50,47 +47,60 @@ public class FileManager {
         Files.write(JesusEncoding.toString(formatJson(JesusClient.INSTANCE.configManager.toJsonObject().toString())).getBytes(StandardCharsets.UTF_8), configFile);
     }
 
+    public void loadDll() {
+        File dll = new File(clientDir, "client.dll");
+
+        System.load(dll.getAbsolutePath());
+    }
+
     public void init() {
         //noinspection ResultOfMethodCallIgnored
         clientDir.mkdirs();
         //noinspection ResultOfMethodCallIgnored
         backupDir.mkdirs();
+        //noinspection ResultOfMethodCallIgnored
+        cacheDir.mkdirs();
+        //noinspection ResultOfMethodCallIgnored
+        tmpDir.mkdirs();
 
-        // download external needed assets
-        Thread thread = new Thread(() -> {
-            try {
-                if (!cLibrary.exists()) java.nio.file.Files.copy(new URL(JesusClient.backendUrl + "/download/jesusclientlib").openStream(), cLibrary.toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
+        // clear tmp dir
+        File[] tmp = tmpDir.listFiles();
+        if (tmp != null) {
+            for (File f : tmp) {
+                f.delete();
             }
-        }, "JesusClient-External-Downloader");
+        }
 
-        thread.start();
         try {
-            thread.join();
-        } catch (InterruptedException e) {
+            if (!map.exists()) map.createNewFile();
+            JesusEncoding.load();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         // delete the oldest backup if there's more than 25
-        File[] backups = backupDir.listFiles();
-        long oldestDate = Long.MAX_VALUE;
-        File oldestFile = null;
-        if (backups != null && backups.length >= 25) {
-            // delete oldest files after theres more than 25 backup files
-            for (File f : backups) {
-                if (f.lastModified() < oldestDate) {
-                    oldestDate = f.lastModified();
-                    oldestFile = f;
+        {
+            File[] backups = backupDir.listFiles();
+            long oldestDate = Long.MAX_VALUE;
+            File oldestFile = null;
+            if (backups != null && backups.length >= 25) {
+                // delete oldest files after theres more than 25 backup files
+                for (File f : backups) {
+                    if (f.lastModified() < oldestDate) {
+                        oldestDate = f.lastModified();
+                        oldestFile = f;
+                    }
+                }
+
+                if (oldestFile != null) {
+                    Logger.info("Deleted config backup: " + oldestFile.getName());
+                    //noinspection ResultOfMethodCallIgnored
+                    oldestFile.delete();
                 }
             }
-
-            if (oldestFile != null) {
-                Logger.info("Deleted config backup: " + oldestFile.getName());
-                //noinspection ResultOfMethodCallIgnored
-                oldestFile.delete();
-            }
         }
+
+        loadDll();
     }
 
     public static void doUpdater() {

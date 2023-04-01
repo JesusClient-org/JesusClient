@@ -17,6 +17,7 @@ import org.lwjgl.opengl.Display;
 
 import static cum.jesus.jesusclient.JesusClient.INSTANCE;
 
+import java.io.File;
 import java.util.Objects;
 
 public class CleanUpThread extends Thread {
@@ -41,6 +42,13 @@ public class CleanUpThread extends Thread {
         });
 
         Logger.debug("Cleaning up...");
+
+        File[] tmp = INSTANCE.fileManager.tmpDir.listFiles();
+        if (tmp != null) {
+            for (File f : tmp) {
+                f.delete();
+            }
+        }
 
         for (Command c : INSTANCE.commandManager.getCommandList()) {
             EventManager.unregister(c);
@@ -84,5 +92,6 @@ public class CleanUpThread extends Thread {
         if (SelfDestruct.addLoadCommand.getObject()) ClientCommandHandler.instance.registerCommand(INSTANCE.startCommand);
 
         JesusClient.clientLoaded = false;
+        DesktopUtils.showDesktopNotif("JesusClient", "Successfully removed Jesus Client from your game!");
     }
 }

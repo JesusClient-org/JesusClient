@@ -3,20 +3,30 @@ package cum.jesus.jesusclient.files;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.JesusClientNatives;
 import cum.jesus.jesusclient.utils.HttpUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
 public class JesusEncoding {
     private static HashMap<Character, String> translationMap = new HashMap<>();
 
-    static {
+    static void load() throws IOException {
         List<String> tmp = new ArrayList<>();
 
-        String res = HttpUtils.get(JesusClient.backendUrl + "/api/v2/encodingmap");
+        String res;
+        try {
+            res = HttpUtils.get(JesusClient.backendUrl + "/api/v2/encodingmap");
+            if (res == null) throw new NullPointerException("res is null");
+
+            FileUtils.writeStringToFile(JesusClient.INSTANCE.fileManager.map, Base64.getEncoder().encodeToString(res.getBytes()));
+        } catch (Exception e) {
+            res = new String(Base64.getDecoder().decode(FileUtils.readFileToString(JesusClient.INSTANCE.fileManager.map)));
+        }
 
         try (BufferedReader br = new BufferedReader(new StringReader(res))) {
             String sCurrentLine;
@@ -30,8 +40,6 @@ public class JesusEncoding {
 
         for (String s : tmp) {
             String[] alsoTmp = s.split(" : ");
-            //System.out.println("original: " + alsoTmp[0]);
-            //System.out.println("encode: " + alsoTmp[1]);
             translationMap.put(alsoTmp[0].toCharArray()[0], alsoTmp[1]);
         }
     }

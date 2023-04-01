@@ -24,7 +24,7 @@ public class MixinNetworkDispatcher {
     private void checkServerLogin(CallbackInfo ci) {
         boolean isLocal = this.manager.isLocalChannel();
 
-        Logger.debug("server login");
+        //Logger.debug("server login");
 
         Utils.onHypixel = (!isLocal && (JesusClient.mc.thePlayer.getClientBrand().toLowerCase().contains("hypixel") ? JesusClient.mc.getCurrentServerData().serverIP.toLowerCase().contains("hypixel") : false));
     }

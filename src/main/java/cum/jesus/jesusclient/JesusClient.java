@@ -1,7 +1,6 @@
 package cum.jesus.jesusclient;
 
 import com.google.gson.*;
-import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.command.CommandManager;
 import cum.jesus.jesusclient.command.commands.EnableClientCommand;
 import cum.jesus.jesusclient.command.commands.JesusSlashCommand;
@@ -11,17 +10,12 @@ import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.files.FileManager;
-import cum.jesus.jesusclient.files.JesusEncoding;
-import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.module.ModuleManager;
-import cum.jesus.jesusclient.module.modules.other.SelfDestruct;
-import cum.jesus.jesusclient.module.settings.Setting;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
 import cum.jesus.jesusclient.scripting.ScriptManager;
 import cum.jesus.jesusclient.utils.*;
 import cum.jesus.jesusclient.utils.threads.CleanUpThread;
-import jline.internal.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.command.ICommand;
@@ -33,10 +27,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.Display;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @SideOnly(Side.CLIENT)
 public class JesusClient {
@@ -108,37 +102,39 @@ public class JesusClient {
         });
 
         // check blacklist
-        if (!HttpUtils.doesUrlExist(backendUrl + "/api/v2/blacklisted")) return;
+        //TODO: add a local storage for cases where an exception would be thrown
+        try {
+            JsonObject payload = new JsonObject();
+            payload.addProperty("uuid", JesusClient.compactUUID);
+            String json = new Gson().toJson(payload);
+            String response = HttpUtils.post(backendUrl + "/api/v2/blacklisted", json);
+            JsonObject obj = new Gson().fromJson(response, JsonObject.class);
+            blacklisted = obj.get("blacklisted").getAsBoolean();
+            if (blacklisted) return;
+        } catch (Exception e) {
 
-        JsonObject payload = new JsonObject();
-        payload.addProperty("uuid", JesusClient.compactUUID);
-        String json = new Gson().toJson(payload);
-        String response = HttpUtils.post(backendUrl + "/api/v2/blacklisted", json);
-        JsonObject obj = new Gson().fromJson(response, JsonObject.class);
-        blacklisted = obj.get("blacklisted").getAsBoolean();
-        if (blacklisted) return;
+        }
 
         Launch.blackboard.forEach((string, object) -> { Logger.debug(string + ": " + object); });
 
         //if (!System.getProperty("user.name").equals("Somer")) return;
 
         // Initialize managers
+        natives = new JesusClientNatives();
         fileManager = new FileManager();
         configManager = new ConfigManager();
         commandManager = new CommandManager();
         settingManager = new SettingManager();
         moduleManager = new ModuleManager();
         scriptManager = new ScriptManager();
-        natives = new JesusClientNatives();
 
         Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION + " - Minecraft 1.8.9");
 
         // loading file manager
         fileManager.init();
-
-        natives.loadNatives();
-
         fileManager.loadScripts();
+
+        //natives.init();
 
         // Add commands
         if (commandManager.addCommands()) Logger.info("Loaded command manager");
@@ -158,9 +154,15 @@ public class JesusClient {
         EventManager.register(this);
 
         // Load capes
+        long startTime = System.currentTimeMillis();
         Capes.load();
+        long endTime = System.currentTimeMillis();
+
+        Logger.debug("Capes took " + (endTime - startTime) + " milliseconds to complete");
 
         configManager.load();
+
+        if (devMode) DesktopUtils.showDesktopNotif("Jesus Client", "Jesus Client has been loaded");
 
         init = true;
         clientLoaded = true;
@@ -176,6 +178,15 @@ public class JesusClient {
             e.printStackTrace();
         }
 
+        natives.stop();
+
+        File[] tmp = fileManager.tmpDir.listFiles();
+        if (tmp != null) {
+            for (File f : tmp) {
+                f.delete();
+            }
+        }
+
         clientLoaded = false;
     }
 
@@ -186,11 +197,6 @@ public class JesusClient {
 
         CleanUpThread cleanUpThread = new CleanUpThread();
         cleanUpThread.start();
-
-        try {
-            cleanUpThread.join();
-        } catch (InterruptedException ignored) {}
-        DesktopUtils.showDesktopNotif("JesusClient", "Successfully removed Jesus Client from your game!");
     }
 
     @EventTarget

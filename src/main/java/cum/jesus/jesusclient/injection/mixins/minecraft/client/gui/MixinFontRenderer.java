@@ -23,13 +23,13 @@ public abstract class MixinFontRenderer {
     private void renderString(String text, boolean shadow, CallbackInfo ci) {
         if (text.contains("JesusTouchMe")) {
             ci.cancel();
-            renderStringAtPos(text.replaceAll("JesusTouchMe", "jesus"), shadow);
+            renderStringAtPos(text.replaceAll("JesusTouchMe", "h"), shadow);
         }
     }
 
     @Inject(method = "getStringWidth", at = {@At("RETURN")}, cancellable = true)
     private void getStringWidth(String text, CallbackInfoReturnable<Integer> cir) {
         if (text != null && text.contains("JesusTouchMe"))
-            cir.setReturnValue(Integer.valueOf(getStringWidth(text.replaceAll("JesusTouchMe", "jesus"))));
+            cir.setReturnValue(Integer.valueOf(getStringWidth(text.replaceAll("JesusTouchMe", "h"))));
     }
 }

@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient.injection.mixins.minecraft.client.multiplayer;
 
+import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.WorldLoadEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -16,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinWorldClient {
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void worldClientConstructor(NetHandlerPlayClient p_i45063_1_, WorldSettings p_i45063_2_, int p_i45063_3_, EnumDifficulty p_i45063_4_, Profiler p_i45063_5_, CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         EventManager.call(new WorldLoadEvent());
     }
 }

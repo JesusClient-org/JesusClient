@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.scripting.runtime.deobfedutils;
+package cum.jesus.jesusclient.scripting.runtime.utils;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.modules.render.Console;

@@ -9,6 +9,7 @@ import cum.jesus.jesusclient.events.GameTickEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.KeyInputEvent;
 import cum.jesus.jesusclient.remote.Updater;
+import cum.jesus.jesusclient.utils.DesktopUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.main.GameConfiguration;
@@ -46,23 +47,33 @@ public class MixinMinecraft implements IMixinMinecraft {
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))
     private void runTick(CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         if (Keyboard.getEventKeyState() && currentScreen == null)
             EventManager.call(new KeyInputEvent(Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey()));
     }
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/FMLCommonHandler;onPreClientTick()V", shift = At.Shift.BEFORE))
     private void gameTickPre(CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         EventManager.call(new GameTickEvent(EventType.PRE));
     }
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/FMLCommonHandler;onPostClientTick()V", shift = At.Shift.BEFORE))
     private void gameTickPost(CallbackInfo ci) {
+        if (!JesusClient.clientLoaded || JesusClient.INSTANCE.blacklisted) return;
+
         EventManager.call(new GameTickEvent(EventType.POST));
     }
 
     @Inject(method = "createDisplay", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setTitle(Ljava/lang/String;)V", shift = At.Shift.AFTER))
     private void setScreenTitle(CallbackInfo ci) {
-        Premium.load();
+        try {
+            Premium.load();
+        } catch (Premium.PremiumException e) {
+            DesktopUtils.showDesktopNotif("Jesus Client", e.getLocalizedMessage());
+        }
 
         JesusClient.CLIENT_VERSION = JesusClient.CLIENT_VERSION_NUMBER + "-" + Premium.getVerType();
         Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION + " - Minecraft 1.8.9");

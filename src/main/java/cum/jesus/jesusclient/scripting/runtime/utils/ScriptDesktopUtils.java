@@ -1,11 +1,9 @@
-package cum.jesus.jesusclient.scripting.runtime.deobfedutils;
+package cum.jesus.jesusclient.scripting.runtime.utils;
 
 import cum.jesus.jesusclient.utils.DesktopUtils;
 
-import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class ScriptDesktopUtils {

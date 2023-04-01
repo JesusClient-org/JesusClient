@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.scripting.runtime.deobfedutils;
+package cum.jesus.jesusclient.scripting.runtime.utils;
 
 import cum.jesus.jesusclient.utils.ChatUtils;
 

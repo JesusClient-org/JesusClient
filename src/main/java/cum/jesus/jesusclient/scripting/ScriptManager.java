@@ -8,7 +8,7 @@ import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.settings.BooleanSetting;
 import cum.jesus.jesusclient.module.settings.ModeSetting;
 import cum.jesus.jesusclient.module.settings.NumberSetting;
-import cum.jesus.jesusclient.scripting.runtime.deobfedutils.*;
+import cum.jesus.jesusclient.scripting.runtime.utils.*;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import jdk.internal.dynalink.beans.StaticClass;

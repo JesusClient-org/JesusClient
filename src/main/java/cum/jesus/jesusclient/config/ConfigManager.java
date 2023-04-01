@@ -27,14 +27,6 @@ public class ConfigManager {
         JsonObject obj = new JsonObject();
 
         {
-            JsonObject metadata = new JsonObject();
-
-            metadata.addProperty("clientVersion", JesusClient.CLIENT_VERSION_NUMBER);
-
-            obj.add("metadata", metadata);
-        }
-
-        {
             JsonObject modules = new JsonObject();
 
             for (Module module : JesusClient.INSTANCE.moduleManager.getModules()) {
@@ -81,33 +73,6 @@ public class ConfigManager {
         }
 
         JsonObject object = (JsonObject) new JsonParser().parse(JesusEncoding.fromString(sb.toString()));
-
-        //<editor-fold desc="metadata">
-        if (object.has("metadata")) {
-            JsonElement metadataElement = object.get("metadata");
-
-            if (metadataElement instanceof JsonObject) {
-                JsonObject metadata = (JsonObject) metadataElement;
-
-                JsonElement clientVersion = metadata.get("clientVersion");
-
-                if (clientVersion != null && clientVersion.isJsonPrimitive() && ((JsonPrimitive) clientVersion).isString()) {
-                    String version = clientVersion.getAsString();
-
-                    if (!version.equals(JesusClient.CLIENT_VERSION_NUMBER)) {
-                        metadata.addProperty("clientVersion", JesusClient.CLIENT_VERSION_NUMBER);
-                    }
-                } else {
-                    backupReasons.add("'clientVersion' object is not valid.");
-                }
-            } else {
-                backupReasons.add("'metadata' object is not valid.");
-            }
-
-        } else {
-            backupReasons.add("Config file has no metadata");
-        }
-        //</editor-fold>
 
         //<editor-fold desc="modules">
         JsonElement modulesElement = object.get("modules");
