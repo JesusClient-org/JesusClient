@@ -7,11 +7,6 @@ public class JesusClientNatives {
 
     public native void stop();
 
-    @Override
-    protected void finalize() {
-        Logger.trace("Native Class has been deleted");
-    }
-
     public static class RT {
         public static void trace(String msg) {
             Logger.trace(msg);

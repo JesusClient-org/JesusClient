@@ -10,6 +10,7 @@ import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.files.FileManager;
+import cum.jesus.jesusclient.files.JesusEncoding;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
@@ -29,6 +30,7 @@ import org.lwjgl.opengl.Display;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,20 +103,6 @@ public class JesusClient {
             ClientCommandHandler.instance.getCommands().remove(obj);
         });
 
-        // check blacklist
-        //TODO: add a local storage for cases where an exception would be thrown
-        try {
-            JsonObject payload = new JsonObject();
-            payload.addProperty("uuid", JesusClient.compactUUID);
-            String json = new Gson().toJson(payload);
-            String response = HttpUtils.post(backendUrl + "/api/v2/blacklisted", json);
-            JsonObject obj = new Gson().fromJson(response, JsonObject.class);
-            blacklisted = obj.get("blacklisted").getAsBoolean();
-            if (blacklisted) return;
-        } catch (Exception e) {
-
-        }
-
         Launch.blackboard.forEach((string, object) -> { Logger.debug(string + ": " + object); });
 
         //if (!System.getProperty("user.name").equals("Somer")) return;
@@ -128,13 +116,58 @@ public class JesusClient {
         moduleManager = new ModuleManager();
         scriptManager = new ScriptManager();
 
+        // check blacklist
+        try {
+            JsonObject payload = new JsonObject();
+            payload.addProperty("uuid", JesusClient.compactUUID);
+            String json = new Gson().toJson(payload);
+            String response = HttpUtils.post(backendUrl + "/api/v2/blacklisted", json);
+            JsonObject obj = new Gson().fromJson(response, JsonObject.class);
+            blacklisted = obj.get("blacklisted").getAsBoolean();
+
+            File blacklist = new File(fileManager.clientDir, "backend.jesus");
+            if (!blacklist.exists()) blacklist.createNewFile();
+
+            String text = JesusEncoding.toString(blacklisted ? "user is blacklisted lol" : "user is not blacklisted");
+
+            Files.write(blacklist.toPath(), text.getBytes());
+        } catch (Exception e) {
+            File blacklist = new File(fileManager.clientDir, "backend.jesus");
+            if (!blacklist.exists()) blacklisted = true;
+
+            try {
+                String text = JesusEncoding.fromString(new String(Files.readAllBytes(blacklist.toPath())));
+
+                blacklisted = text.equals("user is blacklisted lol");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        if (blacklisted) {
+            natives = null;
+            fileManager = null;
+            configManager = null;
+            commandManager = null;
+            settingManager = null;
+            moduleManager = null;
+            scriptManager = null;
+
+            ClientCommandHandler.instance.getCommands().remove(slashCommand.getCommandName());
+            slashCommand.getCommandAliases().forEach(obj -> {
+                ClientCommandHandler.instance.getCommands().remove(obj);
+            });
+
+            return;
+        }
+
         Display.setTitle(JesusClient.CLIENT_NAME + " v" + JesusClient.CLIENT_VERSION + " - Minecraft 1.8.9");
 
         // loading file manager
         fileManager.init();
         fileManager.loadScripts();
 
-        //natives.init();
+        natives.init();
 
         // Add commands
         if (commandManager.addCommands()) Logger.info("Loaded command manager");

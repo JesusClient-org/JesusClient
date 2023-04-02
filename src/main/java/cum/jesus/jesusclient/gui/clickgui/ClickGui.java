@@ -1,16 +1,13 @@
 package cum.jesus.jesusclient.gui.clickgui;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.module.settings.*;
 import cum.jesus.jesusclient.notification.Notification;
 import cum.jesus.jesusclient.notification.NotificationManager;
 import cum.jesus.jesusclient.notification.NotificationType;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
-import cum.jesus.jesusclient.module.settings.BooleanSetting;
-import cum.jesus.jesusclient.module.settings.ModeSetting;
-import cum.jesus.jesusclient.module.settings.NumberSetting;
-import cum.jesus.jesusclient.module.settings.Setting;
 import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.Utils;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
@@ -19,6 +16,7 @@ import me.superblaubeere27.clickgui.Window;
 import me.superblaubeere27.clickgui.components.*;
 import me.superblaubeere27.clickgui.components.Button;
 import me.superblaubeere27.clickgui.components.Label;
+import me.superblaubeere27.clickgui.components.TextField;
 import me.superblaubeere27.clickgui.layout.GridLayout;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
@@ -79,6 +77,7 @@ public class ClickGui extends GuiScreen {
             for (Module module : moduleCategoryListEntry.getValue()) {
                 Pane settingPane = new Pane(renderer, new me.superblaubeere27.clickgui.layout.GridLayout(4));
 
+                //toggle button
                 {
                     settingPane.addComponent(new Label(renderer, "Toggle"));
                     CheckBox cb;
@@ -96,6 +95,7 @@ public class ClickGui extends GuiScreen {
                     });
                 }
 
+                //keybind
                 {
                     settingPane.addComponent(new Label(renderer, "Keybind"));
                     KeybindButton kb;
@@ -194,6 +194,26 @@ public class ClickGui extends GuiScreen {
                             });
 
                             onRenderListeners.add(() -> cb.setValue(((Number) value.getObject()).doubleValue()));
+                        }
+
+                        if (value instanceof StringSetting) {
+                            settingPane.addComponent(new Label(renderer, value.getName()));
+
+                            TextField cb;
+
+                            settingPane.addComponent(cb = new TextField(renderer, ((StringSetting) value).getObject()));
+                            cb.setListener(val -> {
+                                if (value.isPremiumOnly() && !Premium.isUserPremium()) {
+                                    value.setObject(value.getDefault());
+                                    NotificationManager.removeAll("Premium Only");
+                                    NotificationManager.show(new Notification(NotificationType.ERROR, "Premium Only", "This setting is premium only", 3));
+                                    return true;
+                                }
+
+                                value.setObject(val);
+
+                                return true;
+                            });
                         }
                     }
                 }

@@ -45,6 +45,12 @@ public class FileManager {
         Logger.info("Saving config...");
 
         Files.write(JesusEncoding.toString(formatJson(JesusClient.INSTANCE.configManager.toJsonObject().toString())).getBytes(StandardCharsets.UTF_8), configFile);
+
+        if (JesusClient.devMode) {
+            File readableConfig = new File(clientDir, "config_dev.json");
+
+            Files.write(formatJson(JesusClient.INSTANCE.configManager.toJsonObject().toString()).getBytes(StandardCharsets.UTF_8), readableConfig);
+        }
     }
 
     public void loadDll() {

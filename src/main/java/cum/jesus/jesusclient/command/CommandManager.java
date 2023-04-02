@@ -32,7 +32,6 @@ public class CommandManager {
             addCommand(new SessionDevCommand());
             addCommand(new RestartClientCommand());
             addCommand(new ScriptDevCommand());
-            addCommand(new LoadDllCommand());
 
             // premium cmd
             addCommand(new SpamWebhookCommand());

@@ -7,7 +7,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.utils.HttpUtils;
 import cum.jesus.jesusclient.utils.Logger;
 import cum.jesus.jesusclient.utils.slaves.WorkerPool;
-import cum.jesus.jesusclient.utils.slaves.jobs.DownloadJob;
+import cum.jesus.jesusclient.utils.slaves.jobs.DownloadCapeJob;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
@@ -15,12 +15,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Capes {
@@ -70,6 +66,8 @@ public class Capes {
             Logger.error("Could not download capes");
             e.printStackTrace();
         }
+
+        pool.kill();
     }
 
     public static void unload() {
@@ -82,7 +80,7 @@ public class Capes {
             File file = new File(capeDir, capeName + ".png");
             AtomicReference<ResourceLocation> rl = new AtomicReference<>();
             if (!file.exists()) {
-                pool.queueJob(new DownloadJob(id, capeUrl, file, (texture) -> {
+                pool.queueJob(new DownloadCapeJob(id, capeUrl, file, (texture) -> {
                     JesusClient.mc.addScheduledTask(() -> {
                         try {
                             rl.set(JesusClient.mc.getTextureManager().getDynamicTextureLocation("jesusclient", texture));
