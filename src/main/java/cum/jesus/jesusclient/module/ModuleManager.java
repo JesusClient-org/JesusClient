@@ -16,6 +16,7 @@ import cum.jesus.jesusclient.module.modules.self.SessionProtection;
 import cum.jesus.jesusclient.module.modules.self.Timer;
 import cum.jesus.jesusclient.module.modules.dungeons.AutoReady;
 import cum.jesus.jesusclient.module.modules.dungeons.TerminalSolver;
+import cum.jesus.jesusclient.module.modules.skyblock.GhostBlock;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.scripting.ScriptModule;
 import cum.jesus.jesusclient.utils.Logger;
@@ -36,6 +37,7 @@ public class ModuleManager {
         try {
             // skyblock
             addModule(new Cum());
+            addModule(new GhostBlock());
 
             // dungeons
             addModule(new AutoReady());
@@ -99,11 +101,7 @@ public class ModuleManager {
     private void onKey(@NotNull KeyInputEvent event) {
         for (Module module : modules) {
             if (module.getKeybind() == event.getKey()) {
-                if (module.isPremiumFeature() && !Premium.isUserPremium()) {
-                    continue;
-                }
-
-                module.toggle();
+                module.handleKeybind();
             }
         }
     }

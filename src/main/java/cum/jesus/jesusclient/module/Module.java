@@ -124,4 +124,12 @@ public abstract class Module {
     protected void onEnable() {}
 
     protected void onDisable() {}
+
+    protected void handleKeybind() {
+        if (isPremiumFeature() && !Premium.isUserPremium()) {
+            return;
+        }
+
+        toggle();
+    }
 }
