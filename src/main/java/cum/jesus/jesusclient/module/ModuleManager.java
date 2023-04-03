@@ -52,6 +52,7 @@ public class ModuleManager {
             addModule(new RevealHiddenMobs());
             addModule(Console.INSTANCE);
             addModule(PlayerScale.INSTANCE);
+            addModule(new DoorEsp());
 
             // self
             addModule(new Timer());

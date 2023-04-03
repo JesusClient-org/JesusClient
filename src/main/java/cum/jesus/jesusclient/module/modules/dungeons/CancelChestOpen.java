@@ -5,6 +5,7 @@ import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
+import cum.jesus.jesusclient.utils.SkyblockUtils;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 
@@ -16,7 +17,7 @@ public class CancelChestOpen extends Module {
     @EventTarget
     public void openWindow(PacketEvent event) {
         if (event.getEventType() == EventType.RECIEVE) {
-            if (!(event.getPacket() instanceof S2DPacketOpenWindow)) return;
+            if (!SkyblockUtils.inDungeon || !(event.getPacket() instanceof S2DPacketOpenWindow)) return;
 
             if (((S2DPacketOpenWindow) event.getPacket()).getWindowTitle().getUnformattedText().equals("Chest") || ((S2DPacketOpenWindow) event.getPacket()).getWindowTitle().getUnformattedText().equals("Large Chest")) {
                 event.setCancelled(true);
