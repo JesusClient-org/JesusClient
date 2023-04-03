@@ -255,7 +255,7 @@ public class ClickGui extends GuiScreen {
 
         for (Category moduleCategory : keySet) {
             Button button;
-            buttonPane.addComponent(button = new me.superblaubeere27.clickgui.components.Button(renderer, moduleCategory.toString(), buttonPane.getWidth()/3-10, 22));
+            buttonPane.addComponent(button = new Button(renderer, moduleCategory.toString(), buttonPane.getWidth()/3-10, 22));
             button.setOnClickListener(() -> setCurrentCategory(moduleCategory));
         }
 
@@ -264,7 +264,6 @@ public class ClickGui extends GuiScreen {
         conentPane.updateLayout();
 
         window.setContentPane(conentPane);
-
 
         if (categoryPaneMap.keySet().size() > 0)
             setCurrentCategory(categoryPaneMap.keySet().iterator().next());

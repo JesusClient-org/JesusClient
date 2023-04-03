@@ -6,21 +6,26 @@ import cum.jesus.jesusclient.events.eventapi.EventTarget;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
 import jline.internal.Log;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Mouse;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -115,5 +120,21 @@ public class Utils {
     public static String getInventoryName() {
         if(mc.thePlayer == null || mc.theWorld == null) return "null";
         return mc.thePlayer.openContainer.inventorySlots.get(0).inventory.getName();
+    }
+
+    public static ResourceLocation getPseudoResourceLocation(String name) {
+        try {
+            ResourceLocation resourceLocation;
+            File tmp = new File(Utils.class.getClassLoader().getResource("assets/jesusclient/" + name).toURI());
+
+            BufferedImage image = ImageIO.read(tmp);
+            DynamicTexture texture = new DynamicTexture(image);
+
+            resourceLocation = JesusClient.mc.getTextureManager().getDynamicTextureLocation("jesusclient", texture);
+
+            return resourceLocation;
+        } catch (URISyntaxException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

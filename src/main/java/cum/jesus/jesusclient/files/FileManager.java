@@ -3,16 +3,11 @@ package cum.jesus.jesusclient.files;
 import com.google.common.io.Files;
 import com.google.gson.*;
 import cum.jesus.jesusclient.JesusClient;
-import cum.jesus.jesusclient.JesusClientNatives;
-import cum.jesus.jesusclient.NativeClassLoader;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.utils.Logger;
-import org.lwjgl.Sys;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;

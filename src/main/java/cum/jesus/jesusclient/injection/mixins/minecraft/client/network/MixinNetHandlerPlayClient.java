@@ -4,7 +4,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.ChatEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.types.EventType;
-import cum.jesus.jesusclient.module.modules.combat.AntiKB;
+import cum.jesus.jesusclient.module.modules.self.AntiKB;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S02PacketChat;

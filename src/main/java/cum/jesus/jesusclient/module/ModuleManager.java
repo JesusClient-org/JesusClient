@@ -4,22 +4,19 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.KeyInputEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
-import cum.jesus.jesusclient.module.modules.combat.AntiKB;
-import cum.jesus.jesusclient.module.modules.combat.Cum;
-import cum.jesus.jesusclient.module.modules.combat.KillAura;
-import cum.jesus.jesusclient.module.modules.combat.Reach;
+import cum.jesus.jesusclient.module.modules.self.AntiKB;
+import cum.jesus.jesusclient.module.modules.skyblock.Cum;
+import cum.jesus.jesusclient.module.modules.self.Reach;
 import cum.jesus.jesusclient.module.modules.movement.BHop;
 import cum.jesus.jesusclient.module.modules.movement.Flight;
-import cum.jesus.jesusclient.module.modules.other.MonkeyFlip;
 import cum.jesus.jesusclient.module.modules.other.SelfDestruct;
 import cum.jesus.jesusclient.module.modules.render.*;
 import cum.jesus.jesusclient.module.modules.self.SessionProtection;
 import cum.jesus.jesusclient.module.modules.self.Timer;
 import cum.jesus.jesusclient.module.modules.skyblock.ApiKey;
-import cum.jesus.jesusclient.module.modules.skyblock.AutoReady;
-import cum.jesus.jesusclient.module.modules.skyblock.TerminalSolver;
+import cum.jesus.jesusclient.module.modules.dungeons.AutoReady;
+import cum.jesus.jesusclient.module.modules.dungeons.TerminalSolver;
 import cum.jesus.jesusclient.remote.Premium;
-import cum.jesus.jesusclient.scripting.ScriptCommand;
 import cum.jesus.jesusclient.scripting.ScriptModule;
 import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -37,14 +34,11 @@ public class ModuleManager {
 
     public boolean addModules() {
         try {
-            // combat
-            addModule(new Cum());
-            addModule(KillAura.INSTANCE);
-            addModule(Reach.INSTANCE);
-            addModule(AntiKB.INSTANCE);
-
-            //skyblock
+            // skyblock
             addModule(new ApiKey());
+            addModule(new Cum());
+
+            // dungeons
             addModule(new AutoReady());
             addModule(new TerminalSolver());
 
@@ -62,10 +56,11 @@ public class ModuleManager {
             // self
             addModule(new Timer());
             addModule(new SessionProtection());
+            addModule(Reach.INSTANCE);
+            addModule(AntiKB.INSTANCE);
 
             // other
             addModule(new SelfDestruct());
-            addModule(new MonkeyFlip());
 
             // hud shit (has to be added last for modulelist reasons)
             addModule(new Gui());

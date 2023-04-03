@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.module.modules.skyblock;
+package cum.jesus.jesusclient.module.modules.dungeons;
 
 import cum.jesus.jesusclient.events.DrawBackgroundEvent;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;

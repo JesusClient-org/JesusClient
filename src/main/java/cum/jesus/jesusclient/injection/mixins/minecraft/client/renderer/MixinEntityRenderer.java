@@ -1,6 +1,6 @@
 package cum.jesus.jesusclient.injection.mixins.minecraft.client.renderer;
 
-import cum.jesus.jesusclient.module.modules.combat.Reach;
+import cum.jesus.jesusclient.module.modules.self.Reach;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.util.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
