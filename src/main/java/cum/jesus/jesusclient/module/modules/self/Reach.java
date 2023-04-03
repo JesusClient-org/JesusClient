@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.module.modules.combat;
+package cum.jesus.jesusclient.module.modules.self;
 
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
@@ -9,6 +9,6 @@ public class Reach extends Module {
     public static NumberSetting<Float> reachAmount = new NumberSetting<>("Reach amount", 3.0f, 2.0f, 4.5f);
 
     public Reach() {
-        super("Reach", "Hits entities from further away", Category.COMBAT);
+        super("Reach", "Hits entities from further away", Category.DUNGEONS);
     }
 }

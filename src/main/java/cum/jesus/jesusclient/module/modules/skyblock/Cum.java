@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.module.modules.combat;
+package cum.jesus.jesusclient.module.modules.skyblock;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.Category;
@@ -17,7 +17,7 @@ public class Cum extends Module {
     private BooleanSetting cumStash = new BooleanSetting("Pickup Stash", true);
 
     public Cum() {
-        super("Cum", "Throws snowballs very fast", Category.COMBAT);
+        super("Cum", "Throws snowballs very fast", Category.DUNGEONS);
     }
 
     public void onEnable() {

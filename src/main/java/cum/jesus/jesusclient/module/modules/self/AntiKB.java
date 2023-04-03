@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.module.modules.combat;
+package cum.jesus.jesusclient.module.modules.self;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.module.Category;
@@ -10,7 +10,7 @@ import net.minecraft.network.play.server.S27PacketExplosion;
 public class AntiKB extends Module {
     public static AntiKB INSTANCE = new AntiKB();
     public AntiKB() {
-        super("Anti Kb", "Removes knockback", Category.COMBAT);
+        super("Anti Kb", "Removes knockback", Category.DUNGEONS);
     }
 
     public static void handleExplosion(S27PacketExplosion packet) {

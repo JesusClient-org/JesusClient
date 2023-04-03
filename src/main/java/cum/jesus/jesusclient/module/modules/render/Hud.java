@@ -44,7 +44,7 @@ public class Hud extends Module {
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private BooleanSetting tabGuiEnabled = new BooleanSetting("TabGui", false);
-    private BooleanSetting showInfo = new BooleanSetting("Show info", false);
+    //private BooleanSetting showInfo = new BooleanSetting("Show info", false);
     private BooleanSetting watermark = new BooleanSetting("Watermark", true);
     private BooleanSetting arrayList = new BooleanSetting("ArrayList", true);
     public static BooleanSetting lgbtMode = new BooleanSetting("LGBT mode", false);
@@ -108,7 +108,7 @@ public class Hud extends Module {
 
         int blackBarHeight = consolas.getFontHeight() * 2 + 4;
 
-        if (showInfo.getObject()) Gui.drawRect(0, res.getScaledHeight() - blackBarHeight, res.getScaledWidth(), res.getScaledHeight(), (new Color(0, 0, 0, 150)).getRGB());
+        //if (showInfo.getObject()) Gui.drawRect(0, res.getScaledHeight() - blackBarHeight, res.getScaledWidth(), res.getScaledHeight(), (new Color(0, 0, 0, 150)).getRGB());
         if (watermark.getObject()) {
             bigRenderer.drawString(2, 2, JesusClient.CLIENT_NAME, color);
             int i = bigRenderer.getStringWidth(JesusClient.CLIENT_NAME);
@@ -117,7 +117,7 @@ public class Hud extends Module {
             renderer.drawString(4, consolas.getFontHeight() * 2 + 10, "by " + JesusClient.CLIENT_AUTHOR, color);
         }
 
-        if (showInfo.getObject()) {
+        /*if (showInfo.getObject()) {
             bigRenderer.drawString(1, res.getScaledHeight()*2 - bigConsolas.getFontHeight()*2, JesusClient.CLIENT_INITIALS.replace(" ", ""), color);
             int initialSize = bigRenderer.getStringWidth(JesusClient.CLIENT_INITIALS);
 
@@ -162,7 +162,7 @@ public class Hud extends Module {
             GL11.glEnd();
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-        }
+        }*/
 
         if (arrayList.getObject()) {
             AtomicInteger offset = new AtomicInteger(3);
