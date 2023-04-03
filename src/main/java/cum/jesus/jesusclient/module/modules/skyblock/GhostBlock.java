@@ -37,6 +37,8 @@ public class GhostBlock extends Module {
 
     @EventTarget
     public void onTick(GameTickEvent event) {
+        if (!isToggled()) return;
+
         if (event.getEventType() != EventType.PRE || JesusClient.display  != null) return;
         if (getKeybind() > 0 && !Keyboard.isKeyDown(getKeybind())) return;
         if (getKeybind() < 0 && !Mouse.isButtonDown(getKeybind() + 100)) return;

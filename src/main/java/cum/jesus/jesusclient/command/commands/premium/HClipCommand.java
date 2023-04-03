@@ -1,17 +1,17 @@
-package cum.jesus.jesusclient.command.commands;
+package cum.jesus.jesusclient.command.commands.premium;
 
-import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.command.CommandException;
 import cum.jesus.jesusclient.module.modules.render.Gui;
-import net.minecraft.util.MathHelper;
+import cum.jesus.jesusclient.utils.ClipUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class VClipCommand extends Command {
-    public VClipCommand() {
-        super("vclip", "Teleports you an amount on the Y coordinate);");
+public class HClipCommand extends Command {
+    public HClipCommand() {
+        super("hclip", "Clips you horizontally");
     }
 
     @Override
@@ -20,7 +20,9 @@ public class VClipCommand extends Command {
             throw new CommandException("Usage: " + Gui.prefix.getObject() + alias + "[<distance>]");
         }
 
-        JesusClient.mc.thePlayer.setPosition(MathHelper.floor_double(JesusClient.mc.thePlayer.posX) + 0.5D, JesusClient.mc.thePlayer.posY + Double.parseDouble(args[0]), MathHelper.floor_double(JesusClient.mc.thePlayer.posZ) + 0.5D);
+        double dist = Double.parseDouble(args[0]);
+
+        ClipUtils.hClip(dist);
     }
 
     @Override

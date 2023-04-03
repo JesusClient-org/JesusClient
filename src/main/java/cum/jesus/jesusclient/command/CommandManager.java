@@ -2,9 +2,7 @@ package cum.jesus.jesusclient.command;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.commands.dev.*;
-import cum.jesus.jesusclient.command.commands.premium.DisableClientCommand;
-import cum.jesus.jesusclient.command.commands.premium.ReloadScriptsCommand;
-import cum.jesus.jesusclient.command.commands.premium.SpamWebhookCommand;
+import cum.jesus.jesusclient.command.commands.premium.*;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.command.commands.*;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
@@ -36,6 +34,8 @@ public class CommandManager {
             // premium cmd
             addCommand(new SpamWebhookCommand());
             addCommand(new ReloadScriptsCommand());
+            addCommand(new DClipCommand());
+            addCommand(new HClipCommand());
 
             addCommand(new DisableClientCommand());
             addCommand(new DiscordCommand());
