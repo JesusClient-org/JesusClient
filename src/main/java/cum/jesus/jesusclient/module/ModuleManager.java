@@ -4,6 +4,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.events.KeyInputEvent;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.events.eventapi.EventTarget;
+import cum.jesus.jesusclient.module.modules.dungeons.CancelChestOpen;
 import cum.jesus.jesusclient.module.modules.self.AntiKB;
 import cum.jesus.jesusclient.module.modules.skyblock.Cum;
 import cum.jesus.jesusclient.module.modules.self.Reach;
@@ -13,7 +14,6 @@ import cum.jesus.jesusclient.module.modules.other.SelfDestruct;
 import cum.jesus.jesusclient.module.modules.render.*;
 import cum.jesus.jesusclient.module.modules.self.SessionProtection;
 import cum.jesus.jesusclient.module.modules.self.Timer;
-import cum.jesus.jesusclient.module.modules.skyblock.ApiKey;
 import cum.jesus.jesusclient.module.modules.dungeons.AutoReady;
 import cum.jesus.jesusclient.module.modules.dungeons.TerminalSolver;
 import cum.jesus.jesusclient.remote.Premium;
@@ -35,12 +35,12 @@ public class ModuleManager {
     public boolean addModules() {
         try {
             // skyblock
-            addModule(new ApiKey());
             addModule(new Cum());
 
             // dungeons
             addModule(new AutoReady());
             addModule(new TerminalSolver());
+            addModule(new CancelChestOpen());
 
             // movement
             addModule(new Flight());
