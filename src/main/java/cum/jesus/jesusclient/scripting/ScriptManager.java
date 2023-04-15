@@ -5,24 +5,35 @@ import com.google.gson.*;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.gui.clickgui.BoringRenderThingy;
 import cum.jesus.jesusclient.module.Category;
-import cum.jesus.jesusclient.module.settings.BooleanSetting;
-import cum.jesus.jesusclient.module.settings.ModeSetting;
-import cum.jesus.jesusclient.module.settings.NumberSetting;
+import cum.jesus.jesusclient.module.Module;
+import cum.jesus.jesusclient.module.settings.*;
 import cum.jesus.jesusclient.scripting.runtime.utils.*;
 import cum.jesus.jesusclient.utils.Logger;
+import cum.jesus.jesusclient.utils.Utils;
 import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import jdk.internal.dynalink.beans.StaticClass;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jline.internal.Log;
 import me.superblaubeere27.clickgui.IRenderer;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -54,7 +65,7 @@ public class ScriptManager {
         scriptEngine.put("RenderUtils", StaticClass.forClass(ScriptRenderUtils.class));
 
         // global functions
-        scriptEngine.put("setDevMode", new SetDevMode());
+        scriptEngine.put("setDevMode", (Consumer<Boolean>) (devMode) -> { JesusClient.devMode = devMode; });
 
         try {
             scriptEngine.eval("2+2");
@@ -67,6 +78,85 @@ public class ScriptManager {
         if (scriptEngine == null) return "Failed to initialize engine";
 
         return scriptEngine.eval(script);
+    }
+
+    public void loadOneFile(File scriptFile) {
+        try {
+            newScript();
+
+            String scriptContent = new String(Files.readAllBytes(scriptFile.toPath()));
+
+            scriptEngine.put("Module", StaticClass.forClass(ScriptModule2.class));
+            scriptEngine.put("Category", StaticClass.forClass(Category.class));
+            scriptEngine.put("BooleanSetting", StaticClass.forClass(BooleanSetting.class));
+            scriptEngine.put("ModeSetting", StaticClass.forClass(ModeSetting.class));
+            scriptEngine.put("NumberSetting", StaticClass.forClass(NumberSetting.class));
+            scriptEngine.put("StringSetting", StaticClass.forClass(StringSetting.class));
+            scriptEngine.put("Integer", StaticClass.forClass(Integer.class));
+            scriptEngine.put("Float", StaticClass.forClass(Float.class));
+            scriptEngine.put("Double", StaticClass.forClass(Double.class));
+            scriptEngine.put("Long", StaticClass.forClass(Long.class));
+
+            List<ScriptModule2> modules = new ArrayList<>();
+            scriptEngine.put("modules", modules);
+
+            eval(scriptContent);
+
+            if (!scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE).containsKey("manifest")) throw new RuntimeException("No manifest variable was found in " + scriptFile.getName() + " ('var manifest = ...')");
+
+            Object manifestDict = scriptEngine.get("manifest");
+            if (!(manifestDict instanceof Map)) throw new RuntimeException("'manifest' is not a valid Json object / JavaScript dictionary");
+
+            JsonElement manifestElement = new JsonParser().parse((String) eval("JSON.stringify(manifest);"));
+            if (!manifestElement.isJsonObject()) throw new RuntimeException("'manifest' is not a valid Json object / JavaScript dictionary");
+
+            JsonObject manifest = manifestElement.getAsJsonObject();
+
+            String scriptName;
+            String scriptDesc;
+            String scriptVer;
+            String[] scriptAuthors;
+
+            //<editor-fold desc="Metadata">
+            {
+                if (!manifest.has("name")) throw new RuntimeException("Manifest does not contain 'name'");
+                JsonElement element = manifest.get("name");
+
+                if (element.isJsonPrimitive()) scriptName = element.getAsString();
+                else throw new RuntimeException("'name' is not valid");
+
+                if (!manifest.has("description")) scriptDesc = "No description found";
+                else {
+                    element = manifest.get("description");
+
+                    if (element.isJsonPrimitive()) scriptDesc = element.getAsString();
+                    else throw new RuntimeException("'description' is not valid");
+                }
+
+                if (!manifest.has("version")) throw new RuntimeException("Manifest does not contain 'version'");
+                element = manifest.get("version");
+
+                if (element.isJsonPrimitive()) scriptVer = element.getAsString();
+                else throw new RuntimeException("'version' is not valid");
+
+                if (!manifest.has("authors")) throw new RuntimeException("Manifest does not contain 'authors'");
+                element = manifest.get("authors");
+
+                if (element.isJsonArray()) scriptAuthors = new Gson().fromJson(element.getAsJsonArray(), String[].class);
+                else throw new RuntimeException("'authors' is not valid");
+            }
+            //</editor-fold>
+
+            Logger.debug(modules);
+
+            for (ScriptModule2 module : modules) {
+                module.setScriptName(scriptName);
+                JesusClient.INSTANCE.moduleManager.addScriptModule(module);
+                module.doSettings();
+            }
+        } catch (IOException | ScriptException e) {
+            throw new RuntimeException("Failed to open Script file", e);
+        }
     }
 
     public Script load(File scriptFile) {
@@ -582,12 +672,5 @@ public class ScriptManager {
         index.setScriptEngine(scriptEngine);
 
         return index;
-    }
-
-    private class SetDevMode implements Consumer<Boolean> {
-        @Override
-        public void accept(Boolean b) {
-            JesusClient.devMode = b;
-        }
     }
 }

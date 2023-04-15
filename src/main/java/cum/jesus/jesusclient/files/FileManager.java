@@ -166,11 +166,23 @@ public class FileManager {
         if (!scriptDir.exists()) scriptDir.mkdirs();
 
         File[] files = scriptDir.listFiles(pathname -> pathname.getName().endsWith("zip") || pathname.getName().endsWith("cbs"));
+        File[] singleFiles = scriptDir.listFiles(pathname -> pathname.getName().endsWith("js"));
 
         if (files != null) {
             for (File file : files) {
                 try {
                     JesusClient.INSTANCE.scriptManager.load(file);
+                } catch (Exception e) {
+                    Logger.error("Failed to load script " + file.getName());
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (singleFiles != null) {
+            for (File file : singleFiles) {
+                try {
+                    JesusClient.INSTANCE.scriptManager.loadOneFile(file);
                 } catch (Exception e) {
                     Logger.error("Failed to load script " + file.getName());
                     e.printStackTrace();
