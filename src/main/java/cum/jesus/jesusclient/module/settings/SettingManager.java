@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.module.settings;
 
 import cum.jesus.jesusclient.remote.Premium;
+import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,7 @@ public class SettingManager {
      */
     public void registerObject(String name, @NotNull Object object) {
         List<Setting> values = new ArrayList<>();
+
         for (final Field field : object.getClass().getDeclaredFields()) {
             try {
                 field.setAccessible(true);

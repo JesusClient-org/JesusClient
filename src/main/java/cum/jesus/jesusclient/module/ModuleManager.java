@@ -19,6 +19,7 @@ import cum.jesus.jesusclient.module.modules.dungeons.TerminalSolver;
 import cum.jesus.jesusclient.module.modules.skyblock.GhostBlock;
 import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.scripting.ScriptModule;
+import cum.jesus.jesusclient.scripting.ScriptModule2;
 import cum.jesus.jesusclient.utils.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,7 +78,7 @@ public class ModuleManager {
         return true;
     }
 
-    private void addModule(@NotNull Module module) {
+    public void addModule(@NotNull Module module) {
         modules.add(module);
         EventManager.register(module);
         JesusClient.INSTANCE.settingManager.registerObject(module.getName(), module);
@@ -107,6 +108,11 @@ public class ModuleManager {
     }
 
     public void addScriptModule(ScriptModule module) {
+        modules.add(module);
+        EventManager.register(module);
+    }
+
+    public void addScriptModule(ScriptModule2 module) {
         modules.add(module);
         EventManager.register(module);
     }

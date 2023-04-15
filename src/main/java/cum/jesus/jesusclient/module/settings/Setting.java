@@ -50,4 +50,8 @@ public abstract class Setting<T> {
     public boolean isPremiumOnly() {
         return premiumOnly;
     }
+
+    public void setPremiumOnly(boolean premiumOnly) {
+        this.premiumOnly = premiumOnly;
+    }
 }

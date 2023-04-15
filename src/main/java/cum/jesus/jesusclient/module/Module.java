@@ -13,7 +13,7 @@ import org.lwjgl.input.Keyboard;
 
 public abstract class Module {
     protected static final Minecraft mc = Minecraft.getMinecraft();
-    private String name;
+    protected String name;
     private String description;
     private Category category;
     private boolean canBeEnabled;
