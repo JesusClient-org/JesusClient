@@ -1,6 +1,8 @@
 package cum.jesus.jesusclient.scripting;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.command.Command;
+import cum.jesus.jesusclient.module.Module;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,8 @@ public class Script {
     private String description;
     private String version;
     private String[] authors;
-    private List<ScriptModule> modules = new ArrayList<>();
-    private List<ScriptCommand> commands = new ArrayList<>();
+    private List<Module> modules = new ArrayList<>();
+    private List<Command> commands = new ArrayList<>();
     private ScriptIndex index;
 
     public Script(String name, String description, String version, String[] authors, ScriptIndex index) {
@@ -38,11 +40,11 @@ public class Script {
         return authors;
     }
 
-    public List<ScriptModule> getModules() {
+    public List<Module> getModules() {
         return modules;
     }
 
-    public List<ScriptCommand> getCommands() {
+    public List<Command> getCommands() {
         return commands;
     }
 
@@ -51,11 +53,23 @@ public class Script {
     }
 
     public void register() {
-        for (ScriptModule module : modules) {
-            JesusClient.INSTANCE.moduleManager.addScriptModule(module);
+        for (Module module : modules) {
+            if (module instanceof ScriptModule2) {
+                ((ScriptModule2) module).setScriptName(name);
+                JesusClient.INSTANCE.moduleManager.addScriptModule((ScriptModule2) module);
+                ((ScriptModule2) module).doSettings();
+            } else if (module instanceof ScriptModule) {
+                JesusClient.INSTANCE.moduleManager.addScriptModule((ScriptModule) module);
+            }
         }
-        for (ScriptCommand command : commands) {
-            JesusClient.INSTANCE.commandManager.addScriptCommand(command);
+        for (Command command : commands) {
+            command.setDescription("(From script: " + name + ") " + command.getDescription());
+            command.setPremiumOnly(true);
+            if (command instanceof ScriptCommand) {
+                JesusClient.INSTANCE.commandManager.addScriptCommand((ScriptCommand) command);
+            } else {
+                JesusClient.INSTANCE.commandManager.addCommand(command);
+            }
         }
     }
 }

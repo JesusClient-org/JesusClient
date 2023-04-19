@@ -3,6 +3,7 @@ package cum.jesus.jesusclient.scripting;
 import com.google.common.io.ByteStreams;
 import com.google.gson.*;
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.command.Command;
 import cum.jesus.jesusclient.gui.clickgui.BoringRenderThingy;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
@@ -40,6 +41,15 @@ import java.util.zip.ZipFile;
 
 public class ScriptManager {
     private ScriptEngine scriptEngine;
+    private final List<Script> scripts = new ArrayList<>();
+
+    public List<Script> getScripts() {
+        return scripts;
+    }
+
+    public void addScript(Script script) {
+        scripts.add(script);
+    }
 
     public ScriptManager() {
         newScript();
@@ -80,25 +90,36 @@ public class ScriptManager {
         return scriptEngine.eval(script);
     }
 
-    public void loadOneFile(File scriptFile) {
+    public Script loadOneFile(File scriptFile) {
         try {
             newScript();
 
             String scriptContent = new String(Files.readAllBytes(scriptFile.toPath()));
 
+            // module stuff
             scriptEngine.put("Module", StaticClass.forClass(ScriptModule2.class));
             scriptEngine.put("Category", StaticClass.forClass(Category.class));
             scriptEngine.put("BooleanSetting", StaticClass.forClass(BooleanSetting.class));
             scriptEngine.put("ModeSetting", StaticClass.forClass(ModeSetting.class));
             scriptEngine.put("NumberSetting", StaticClass.forClass(NumberSetting.class));
             scriptEngine.put("StringSetting", StaticClass.forClass(StringSetting.class));
+
+            // command stuff
+            scriptEngine.put("Command", StaticClass.forClass(Command.class));
+
+            // general stuff (might move to entire engine)
             scriptEngine.put("Integer", StaticClass.forClass(Integer.class));
             scriptEngine.put("Float", StaticClass.forClass(Float.class));
             scriptEngine.put("Double", StaticClass.forClass(Double.class));
             scriptEngine.put("Long", StaticClass.forClass(Long.class));
 
             List<ScriptModule2> modules = new ArrayList<>();
+            List<Command> commands = new ArrayList<>();
             scriptEngine.put("modules", modules);
+            scriptEngine.put("commands", commands);
+
+            if (scriptContent.contains("cum.jesus.jesusclient")) throw new RuntimeException("Attempted use of 'cum.jesus.jesusclient' Java package");
+            if (scriptContent.contains("getSessionID") || scriptContent.contains("getToken")) throw new RuntimeException("Fuck ratters");
 
             eval(scriptContent);
 
@@ -147,13 +168,22 @@ public class ScriptManager {
             }
             //</editor-fold>
 
-            Logger.debug(modules);
+            ScriptIndex idx = new ScriptIndex();
+            idx.setScriptEngine(scriptEngine);
+
+            Script script = new Script(scriptName, scriptDesc, scriptVer, scriptAuthors, idx);
 
             for (ScriptModule2 module : modules) {
-                module.setScriptName(scriptName);
-                JesusClient.INSTANCE.moduleManager.addScriptModule(module);
-                module.doSettings();
+                script.getModules().add(module);
             }
+
+            for (Command command : commands) {
+                script.getCommands().add(command);
+            }
+
+            script.register();
+
+            return script;
         } catch (IOException | ScriptException e) {
             throw new RuntimeException("Failed to open Script file", e);
         }
@@ -664,7 +694,7 @@ public class ScriptManager {
         if (indexContent.contains("getSessionID") || indexContent.contains("getToken")) throw new RuntimeException("Fuck ratters");
 
         try {
-            scriptEngine.eval(indexContent);
+            eval(indexContent);
         } catch (ScriptException e) {
             throw new RuntimeException("Failed to compile script", e);
         }

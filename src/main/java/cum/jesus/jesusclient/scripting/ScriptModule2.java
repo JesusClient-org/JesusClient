@@ -39,4 +39,9 @@ public class ScriptModule2 extends Module {
     protected void addSetting(Setting setting) {
         settings.add(setting);
     }
+
+    @Override
+    public boolean isPremiumFeature() {
+        return true;
+    }
 }

@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class  Command {
+public abstract class Command {
     protected final Minecraft mc = Minecraft.getMinecraft();
 
     private String name;
     private String description;
     private String[] aliases;
-    private boolean premiumOnly;
+    private boolean premiumOnly = false;
     private boolean devOnly;
 
     protected Command(String name, String description, String... aliases) {
@@ -43,7 +43,11 @@ public abstract class  Command {
     }
 
     public boolean isPremiumOnly() {
-        return false;
+        return premiumOnly;
+    }
+
+    public void setPremiumOnly(boolean premiumOnly) {
+        this.premiumOnly = premiumOnly;
     }
 
     public boolean isDevOnly() {
@@ -52,6 +56,17 @@ public abstract class  Command {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+    * to change description of one file script commands
+    */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String[] getAliases() {

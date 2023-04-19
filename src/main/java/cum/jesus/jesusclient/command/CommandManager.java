@@ -51,7 +51,7 @@ public class CommandManager {
         return true;
     }
 
-    private void addCommand(Command c) {
+    public void addCommand(Command c) {
         if (c.isDevOnly() && !JesusClient.devMode) return;
         commandList.add(c);
         EventManager.register(c);
