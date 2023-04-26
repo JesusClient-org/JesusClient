@@ -11,6 +11,10 @@ import javax.script.ScriptException;
 public class ScriptIndex {
     private ScriptEngine engine;
 
+    public ScriptEngine getEngine() {
+        return engine;
+    }
+
     public void setScriptEngine(ScriptEngine scriptEngine) {
         engine = scriptEngine;
     }

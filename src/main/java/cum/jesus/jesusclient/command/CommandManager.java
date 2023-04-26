@@ -7,6 +7,7 @@ import cum.jesus.jesusclient.remote.Premium;
 import cum.jesus.jesusclient.command.commands.*;
 import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.module.modules.render.Gui;
+import cum.jesus.jesusclient.scripting.Script;
 import cum.jesus.jesusclient.scripting.ScriptCommand;
 import cum.jesus.jesusclient.utils.ChatUtils;
 import cum.jesus.jesusclient.utils.Logger;
@@ -55,6 +56,11 @@ public class CommandManager {
         if (c.isDevOnly() && !JesusClient.devMode) return;
         commandList.add(c);
         EventManager.register(c);
+    }
+
+    public void removeCommand(Command c) {
+        commandList.remove(c);
+        EventManager.unregister(c);
     }
 
     public @NotNull List<Command> getCommandList() {
@@ -138,6 +144,11 @@ public class CommandManager {
 
     public void addScriptCommand(ScriptCommand command) {
         addCommand(command);
+    }
+
+    public void removeScriptCommand(ScriptCommand command) {
+        commandList.remove(command);
+        EventManager.unregister(command);
     }
 
     public void removeScriptCommands() {

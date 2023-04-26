@@ -14,6 +14,8 @@ import cum.jesus.jesusclient.files.JesusEncoding;
 import cum.jesus.jesusclient.module.ModuleManager;
 import cum.jesus.jesusclient.module.settings.SettingManager;
 import cum.jesus.jesusclient.remote.Capes;
+import cum.jesus.jesusclient.scripting.LibraryScript;
+import cum.jesus.jesusclient.scripting.Script;
 import cum.jesus.jesusclient.scripting.ScriptManager;
 import cum.jesus.jesusclient.utils.*;
 import cum.jesus.jesusclient.utils.threads.CleanUpThread;
@@ -28,11 +30,13 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.Display;
 
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class JesusClient {
@@ -174,6 +178,8 @@ public class JesusClient {
 
         // Add modules
         if (moduleManager.addModules()) Logger.info("Loaded module manager");
+
+
 
         // load first time
         try {

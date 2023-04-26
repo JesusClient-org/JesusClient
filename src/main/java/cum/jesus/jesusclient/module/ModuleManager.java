@@ -117,6 +117,16 @@ public class ModuleManager {
         EventManager.register(module);
     }
 
+    public void removeScriptModule(ScriptModule module) {
+        modules.remove(module);
+        EventManager.unregister(module);
+    }
+
+    public void removeScriptModule(ScriptModule2 module) {
+        modules.remove(module);
+        EventManager.unregister(module);
+    }
+
     public void removeScriptModules() {
         modules.clear();
         addModules();

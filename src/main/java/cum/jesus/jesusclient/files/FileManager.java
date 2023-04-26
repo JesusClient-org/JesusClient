@@ -4,14 +4,19 @@ import com.google.common.io.Files;
 import com.google.gson.*;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.remote.Premium;
+import cum.jesus.jesusclient.scripting.LibraryScript;
+import cum.jesus.jesusclient.scripting.Script;
 import cum.jesus.jesusclient.utils.Logger;
 
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class FileManager {
@@ -171,7 +176,7 @@ public class FileManager {
         if (files != null) {
             for (File file : files) {
                 try {
-                    JesusClient.INSTANCE.scriptManager.addScript(JesusClient.INSTANCE.scriptManager.load(file));
+                    JesusClient.INSTANCE.scriptManager.load(file);
                 } catch (Exception e) {
                     Logger.error("Failed to load script " + file.getName());
                     e.printStackTrace();
@@ -182,10 +187,45 @@ public class FileManager {
         if (singleFiles != null) {
             for (File file : singleFiles) {
                 try {
-                    JesusClient.INSTANCE.scriptManager.addScript(JesusClient.INSTANCE.scriptManager.loadOneFile(file));
+                    JesusClient.INSTANCE.scriptManager.loadOneFile(file);
                 } catch (Exception e) {
                     Logger.error("Failed to load script " + file.getName());
                     e.printStackTrace();
+                }
+            }
+        }
+
+        List<Script> tmpScripts = new ArrayList<>(JesusClient.INSTANCE.scriptManager.getScripts());
+        tmpScripts.addAll(JesusClient.INSTANCE.scriptManager.getLibs());
+        for (Script script : tmpScripts) {
+            for (String string : script.getDependencies()) {
+                if (JesusClient.INSTANCE.scriptManager.getLibNames().contains(string)) {
+                    Logger.debug("requirement for " + script.getName() + ": " + string + " found!");
+
+                    LibraryScript lib = JesusClient.INSTANCE.scriptManager.getLibraryByName(string);
+
+                    if (lib == null) {
+                        JesusClient.INSTANCE.scriptManager.getScripts().remove(script);
+                        tmpScripts.remove(script);
+
+                        script.purge();
+
+                        Logger.error("Requirement for " + script.getName() + ": " + string + " was found, but not returned correctly.");
+                        continue;
+                    }
+
+                    try {
+                        lib.addObjectToEngine(script.getIndex().getEngine());
+                    } catch (ScriptException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    JesusClient.INSTANCE.scriptManager.getScripts().remove(script);
+                    tmpScripts.remove(script);
+
+                    script.purge();
+
+                    Logger.error("Requirement for " + script.getName() + ": " + string + " was not found.");
                 }
             }
         }

@@ -1,4 +1,4 @@
-# JesusInjectionClient
+# JesusClient
 
 ### Todo
 * add a way for working with files in the terminal

@@ -19,6 +19,10 @@ public class ReloadScriptsCommand extends Command {
         JesusClient.INSTANCE.commandManager.removeScriptCommands();
         JesusClient.INSTANCE.moduleManager.removeScriptModules();
 
+        JesusClient.INSTANCE.scriptManager.getScripts().clear();
+        JesusClient.INSTANCE.scriptManager.getLibs().clear();
+        JesusClient.INSTANCE.scriptManager.getLibNames().clear();
+
         JesusClient.INSTANCE.fileManager.loadScripts();
     }
 

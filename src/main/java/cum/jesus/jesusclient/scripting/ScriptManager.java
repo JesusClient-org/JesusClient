@@ -4,6 +4,7 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.*;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.Command;
+import cum.jesus.jesusclient.events.eventapi.EventManager;
 import cum.jesus.jesusclient.gui.clickgui.BoringRenderThingy;
 import cum.jesus.jesusclient.module.Category;
 import cum.jesus.jesusclient.module.Module;
@@ -15,6 +16,8 @@ import cum.jesus.jesusclient.utils.font.GlyphPageFontRenderer;
 import jdk.internal.dynalink.beans.StaticClass;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.internal.runtime.ScriptFunction;
+import jdk.nashorn.internal.runtime.ScriptObject;
 import jline.internal.Log;
 import me.superblaubeere27.clickgui.IRenderer;
 
@@ -41,14 +44,29 @@ import java.util.zip.ZipFile;
 
 public class ScriptManager {
     private ScriptEngine scriptEngine;
+
     private final List<Script> scripts = new ArrayList<>();
+    private final List<LibraryScript> libs = new ArrayList<>();
+    private final List<String> libNames = new ArrayList<>();
 
     public List<Script> getScripts() {
         return scripts;
     }
 
-    public void addScript(Script script) {
-        scripts.add(script);
+    public List<LibraryScript> getLibs() {
+        return libs;
+    }
+
+    public List<String> getLibNames() {
+        return libNames;
+    }
+
+    public LibraryScript getLibraryByName(String name) {
+        for (LibraryScript script : libs) {
+            if (script.getName().equals(name)) return script;
+        }
+
+        return null;
     }
 
     public ScriptManager() {
@@ -137,6 +155,8 @@ public class ScriptManager {
             String scriptDesc;
             String scriptVer;
             String[] scriptAuthors;
+            String[] scriptDependencies;
+            boolean isLibrary = false;
 
             //<editor-fold desc="Metadata">
             {
@@ -165,25 +185,81 @@ public class ScriptManager {
 
                 if (element.isJsonArray()) scriptAuthors = new Gson().fromJson(element.getAsJsonArray(), String[].class);
                 else throw new RuntimeException("'authors' is not valid");
+
+                if (manifest.has("dependencies")) {
+                    element = manifest.get("dependencies");
+
+                    if (element.isJsonArray())
+                        scriptDependencies = new Gson().fromJson(element.getAsJsonArray(), String[].class);
+                    else throw new RuntimeException("'dependencies' is not valid");
+                } else {
+                    scriptDependencies = new String[0];
+                }
+
+                if (manifest.has("library")) {
+                    element = manifest.get("library");
+
+                    if (element.isJsonPrimitive())
+                        isLibrary = element.getAsBoolean();
+                    else throw new RuntimeException("'library' is not valid");
+                }
             }
             //</editor-fold>
 
             ScriptIndex idx = new ScriptIndex();
             idx.setScriptEngine(scriptEngine);
 
-            Script script = new Script(scriptName, scriptDesc, scriptVer, scriptAuthors, idx);
+            EventManager.register(idx);
 
-            for (ScriptModule2 module : modules) {
-                script.getModules().add(module);
+            if (isLibrary) {
+                LibraryScript library = new LibraryScript(scriptName, scriptDesc, scriptVer, scriptAuthors, scriptDependencies, idx);
+
+                for (ScriptModule2 module : modules) {
+                    Logger.warn("Found module in library: " + scriptName + ". Libraries should not have any modules");
+                }
+
+                for (Command command : commands) {
+                    library.getCommands().add(command);
+                }
+
+                Bindings bindings = scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE);
+
+                for (String key : bindings.keySet()) {
+                    Object value = bindings.get(key);
+
+                    //Logger.debug(key + ": " + value + " (" + value.getClass().getSimpleName() + ")");
+
+                    if (key.startsWith("public_")) {
+                        String functionName = key.substring("public_".length());
+                        Logger.debug("public function of " + scriptName + ": " + functionName);
+
+                        library.addPublicObject(functionName, value);
+                    } else {
+                        Logger.debug("local function of " + scriptName + ": " + key);
+                    }
+                }
+
+                libs.add(library);
+                libNames.add(library.getName());
+
+                return library;
+            } else {
+                Script script = new Script(scriptName, scriptDesc, scriptVer, scriptAuthors, scriptDependencies, idx);
+
+                for (ScriptModule2 module : modules) {
+                    script.getModules().add(module);
+                }
+
+                for (Command command : commands) {
+                    script.getCommands().add(command);
+                }
+
+                script.register();
+
+                scripts.add(script);
+
+                return script;
             }
-
-            for (Command command : commands) {
-                script.getCommands().add(command);
-            }
-
-            script.register();
-
-            return script;
         } catch (IOException | ScriptException e) {
             throw new RuntimeException("Failed to open Script file", e);
         }
@@ -205,7 +281,9 @@ public class ScriptManager {
             String scriptDesc;
             String scriptVer;
             String[] scriptAuthors;
+            String[] scriptDependencies;
             String scriptIndex;
+            boolean isLibrary = false;
 
             //<editor-fold desc="Metadata">
             {
@@ -235,17 +313,34 @@ public class ScriptManager {
                 if (element.isJsonArray()) scriptAuthors = new Gson().fromJson(element.getAsJsonArray(), String[].class);
                 else throw new RuntimeException("'authors' is not valid");
 
+                if (manifest.has("dependencies")) {
+                    element = manifest.get("dependencies");
+
+                    if (element.isJsonArray())
+                        scriptDependencies = new Gson().fromJson(element.getAsJsonArray(), String[].class);
+                    else throw new RuntimeException("'dependencies' is not valid");
+                } else {
+                    scriptDependencies = new String[0];
+                }
+
                 if (!manifest.has("index")) throw new RuntimeException("Manifest does not contain 'index'");
                 element = manifest.get("index");
 
                 if (element.isJsonPrimitive()) scriptIndex = element.getAsString();
                 else throw new RuntimeException("'index' is not valid");
+
+                if (manifest.has("library")) {
+                    element = manifest.get("library");
+
+                    if (element.isJsonPrimitive()) isLibrary = element.getAsBoolean();
+                    else throw new RuntimeException("'library' is not valid");
+                }
             }
             //</editor-fold>
 
             newScript();
 
-            Script script = new Script(scriptName, scriptDesc, scriptVer, scriptAuthors, loadIndex(scriptIndex, zipFile));
+            Script script = new Script(scriptName, scriptDesc, scriptVer, scriptAuthors, scriptDependencies, loadIndex(scriptIndex, zipFile));
 
             if (manifest.has("modules")) {
                 JsonElement element = manifest.get("modules");
@@ -274,6 +369,8 @@ public class ScriptManager {
             script.register();
 
             Logger.info("Successfully loaded " + script.getName() + " " + script.getVersion());
+
+            scripts.add(script);
 
             return script;
         } catch (IOException ex) {
@@ -700,6 +797,7 @@ public class ScriptManager {
         }
 
         index.setScriptEngine(scriptEngine);
+        EventManager.register(index);
 
         return index;
     }
