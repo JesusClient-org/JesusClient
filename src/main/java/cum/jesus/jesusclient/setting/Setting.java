@@ -1,6 +1,8 @@
 package cum.jesus.jesusclient.setting;
 
-public abstract class Setting<T> {
+import cum.jesus.jesusclient.file.JesusSerializable;
+
+public abstract class Setting<T> implements JesusSerializable {
     private String name;
     private T value;
     private T defaultValue;

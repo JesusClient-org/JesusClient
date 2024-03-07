@@ -13,9 +13,16 @@ import java.nio.file.Files;
  */
 public final class JesusFile {
     private final File file;
+    private final FileOutputStream appender;
 
     JesusFile(File file) {
         this.file = file;
+
+        try {
+            appender = new FileOutputStream(file, true);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public long length() {
@@ -34,11 +41,35 @@ public final class JesusFile {
         }
     }
 
+    public void clear() {
+        try {
+            Files.write(file.toPath(), new byte[0]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void write(final byte[] bytes) {
         try {
             Files.write(file.toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void write(final JesusSerializable serializable) {
+        write(serializable.toBytes());
+    }
+
+    public void append(final byte[] bytes) {
+        try {
+            appender.write(bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void append(final JesusSerializable serializable) {
+        append(serializable.toBytes());
     }
 }

@@ -15,8 +15,9 @@ public final class ConfigManager {
     }
 
     public void save(JesusFile file) {
+        file.clear();
         for (Setting setting : JesusClient.instance.settingManager.getAllSettingsFrom(file.getNameNoExt())) {
-            file.write(setting.toBytes());
+            file.append(setting);
         }
     }
 }

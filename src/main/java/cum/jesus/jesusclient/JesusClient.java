@@ -54,6 +54,8 @@ public class JesusClient {
         configManager.load(Objects.requireNonNull(fileManager.get("client.jesus")));
 
         Logger.info(config.test.getValue());
+        Logger.info(config.number.getValue());
+        Logger.info(config.string.getValue());
     }
 
     public void stop() {
