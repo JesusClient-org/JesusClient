@@ -16,5 +16,6 @@ public final class CommandHandler {
     public boolean execute(@NotNull String string) {
         String raw = string.substring(1);
         String[] split = raw.split(" ");
+        return false;
     }
 }

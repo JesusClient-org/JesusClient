@@ -10,6 +10,10 @@ public final class FileManager {
 
     public FileManager(File root) {
         this.root = root;
+
+        if (!root.exists()) {
+            root.mkdirs();
+        }
     }
 
     public JesusFile open(final String file) throws FileNotFoundException {
@@ -41,7 +45,16 @@ public final class FileManager {
     public JesusFile get(final String file) {
         File f = new File(root, file);
 
-        if (!f.exists())
+        if (!f.exists()) {
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return new JesusFile(f);
     }
 
     /**
