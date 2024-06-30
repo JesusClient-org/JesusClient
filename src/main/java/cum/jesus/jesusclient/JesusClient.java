@@ -8,7 +8,7 @@ import cum.jesus.jesusclient.file.FileManager;
 import cum.jesus.jesusclient.module.ModuleHandler;
 import cum.jesus.jesusclient.module.ModuleRegistry;
 import cum.jesus.jesusclient.setting.SettingManager;
-import cum.jesus.jesusclient.setting.User;
+import cum.jesus.jesusclient.util.User;
 import net.minecraft.client.Minecraft;
 import net.minecraft.launchwrapper.Launch;
 

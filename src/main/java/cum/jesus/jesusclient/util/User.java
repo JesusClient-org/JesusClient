@@ -1,4 +1,4 @@
-package cum.jesus.jesusclient.setting;
+package cum.jesus.jesusclient.util;
 
 import java.util.UUID;
 
