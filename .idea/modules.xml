@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ClientBase.api.iml" filepath="$PROJECT_DIR$/.idea/modules/ClientBase.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ClientBase.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ClientBase.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ClientBase.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ClientBase.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/JesusClient.api.iml" filepath="$PROJECT_DIR$/.idea/modules/JesusClient.api.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/JesusClient.main.iml" filepath="$PROJECT_DIR$/.idea/modules/JesusClient.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/JesusClient.test.iml" filepath="$PROJECT_DIR$/.idea/modules/JesusClient.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cum.jesus.jesusclient.JesusClient.api.iml" filepath="$PROJECT_DIR$/.idea/modules/cum.jesus.jesusclient.JesusClient.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cum.jesus.jesusclient.JesusClient.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cum.jesus.jesusclient.JesusClient.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cum.jesus.jesusclient.JesusClient.test.iml" filepath="$PROJECT_DIR$/.idea/modules/cum.jesus.jesusclient.JesusClient.test.iml" />
     </modules>
   </component>
 </project>

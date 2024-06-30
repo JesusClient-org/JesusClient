@@ -1,7 +1,7 @@
 package cum.jesus.jesusclient.setting;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
+import cum.jesus.jesusclient.config.IConfigurable;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,23 +9,8 @@ import java.util.Map;
 public final class SettingManager {
     private Map<String, List<Setting>> settingMap = new HashMap<>();
 
-    public void registerObject(String name, Object obj) {
-        List<Setting> settings = new ArrayList<>();
-
-        for (Field field : obj.getClass().getDeclaredFields()) {
-            try {
-                field.setAccessible(true);
-                Object object = field.get(obj);
-
-                if (object instanceof Setting) {
-                    settings.add((Setting) object);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        settingMap.put(name.toLowerCase(), settings);
+    public void registerObject(String name, IConfigurable obj) {
+        settingMap.put(name.toLowerCase(), obj.getSettings());
     }
 
     public List<Setting> getAllSettingsFrom(String name) {

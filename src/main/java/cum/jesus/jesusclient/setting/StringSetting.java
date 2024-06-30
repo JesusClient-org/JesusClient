@@ -1,5 +1,7 @@
 package cum.jesus.jesusclient.setting;
 
+import cum.jesus.jesusclient.util.PrimitiveJesusSerializer;
+
 public final class StringSetting extends Setting<String> {
     public StringSetting(String name, String defaultValue) {
         super(name, defaultValue);
@@ -7,26 +9,14 @@ public final class StringSetting extends Setting<String> {
 
     @Override
     public byte[] toBytes() {
-        byte[] bytes = new byte[getValue().length() + 1];
-
-        for (int i = 0; i < getValue().length(); i++) {
-            bytes[i] = (byte) getValue().charAt(i);
-        }
-
-        bytes[bytes.length - 1] = 0;
-
-        return bytes;
+        return PrimitiveJesusSerializer.serializeString(getValue());
     }
 
     @Override
     public int fromBytes(byte[] bytes, int index) {
-        int length = 0;
-        while (bytes[index + length] != 0) {
-            length++;
-        }
-
-        setValue(new String(bytes, index, length));
-
-        return index + length + 1;
+        String[] tmp = new String[1];
+        index = PrimitiveJesusSerializer.deserializeString(bytes, index, tmp);
+        setValue(tmp[0]);
+        return index;
     }
 }

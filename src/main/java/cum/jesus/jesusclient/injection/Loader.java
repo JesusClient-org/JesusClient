@@ -14,7 +14,6 @@ public final class Loader implements IFMLLoadingPlugin {
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
     }
 
-
     @Override
     public String[] getASMTransformerClass() {
         return new String[0];

@@ -25,4 +25,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'ClientBase'
+rootProject.name = 'JesusClient'

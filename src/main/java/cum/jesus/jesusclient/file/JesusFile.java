@@ -2,7 +2,10 @@ package cum.jesus.jesusclient.file;
 
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 
 /**
@@ -29,6 +32,10 @@ public final class JesusFile {
         return file.length();
     }
 
+    public String getName() {
+        return file.getName();
+    }
+
     public String getNameNoExt() {
         return FilenameUtils.removeExtension(file.getName());
     }
@@ -42,11 +49,7 @@ public final class JesusFile {
     }
 
     public void clear() {
-        try {
-            Files.write(file.toPath(), new byte[0]);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        write(new byte[0]);
     }
 
     public void write(final byte[] bytes) {

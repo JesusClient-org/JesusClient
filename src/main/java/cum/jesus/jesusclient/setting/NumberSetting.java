@@ -1,5 +1,7 @@
 package cum.jesus.jesusclient.setting;
 
+import cum.jesus.jesusclient.util.PrimitiveJesusSerializer;
+
 public final class NumberSetting<T extends Number> extends Setting<T> {
     private T min;
     private T max;
@@ -18,32 +20,20 @@ public final class NumberSetting<T extends Number> extends Setting<T> {
         return max;
     }
 
-    private byte[] getBytes(long number, int size) {
-        byte[] bytes = new byte[size];
-
-        for (int i = 0; i < size; i++) {
-            bytes[i] = (byte) ((number >> (8 * (size - 1 - i))) & 0xFF);
-        }
-
-        return bytes;
-    }
-
     @Override
     public byte[] toBytes() {
         if (getValue() instanceof Integer) {
-            return getBytes((Integer) getValue(), 4);
+            return PrimitiveJesusSerializer.serializeInt(getValue().intValue());
         } else if (getValue() instanceof Long) {
-            return getBytes((Long) getValue(), 8);
+            return PrimitiveJesusSerializer.serializeLong(getValue().longValue());
         } else if (getValue() instanceof Short) {
-            return getBytes((Short) getValue(), 2);
+            return PrimitiveJesusSerializer.serializeShort(getValue().shortValue());
         } else if (getValue() instanceof Byte) {
-            return getBytes((Byte) getValue(), 1);
+            return PrimitiveJesusSerializer.serializeByte(getValue().byteValue());
         } else if (getValue() instanceof Float) {
-            int intBits = Float.floatToIntBits((Float) getValue());
-            return getBytes(intBits, 4);
+            return PrimitiveJesusSerializer.serializeFloat(getValue().floatValue());
         } else if (getValue() instanceof Double) {
-            long longBits = Double.doubleToLongBits((Double) getValue());
-            return getBytes(longBits, 8);
+            return PrimitiveJesusSerializer.serializeDouble(getValue().doubleValue());
         }
 
         return new byte[0];
@@ -52,37 +42,27 @@ public final class NumberSetting<T extends Number> extends Setting<T> {
     @Override
     public int fromBytes(byte[] bytes, int index) {
         if (getValue() instanceof Integer) {
-            int number = 0;
-            for (int i = 0; i < 4; i++) {
-                number |= ((int) bytes[index++] & 0xFF) << (24 - 8 * i);
-            }
-            setValue((T) Integer.valueOf(number));
+            int[] a = new int[] { getValue().intValue() };
+            index = PrimitiveJesusSerializer.deserializeInt(bytes, index, a);
+            setValue((T) Integer.valueOf(a[0]));
         } else if (getValue() instanceof Long) {
-            long number = 0;
-            for (int i = 0; i < 8; i++) {
-                number |= ((long) bytes[index++] & 0xFF) << (56 - 8 * i);
-            }
-            setValue((T) Long.valueOf(number));
+            long[] a = new long[] { getValue().longValue() };
+            index = PrimitiveJesusSerializer.deserializeLong(bytes, index, a);
+            setValue((T) Long.valueOf(a[0]));
         } else if (getValue() instanceof Short) {
-            short number = 0;
-            for (int i = 0; i < 2; i++) {
-                number |= (short) (((short) bytes[index++] & 0xFF) << (8 - 8 * i));
-            }
-            setValue((T) Short.valueOf(number));
+            short[] a = new short[] { getValue().shortValue() };
+            index = PrimitiveJesusSerializer.deserializeShort(bytes, index, a);
+            setValue((T) Short.valueOf(a[0]));
         } else if (getValue() instanceof Byte) {
             setValue((T) Byte.valueOf(bytes[index++]));
         } else if (getValue() instanceof Float) {
-            int number = 0;
-            for (int i = 0; i < 4; i++) {
-                number |= ((int) bytes[index++] & 0xFF) << (24 - 8 * i);
-            }
-            setValue((T) Float.valueOf(Float.intBitsToFloat(number)));
+            float[] a = new float[] { getValue().floatValue() };
+            index = PrimitiveJesusSerializer.deserializeFloat(bytes, index, a);
+            setValue((T) Float.valueOf(a[0]));
         } else if (getValue() instanceof Double) {
-            long number = 0;
-            for (int i = 0; i < 8; i++) {
-                number |= ((long) bytes[index++] & 0xFF) << (56 - 8 * i);
-            }
-            setValue((T) Double.valueOf(Double.longBitsToDouble(number)));
+            double[] a = new double[] { getValue().doubleValue() };
+            index = PrimitiveJesusSerializer.deserializeDouble(bytes, index, a);
+            setValue((T) Double.valueOf(a[0]));
         }
 
         return index;

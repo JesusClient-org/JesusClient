@@ -1,23 +1,24 @@
 package cum.jesus.jesusclient;
 
 import cum.jesus.jesusclient.command.CommandHandler;
-import cum.jesus.jesusclient.command.CommandRegistry;
 import cum.jesus.jesusclient.config.ClientConfig;
 import cum.jesus.jesusclient.config.ConfigManager;
+import cum.jesus.jesusclient.event.EventManager;
 import cum.jesus.jesusclient.file.FileManager;
 import cum.jesus.jesusclient.module.ModuleHandler;
 import cum.jesus.jesusclient.module.ModuleRegistry;
 import cum.jesus.jesusclient.setting.SettingManager;
-import cum.jesus.jesusclient.util.Logger;
+import cum.jesus.jesusclient.setting.User;
 import net.minecraft.client.Minecraft;
+import net.minecraft.launchwrapper.Launch;
 
 import java.io.File;
-import java.util.Objects;
 
 public class JesusClient {
-    public static JesusClient instance = null;
-
     public static final Minecraft mc = Minecraft.getMinecraft();
+
+    public static JesusClient instance = null;
+    private static boolean loaded = false;
 
     public FileManager fileManager;
     public ConfigManager configManager;
@@ -25,10 +26,11 @@ public class JesusClient {
     public CommandHandler commandHandler;
     public ModuleHandler moduleHandler;
 
-    public ClientConfig config = new ClientConfig();
+    public ClientConfig config;
+
+    public boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") || User.username.equals("JesusTouchMe");
 
     private JesusClient() {
-
     }
 
     public static void init() {
@@ -39,26 +41,47 @@ public class JesusClient {
         instance = new JesusClient();
     }
 
+    public static boolean isLoaded() {
+        return instance != null && loaded;
+    }
+
     public void start() {
-        CommandRegistry commandRegistry = new CommandRegistry();
         ModuleRegistry moduleRegistry = new ModuleRegistry();
 
         fileManager = new FileManager(new File(mc.mcDataDir, "jesusclient"));
         configManager = new ConfigManager();
         settingManager = new SettingManager();
-        commandHandler = new CommandHandler(commandRegistry);
+        commandHandler = new CommandHandler();
         moduleHandler = new ModuleHandler(moduleRegistry);
 
-        settingManager.registerObject("client", config);
+        if (!devMode && fileManager.hasFile("developer"))
+            devMode = true;
 
-        configManager.load(Objects.requireNonNull(fileManager.get("client.jesus")));
+        config = new ClientConfig();
 
-        Logger.info(config.test.getValue());
-        Logger.info(config.number.getValue());
-        Logger.info(config.string.getValue());
+        settingManager.registerObject("Client", config);
+
+        commandHandler.addCommands();
+        moduleHandler.addModules();
+
+        if (devMode) {
+            commandHandler.addDevCommands();
+            moduleHandler.addDevModules();
+        }
+
+        EventManager.register(moduleHandler);
+
+        configManager.load();
+
+        EventManager.cleanRegistry(true);
+
+        loaded = true;
     }
 
     public void stop() {
+        configManager.save();
+        fileManager.clearTmpDir();
 
+        loaded = false;
     }
 }

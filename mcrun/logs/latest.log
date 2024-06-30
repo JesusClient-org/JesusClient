@@ -1,21 +1,55 @@
-[13:18:35] [Client thread/INFO]: Setting user: Player934
-[13:18:36] [Client thread/INFO]: LWJGL Version: 2.9.4
-[13:18:38] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge
-[13:18:39] [Sound Library Loader/INFO]: Starting up SoundSystem...
-[13:18:39] [Thread-9/INFO]: Initializing LWJGL OpenAL
-[13:18:39] [Thread-9/INFO]: (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
-[13:18:39] [Thread-9/INFO]: OpenAL initialized.
-[13:18:39] [Sound Library Loader/INFO]: Sound engine started
-[13:18:41] [Client thread/INFO]: Created: 16x16 textures-atlas
-[13:18:42] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge
-[13:18:42] [Client thread/INFO]: SoundSystem shutting down...
-[13:18:42] [Client thread/WARN]: Author: Paul Lamb, www.paulscode.com
-[13:18:42] [Sound Library Loader/INFO]: Starting up SoundSystem...
-[13:18:42] [Thread-11/INFO]: Initializing LWJGL OpenAL
-[13:18:42] [Thread-11/INFO]: (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
-[13:18:42] [Thread-11/INFO]: OpenAL initialized.
-[13:18:42] [Sound Library Loader/INFO]: Sound engine started
-[13:18:44] [Client thread/INFO]: Created: 512x512 textures-atlas
-[13:18:50] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:music.menu
-[13:18:59] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:music.menu
-[13:19:06] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:music.menu
+[10:25:55] [Client thread/INFO]: Setting user: Player379
+[10:25:56] [Client thread/INFO]: LWJGL Version: 2.9.4
+[10:25:59] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge
+[10:25:59] [Sound Library Loader/INFO]: Starting up SoundSystem...
+[10:26:00] [Thread-9/INFO]: Initializing LWJGL OpenAL
+[10:26:00] [Thread-9/INFO]: (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
+[10:26:00] [Thread-9/INFO]: OpenAL initialized.
+[10:26:00] [Sound Library Loader/INFO]: Sound engine started
+[10:26:02] [Client thread/INFO]: Created: 16x16 textures-atlas
+[10:26:02] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge
+[10:26:03] [Client thread/INFO]: SoundSystem shutting down...
+[10:26:03] [Client thread/WARN]: Author: Paul Lamb, www.paulscode.com
+[10:26:03] [Sound Library Loader/INFO]: Starting up SoundSystem...
+[10:26:03] [Thread-11/INFO]: Initializing LWJGL OpenAL
+[10:26:03] [Thread-11/INFO]: (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
+[10:26:03] [Thread-11/INFO]: OpenAL initialized.
+[10:26:03] [Sound Library Loader/INFO]: Sound engine started
+[10:26:05] [Client thread/INFO]: Created: 512x512 textures-atlas
+[10:26:08] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:gui.button.press
+[10:26:09] [Server thread/INFO]: Starting integrated minecraft server version 1.8.9
+[10:26:09] [Server thread/INFO]: Generating keypair
+[10:26:09] [Server thread/INFO]: Preparing start region for level 0
+[10:26:10] [Server thread/INFO]: Changing view distance to 16, from 10
+[10:26:10] [Server thread/INFO]: Player379[local:E:67c86ce7] logged in with entity id 297 at (120.27947568731945, 99.51803025299893, 271.6780947664448)
+[10:26:10] [Server thread/INFO]: Player379 joined the game
+[10:26:11] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:minecart.base
+[10:26:11] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:minecart.base
+[10:26:11] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:minecart.base
+[10:26:11] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:minecart.base
+[10:26:11] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:minecart.base
+[10:26:11] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:minecart.base
+[10:26:13] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:music.game.creative
+[10:26:14] [Client thread/INFO]: [CHAT] §6§lList of available commands
+[10:26:14] [Client thread/INFO]: [CHAT] §6-discord - Join the JesusClient Discord server
+[10:26:14] [Client thread/INFO]: [CHAT] §6-help - Provides a list of every command
+[10:26:14] [Client thread/INFO]: [CHAT] §6-module - Allows simple interaction with modules
+[10:26:14] [Client thread/INFO]: [CHAT] 
+[10:26:14] [Client thread/INFO]: [CHAT] §6§oType -cmd help for more detailed help about cmd
+[10:26:22] [Client thread/INFO]: [CHAT] §6§lHelp for '-module'§r§6 - Allows simple interaction with modules:           [mod]
+[10:26:22] [Client thread/INFO]: [CHAT] §6-module toggle <> - Toggles a given module
+[10:26:22] [Client thread/INFO]: [CHAT] §6
+[10:28:04] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:mob.bat.takeoff
+[10:28:26] [Client thread/INFO]: Stopping!
+[10:28:26] [Client thread/INFO]: SoundSystem shutting down...
+[10:28:26] [Server thread/INFO]: Stopping server
+[10:28:26] [Server thread/INFO]: Saving players
+[10:28:26] [Server thread/INFO]: Saving worlds
+[10:28:26] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[10:28:26] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[10:28:26] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[10:28:26] [Client thread/WARN]: Author: Paul Lamb, www.paulscode.com
+[10:28:26] [Client Shutdown Thread/INFO]: Stopping server
+[10:28:26] [Client Shutdown Thread/INFO]: Saving players
+[10:28:26] [Client Shutdown Thread/INFO]: Saving worlds
+[10:28:26] [Client Shutdown Thread/INFO]: Saving chunks for level 'New World'/Overworld
