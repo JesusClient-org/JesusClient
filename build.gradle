@@ -1,45 +1,31 @@
 buildscript {
     repositories {
-        jcenter()
-        mavenLocal()
         mavenCentral()
 
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-
-        maven {
-            url = "https://plugins.gradle.org/m2"
-        }
-
-        maven {
-            name = 'SpongePowered'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-        }
+        maven { url "http://files.minecraftforge.net/maven" }
+        maven { url "https://repo.spongepowered.org/repository/maven-public/" }
+        maven { url "https://jitpack.io" }
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
+
+        classpath "com.github.Debuggingss:ForgeGradle:1d22621a6b"
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.10"
-        classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
-        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
     }
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
-apply plugin: "org.spongepowered.mixin"
-apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "kotlin"
 
 repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
 
-    maven {
-        name = 'spongepowered-repo'
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
-    }
+    maven { url "https://repo.essential.gg/repository/maven-public" }
+    maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven { url 'https://jitpack.io' }
 }
 
 version = "0.1.0"
@@ -58,10 +44,12 @@ minecraft {
 }
 
 dependencies {
-    compile("org.spongepowered:mixin:0.6.4-SNAPSHOT") {
-        exclude module: "launchwrapper"
+    provided("dev.falsehonesty.asmhelper:AsmHelper:1.5.3-10809") {
+        exclude group: "org.jetbrains.kotlin"
     }
+
     implementation 'org.jetbrains:annotations:15.0'
+    implementation 'com.chattriggers:rhino:1.8.6'
 }
 
 processResources {
@@ -79,27 +67,10 @@ processResources {
     }
 }
 
-mixin {
-    add sourceSets.main, "mixins.jesusclient.refmap.json"
-}
-
-shadowJar {
-    dependencies {
-        include(dependency('org.spongepowered:mixin'))
-        include(dependency('org.jetbrains:annotations'))
-    }
-
-    classifier = 'full'
-}
-
-build.dependsOn(shadowJar)
-
 jar {
     manifest.attributes(
-            "MixinConfigs": 'mixins.jesusclient.json',
-            "tweakClass": 'org.spongepowered.asm.launch.MixinTweaker',
-            "TweakOrder": 0,
-            "FMLCorePluginContainsFMLMod": 'cum.jesus.jesusclient.injection.Loader'
+            "FMLCorePlugin": "dev.falsehonesty.asmhelper.core.AsmHelperLoadingPlugin",
+            "FMLCorePluginContainsFMLMod": "true"
     )
 }
 
