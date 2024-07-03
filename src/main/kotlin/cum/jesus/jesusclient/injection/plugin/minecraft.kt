@@ -40,16 +40,7 @@ fun injectStartGame() = inject {
     methodName = "startGame"
     methodDesc = "()V"
 
-    at = At(
-        InjectionPoint.INVOKE(
-            Descriptor(
-                "net/minecraft/client/gui/GuiIngame",
-                "<init>",
-                "(Lnet/minecraft/client/Minecraft;)V"
-            )
-        ),
-        before = false
-    )
+    at = At(InjectionPoint.TAIL)
 
     codeBlock {
         code {

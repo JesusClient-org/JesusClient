@@ -8,7 +8,7 @@ import dev.falsehonesty.asmhelper.BaseClassTransformer
 import net.minecraft.launchwrapper.LaunchClassLoader
 
 class JesusTransformer : BaseClassTransformer() {
-    var transforming = false
+    private var transforming = false
 
     override fun setup(classLoader: LaunchClassLoader) {
         super.setup(classLoader)

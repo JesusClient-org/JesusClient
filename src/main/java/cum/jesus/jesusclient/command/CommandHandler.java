@@ -143,7 +143,7 @@ public final class CommandHandler {
 
     private String[] doCommand(RegisteredCommand command, String[] args) {
         if (args.length == 0) {
-            if (command.entry != null) return new String[] { command.entry.invoke() };
+            if (command.entry != null) return new String[] { command.entry.invoke(null) };
             else return command.helpCommand;
         } else if (args[0].equalsIgnoreCase("help")) {
             if (args.length == 1) {
@@ -561,7 +561,7 @@ public final class CommandHandler {
                 return null;
         }
 
-        String invoke(String... args) {
+        String invoke(String[] args) {
             try {
                 if (args == null) {
                     method.invoke(parent);
