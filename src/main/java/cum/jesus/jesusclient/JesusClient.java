@@ -1,5 +1,6 @@
 package cum.jesus.jesusclient;
 
+import com.google.gson.Gson;
 import cum.jesus.jesusclient.command.CommandHandler;
 import cum.jesus.jesusclient.config.ClientConfig;
 import cum.jesus.jesusclient.config.ConfigManager;
@@ -7,20 +8,20 @@ import cum.jesus.jesusclient.event.EventManager;
 import cum.jesus.jesusclient.file.FileManager;
 import cum.jesus.jesusclient.module.ModuleHandler;
 import cum.jesus.jesusclient.module.ModuleRegistry;
+import cum.jesus.jesusclient.script.ScriptManager;
+import cum.jesus.jesusclient.script.runtime.listeners.ClientListener;
 import cum.jesus.jesusclient.setting.SettingManager;
 import cum.jesus.jesusclient.util.User;
 import net.minecraft.client.Minecraft;
 import net.minecraft.launchwrapper.Launch;
 
-import java.io.File;
-
 public class JesusClient {
-    public static final Minecraft mc = Minecraft.getMinecraft();
+    public static Minecraft mc;
+    public static Gson gson = new Gson();
 
     public static JesusClient instance = null;
     private static boolean loaded = false;
 
-    public FileManager fileManager;
     public ConfigManager configManager;
     public SettingManager settingManager;
     public CommandHandler commandHandler;
@@ -28,7 +29,7 @@ public class JesusClient {
 
     public ClientConfig config;
 
-    public boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") || User.username.equals("JesusTouchMe");
+    public boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") || User.username.equals("JesusTouchMe") || FileManager.hasFile("developer");
 
     private JesusClient() {
     }
@@ -39,6 +40,7 @@ public class JesusClient {
         }
 
         instance = new JesusClient();
+        mc = Minecraft.getMinecraft();
     }
 
     public static boolean isLoaded() {
@@ -48,14 +50,12 @@ public class JesusClient {
     public void start() {
         ModuleRegistry moduleRegistry = new ModuleRegistry();
 
-        fileManager = new FileManager(new File(mc.mcDataDir, "jesusclient"));
         configManager = new ConfigManager();
         settingManager = new SettingManager();
         commandHandler = new CommandHandler();
         moduleHandler = new ModuleHandler(moduleRegistry);
 
-        if (!devMode && fileManager.hasFile("developer"))
-            devMode = true;
+        FileManager.clearTmpDir();
 
         config = new ClientConfig();
 
@@ -73,6 +73,11 @@ public class JesusClient {
 
         configManager.load();
 
+        ScriptManager.setup();
+        ScriptManager.entryPass();
+
+        EventManager.register(ClientListener.INSTANCE);
+
         EventManager.cleanRegistry(true);
 
         loaded = true;
@@ -80,7 +85,7 @@ public class JesusClient {
 
     public void stop() {
         configManager.save();
-        fileManager.clearTmpDir();
+        FileManager.clearTmpDir();
 
         loaded = false;
     }

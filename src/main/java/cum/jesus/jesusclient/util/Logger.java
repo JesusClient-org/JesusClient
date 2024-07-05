@@ -1,5 +1,7 @@
 package cum.jesus.jesusclient.util;
 
+import cum.jesus.jesusclient.JesusClient;
+
 import java.io.PrintStream;
 
 public final class Logger {
@@ -78,7 +80,9 @@ public final class Logger {
     }
 
     public static void debug(final Object... msg) {
-        log(Level.DEBUG, msg);
+        if (JesusClient.instance.devMode) {
+            log(Level.DEBUG, msg);
+        }
     }
 
     public static void info(final Object... msg) {

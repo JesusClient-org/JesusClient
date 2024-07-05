@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.config;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.file.FileManager;
 import cum.jesus.jesusclient.file.JesusFile;
 import cum.jesus.jesusclient.module.Module;
 import cum.jesus.jesusclient.setting.BooleanSetting;
@@ -15,10 +16,10 @@ public final class ConfigManager {
     public void load() {
         List<String> issues = new ArrayList<>();
 
-        if (JesusClient.instance.fileManager.hasFile("Client"))
-            load("Client", JesusClient.instance.fileManager.get("Client"));
+        if (FileManager.hasFile("Client"))
+            load("Client", FileManager.get("Client"));
 
-        JesusFile[] moduleFiles = JesusClient.instance.fileManager.getAllModuleFiles();
+        JesusFile[] moduleFiles = FileManager.getAllModuleFiles();
 
         for (JesusFile moduleFile : moduleFiles) {
             loadModule(moduleFile.getNameNoExt(), moduleFile, issues);
@@ -32,11 +33,11 @@ public final class ConfigManager {
     }
 
     public void save() {
-        save("Client", JesusClient.instance.fileManager.get("Client"));
+        save("Client", FileManager.get("Client"));
 
         for (Module module : JesusClient.instance.moduleHandler.getRegistry().getModules()) {
             String name = module.getName().replace(" ", "");
-            save(name, JesusClient.instance.fileManager.get("modules/" + name));
+            save(name, FileManager.get("modules/" + name));
         }
     }
 

@@ -7,5 +7,3 @@ gradle-app.setting
 !gradle-wrapper.jar
 
 .gradletasknamecache
-/mcrun/
-/mcrun/*/
