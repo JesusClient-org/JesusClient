@@ -208,8 +208,10 @@ public final class JSLoader implements ScriptLoader {
     @Override
     public void execTriggerType(TriggerType type, Object[] args) {
         ConcurrentSkipListSet<Trigger> ret = triggers.get(type);
-        for (Trigger trigger : ret) {
-            trigger.trigger(args);
+        if (ret != null) {
+            for (Trigger trigger : ret) {
+                trigger.trigger(args);
+            }
         }
     }
 
