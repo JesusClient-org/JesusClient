@@ -1,0 +1,9 @@
+{
+  "name": "TestScriptJS",
+  "language": "js",
+  "version": "1.0",
+  "entry": "entry.js",
+  "asmEntry": "asm.js",
+  "author": "JesusTouchMe",
+  "description": "Test script for the JesusClient JavaScript language engine implementation"
+}
