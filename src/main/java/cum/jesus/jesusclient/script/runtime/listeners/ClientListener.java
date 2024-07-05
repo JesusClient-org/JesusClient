@@ -5,6 +5,7 @@ import cum.jesus.jesusclient.event.EventType;
 import cum.jesus.jesusclient.event.Priority;
 import cum.jesus.jesusclient.event.events.videogame.GameTickEvent;
 import cum.jesus.jesusclient.script.trigger.TriggerType;
+import cum.jesus.jesusclient.util.Logger;
 
 public final class ClientListener {
     public static final ClientListener INSTANCE = new ClientListener();
@@ -19,7 +20,7 @@ public final class ClientListener {
 
     @EventTarget(Priority.LOW) // we want scripts to usually happen after everything else
     private void onTick(GameTickEvent event) {
-        if (event.getEventType() == EventType.PRE) return;
+        if (event.getEventType() != EventType.POST) return;
 
         TriggerType.TICK.triggerAll(new Object[] { ticksPassed++ });
 

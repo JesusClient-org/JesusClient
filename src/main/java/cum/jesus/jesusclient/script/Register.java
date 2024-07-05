@@ -44,7 +44,7 @@ public abstract class Register {
     }
 
     /**
-     * 1 argument - elapsed ticks
+     * 1 argument - elapsed seconds
      */
     public BasicTrigger registerSecond(Object method) {
         return new BasicTrigger(method, TriggerType.SECOND, getLoader());

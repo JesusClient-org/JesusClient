@@ -5,6 +5,7 @@ import cum.jesus.jesusclient.event.EventManager
 import cum.jesus.jesusclient.event.EventType
 import cum.jesus.jesusclient.event.events.videogame.GameTickEvent
 import cum.jesus.jesusclient.event.events.videogame.KeyInputEvent
+import cum.jesus.jesusclient.util.Logger
 import dev.falsehonesty.asmhelper.dsl.At
 import dev.falsehonesty.asmhelper.dsl.InjectionPoint
 import dev.falsehonesty.asmhelper.dsl.inject
@@ -19,6 +20,7 @@ fun injectMinecraft() {
     injectShutdown()
     injectRunTickDispatchKeypresses()
     injectRunTickPre()
+    injectRunTickPost()
 }
 
 fun injectConstructor()  = inject {

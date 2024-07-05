@@ -2,6 +2,7 @@ package cum.jesus.jesusclient.event;
 
 import cum.jesus.jesusclient.event.events.Event;
 import cum.jesus.jesusclient.event.events.EventStoppable;
+import cum.jesus.jesusclient.util.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -114,7 +115,9 @@ public final class EventManager {
     private static void invoke(MethodData data, Event argument) {
         try {
             data.target.invoke(data.source, argument);
-        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException ignored) {
+        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+            Logger.error("dawg something's wrong here");
+            e.printStackTrace();
         }
     }
 
