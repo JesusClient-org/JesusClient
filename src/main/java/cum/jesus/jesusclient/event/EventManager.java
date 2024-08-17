@@ -14,6 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class EventManager {
     private static final Map<Class<? extends Event>, List<MethodData>> REGISTRY = new HashMap<>();
+    private static final List<MethodData> ALL_EVENT_REGISTRY = new CopyOnWriteArrayList<>(); // for event listeners with a parameter of Event
 
     private EventManager() {
     }
@@ -54,8 +55,20 @@ public final class EventManager {
                         break;
                     }
                 }
+
+                for (MethodData data : ALL_EVENT_REGISTRY) {
+                    invoke(data, event);
+
+                    if (stoppable.isStopped()) {
+                        break;
+                    }
+                }
             } else {
                 for (MethodData data : dataList) {
+                    invoke(data, event);
+                }
+
+                for (MethodData data : ALL_EVENT_REGISTRY) {
                     invoke(data, event);
                 }
             }
@@ -72,7 +85,9 @@ public final class EventManager {
             data.target.setAccessible(true);
         }
 
-        if (REGISTRY.containsKey(indexClass)) {
+        if (indexClass == Event.class) {
+            ALL_EVENT_REGISTRY.add(data);
+        } else if (REGISTRY.containsKey(indexClass)) {
             if (!REGISTRY.get(indexClass).contains(data)) {
                 REGISTRY.get(indexClass).add(data);
                 sortListValue(indexClass);

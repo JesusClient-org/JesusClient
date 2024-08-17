@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.setting;
 
-import cum.jesus.jesusclient.util.PrimitiveJesusSerializer;
+import cum.jesus.jesusclient.config.builder.ConfigBuilder;
+import cum.jesus.jesusclient.config.reader.ConfigReader;
 
 public final class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String name, Boolean defaultValue) {
@@ -8,13 +9,12 @@ public final class BooleanSetting extends Setting<Boolean> {
     }
 
     @Override
-    public byte[] toBytes() {
-        return PrimitiveJesusSerializer.serializeBoolean(getValue());
+    public void addToBuilder(ConfigBuilder builder) {
+        builder.addBoolean(getName(), getValue());
     }
 
     @Override
-    public int fromBytes(byte[] bytes, int index) {
-        setValue(bytes[index++] != 0);
-        return index;
+    public void getFromReader(ConfigReader reader) {
+        setValue(reader.getBoolean(getName()));
     }
 }

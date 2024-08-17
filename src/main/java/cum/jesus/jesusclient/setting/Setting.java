@@ -1,8 +1,9 @@
 package cum.jesus.jesusclient.setting;
 
-import cum.jesus.jesusclient.file.JesusSerializable;
+import cum.jesus.jesusclient.config.builder.ConfigBuilder;
+import cum.jesus.jesusclient.config.reader.ConfigReader;
 
-public abstract class Setting<T> implements JesusSerializable {
+public abstract class Setting<T> {
     private String name;
     private T value;
     private T defaultValue;
@@ -29,13 +30,7 @@ public abstract class Setting<T> implements JesusSerializable {
         return defaultValue;
     }
 
-    public abstract byte[] toBytes();
+    public abstract void addToBuilder(ConfigBuilder builder);
 
-    /**
-     * Convert .jesus data to setting
-     * @param bytes Raw bytes from .jesus file
-     * @param index The index of the bytes to begin from
-     * @return The new index after reading
-     */
-    public abstract int fromBytes(byte[] bytes, int index);
+    public abstract void getFromReader(ConfigReader reader);
 }

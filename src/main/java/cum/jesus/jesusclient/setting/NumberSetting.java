@@ -1,6 +1,9 @@
 package cum.jesus.jesusclient.setting;
 
-import cum.jesus.jesusclient.util.PrimitiveJesusSerializer;
+import cum.jesus.jesusclient.config.builder.ConfigBuilder;
+import cum.jesus.jesusclient.config.reader.ConfigReader;
+
+import java.math.BigInteger;
 
 public final class NumberSetting<T extends Number> extends Setting<T> {
     private T min;
@@ -21,50 +24,28 @@ public final class NumberSetting<T extends Number> extends Setting<T> {
     }
 
     @Override
-    public byte[] toBytes() {
-        if (getValue() instanceof Integer) {
-            return PrimitiveJesusSerializer.serializeInt(getValue().intValue());
-        } else if (getValue() instanceof Long) {
-            return PrimitiveJesusSerializer.serializeLong(getValue().longValue());
-        } else if (getValue() instanceof Short) {
-            return PrimitiveJesusSerializer.serializeShort(getValue().shortValue());
-        } else if (getValue() instanceof Byte) {
-            return PrimitiveJesusSerializer.serializeByte(getValue().byteValue());
-        } else if (getValue() instanceof Float) {
-            return PrimitiveJesusSerializer.serializeFloat(getValue().floatValue());
-        } else if (getValue() instanceof Double) {
-            return PrimitiveJesusSerializer.serializeDouble(getValue().doubleValue());
-        }
-
-        return new byte[0];
+    public void addToBuilder(ConfigBuilder builder) {
+        builder.addNumber(getName(), getValue());
     }
 
     @Override
-    public int fromBytes(byte[] bytes, int index) {
+    public void getFromReader(ConfigReader reader) {
         if (getValue() instanceof Integer) {
-            int[] a = new int[] { getValue().intValue() };
-            index = PrimitiveJesusSerializer.deserializeInt(bytes, index, a);
-            setValue((T) Integer.valueOf(a[0]));
-        } else if (getValue() instanceof Long) {
-            long[] a = new long[] { getValue().longValue() };
-            index = PrimitiveJesusSerializer.deserializeLong(bytes, index, a);
-            setValue((T) Long.valueOf(a[0]));
-        } else if (getValue() instanceof Short) {
-            short[] a = new short[] { getValue().shortValue() };
-            index = PrimitiveJesusSerializer.deserializeShort(bytes, index, a);
-            setValue((T) Short.valueOf(a[0]));
-        } else if (getValue() instanceof Byte) {
-            setValue((T) Byte.valueOf(bytes[index++]));
+            setValue((T) Integer.valueOf(reader.getInt(getName())));
         } else if (getValue() instanceof Float) {
-            float[] a = new float[] { getValue().floatValue() };
-            index = PrimitiveJesusSerializer.deserializeFloat(bytes, index, a);
-            setValue((T) Float.valueOf(a[0]));
+            setValue((T) Float.valueOf(reader.getFloat(getName())));
+        } else if (getValue() instanceof Long) {
+            setValue((T) Long.valueOf(reader.getLong(getName())));
         } else if (getValue() instanceof Double) {
-            double[] a = new double[] { getValue().doubleValue() };
-            index = PrimitiveJesusSerializer.deserializeDouble(bytes, index, a);
-            setValue((T) Double.valueOf(a[0]));
+            setValue((T) Double.valueOf(reader.getDouble(getName())));
+        } else if (getValue() instanceof Short) {
+            setValue((T) Short.valueOf(reader.getShort(getName())));
+        } else if (getValue() instanceof Byte) {
+            setValue((T) Byte.valueOf(reader.getByte(getName())));
+        } else if (getValue() instanceof BigInteger) {
+            setValue((T) reader.getBigInt(getName()));
+        } else {
+            throw new RuntimeException("what the fuck kinda number is you using :sob:");
         }
-
-        return index;
     }
 }

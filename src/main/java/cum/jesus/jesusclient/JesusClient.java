@@ -10,7 +10,9 @@ import cum.jesus.jesusclient.module.ModuleHandler;
 import cum.jesus.jesusclient.module.ModuleRegistry;
 import cum.jesus.jesusclient.script.ScriptManager;
 import cum.jesus.jesusclient.script.runtime.listeners.ClientListener;
-import cum.jesus.jesusclient.setting.SettingManager;
+import cum.jesus.jesusclient.script.trigger.EventTrigger;
+import cum.jesus.jesusclient.util.ExceptionHandler;
+import cum.jesus.jesusclient.util.Logger;
 import cum.jesus.jesusclient.util.User;
 import net.minecraft.client.Minecraft;
 import net.minecraft.launchwrapper.Launch;
@@ -23,7 +25,6 @@ public class JesusClient {
     private static boolean loaded = false;
 
     public ConfigManager configManager;
-    public SettingManager settingManager;
     public CommandHandler commandHandler;
     public ModuleHandler moduleHandler;
 
@@ -51,15 +52,15 @@ public class JesusClient {
         ModuleRegistry moduleRegistry = new ModuleRegistry();
 
         configManager = new ConfigManager();
-        settingManager = new SettingManager();
         commandHandler = new CommandHandler();
         moduleHandler = new ModuleHandler(moduleRegistry);
+
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
         FileManager.clearTmpDir();
 
         config = new ClientConfig();
-
-        settingManager.registerObject("Client", config);
+        configManager.register(config);
 
         commandHandler.addCommands();
         moduleHandler.addModules();
@@ -73,10 +74,11 @@ public class JesusClient {
 
         configManager.load();
 
+        EventManager.register(ClientListener.INSTANCE);
+        EventManager.register(EventTrigger.EVENT_LISTENER);
+
         ScriptManager.setup();
         ScriptManager.entryPass();
-
-        EventManager.register(ClientListener.INSTANCE);
 
         EventManager.cleanRegistry(true);
 
@@ -88,5 +90,7 @@ public class JesusClient {
         FileManager.clearTmpDir();
 
         loaded = false;
+
+        Logger.debug("yo");
     }
 }

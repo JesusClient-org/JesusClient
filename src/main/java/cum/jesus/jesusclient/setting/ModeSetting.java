@@ -1,9 +1,10 @@
 package cum.jesus.jesusclient.setting;
 
-import cum.jesus.jesusclient.util.PrimitiveJesusSerializer;
+import cum.jesus.jesusclient.config.builder.ConfigBuilder;
+import cum.jesus.jesusclient.config.reader.ConfigReader;
 
 public final class ModeSetting extends Setting<Integer> {
-    private String[] modes;
+    private final String[] modes;
 
     public ModeSetting(String name, String defaultValue, String... modes) {
         super(name, 0);
@@ -38,15 +39,12 @@ public final class ModeSetting extends Setting<Integer> {
     }
 
     @Override
-    public byte[] toBytes() {
-        return PrimitiveJesusSerializer.serializeInt(getValue());
+    public void addToBuilder(ConfigBuilder builder) {
+        builder.addInt(getName(), getValue());
     }
 
     @Override
-    public int fromBytes(byte[] bytes, int index) {
-        int[] value = new int[1];
-        index = PrimitiveJesusSerializer.deserializeInt(bytes, index, value);
-        setValue(value[0]);
-        return index;
+    public void getFromReader(ConfigReader reader) {
+        setValue(reader.getInt(getName()));
     }
 }

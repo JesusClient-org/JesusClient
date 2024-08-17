@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.JesusClient.api.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.JesusClient.api.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.JesusClient.main.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.JesusClient.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.JesusClient.test.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.JesusClient.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JesusClient.iml" filepath="$PROJECT_DIR$/.idea/modules/JesusClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/JesusClient.api.iml" filepath="$PROJECT_DIR$/.idea/modules/JesusClient.api.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/JesusClient.main.iml" filepath="$PROJECT_DIR$/.idea/modules/JesusClient.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/JesusClient.test.iml" filepath="$PROJECT_DIR$/.idea/modules/JesusClient.test.iml" />

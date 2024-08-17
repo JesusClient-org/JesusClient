@@ -7,7 +7,6 @@ import cum.jesus.jesusclient.script.trigger.Trigger;
 import cum.jesus.jesusclient.script.trigger.TriggerType;
 import cum.jesus.jesusclient.util.ChatUtils;
 import cum.jesus.jesusclient.util.Logger;
-import org.jetbrains.annotations.Contract;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.commonjs.module.ModuleScriptProvider;
 import org.mozilla.javascript.commonjs.module.Require;
@@ -66,7 +65,7 @@ public final class JSLoader implements ScriptLoader {
 
         pushContext();
 
-        String asmProvidedLibs = FileManager.saveResource("/js/asmProvidedLibs.js", "asm-provided-libs.js", true);
+        String asmProvidedLibs = FileManager.saveResourceString("/js/asmProvidedLibs.js", "asm-provided-libs.js", true);
 
         try {
             scriptContext.evaluateString(scope, asmProvidedLibs, "asmProvidedLibs", 1, null);
@@ -82,8 +81,7 @@ public final class JSLoader implements ScriptLoader {
     public void asmSetup() {
         pushContext();
 
-        File asmLibFile = new File(FileManager.resourcesDir, "asm-lib.js");
-        FileManager.saveResource("/js/asmLib.js", "asm-lib.js", true);
+        File asmLibFile = FileManager.saveResource("/js/asmLib.js", "asm-lib.js", true);
 
         try {
             Scriptable returned = require.loadScript("ASMLib", asmLibFile.toURI());
@@ -124,7 +122,7 @@ public final class JSLoader implements ScriptLoader {
     public void entrySetup() {
         pushContext();
 
-        String stdLib = FileManager.saveResource("/js/stdLib.js", "std-lib.js", true);
+        String stdLib = FileManager.saveResourceString("/js/stdLib.js", "std-lib.js", true);
 
         try {
             scriptContext.evaluateString(scope, stdLib, "stdLib", 1, null);
@@ -180,7 +178,7 @@ public final class JSLoader implements ScriptLoader {
     public void removeTrigger(Trigger trigger) {
         ConcurrentSkipListSet<Trigger> ret = triggers.get(trigger.getTriggerType());
         if (ret == null) return;
-        ret.add(trigger);
+        ret.remove(trigger);
     }
 
     @Override
@@ -199,7 +197,6 @@ public final class JSLoader implements ScriptLoader {
         } catch (Throwable e) {
             e.printStackTrace();
             removeTrigger(trigger);
-            ChatUtils.sendPrefixMessage(e.getMessage());
         } finally {
             popContext();
         }
@@ -238,15 +235,6 @@ public final class JSLoader implements ScriptLoader {
         if (missingContext) Context.exit();
     }
 
-    private static Object asmInvoke(Callable func, Object[] args) {
-        INSTANCE.pushContext();
-
-        Object ret = func.call(INSTANCE.scriptContext, INSTANCE.scope, INSTANCE.scope, args);
-
-        INSTANCE.popContext();
-        return ret;
-    }
-
     private void instanceContext(List<URL> files) {
         JSContextFactory.INSTANCE.addAllURLs(files);
 
@@ -261,6 +249,14 @@ public final class JSLoader implements ScriptLoader {
         Context.exit();
     }
 
+    private static Object asmInvoke(Callable func, Object[] args) {
+        INSTANCE.pushContext();
+
+        Object ret = func.call(INSTANCE.scriptContext, INSTANCE.scope, INSTANCE.scope, args);
+
+        INSTANCE.popContext();
+        return ret;
+    }
     public class JesusRequire extends Require {
         public JesusRequire(ModuleScriptProvider scriptProvider) {
             super(scriptContext, scope, scriptProvider, null, null, false);

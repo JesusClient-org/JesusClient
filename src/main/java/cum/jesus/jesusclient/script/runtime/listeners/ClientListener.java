@@ -3,6 +3,7 @@ package cum.jesus.jesusclient.script.runtime.listeners;
 import cum.jesus.jesusclient.event.EventTarget;
 import cum.jesus.jesusclient.event.EventType;
 import cum.jesus.jesusclient.event.Priority;
+import cum.jesus.jesusclient.event.events.Event;
 import cum.jesus.jesusclient.event.events.videogame.GameTickEvent;
 import cum.jesus.jesusclient.script.trigger.TriggerType;
 import cum.jesus.jesusclient.util.Logger;

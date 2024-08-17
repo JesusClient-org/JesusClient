@@ -5,7 +5,7 @@ public enum ModuleCategory {
 
     ;
 
-    private String name;
+    public final String name;
 
     ModuleCategory(String name) {
         this.name = name;

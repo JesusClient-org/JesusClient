@@ -3,17 +3,16 @@ package cum.jesus.jesusclient.file;
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.util.ChatUtils;
 import org.apache.commons.io.FileUtils;
-import org.lwjgl.Sys;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class FileManager {
     public static final File root;
     public static final File assetsDir;
-    public static final File moduleDir;
+    public static final File configDir;
     public static final File resourcesDir;
     public static final File scriptDir;
     public static final File tmpDir;
@@ -21,55 +20,27 @@ public final class FileManager {
     static {
         root = new File(JesusClient.mc == null ? new File(".") : JesusClient.mc.mcDataDir == null ? new File(".") : JesusClient.mc.mcDataDir, "jesusclient");
         assetsDir = new File(root, "assets");
-        moduleDir = new File(root, "modules");
+        configDir = new File(root, "config");
         resourcesDir = new File(root, "resources");
         scriptDir = new File(root, "scripts");
         tmpDir = new File(root, "tmp");
 
         root.mkdirs();
         assetsDir.mkdirs();
-        moduleDir.mkdirs();
+        configDir.mkdirs();
         resourcesDir.mkdirs();
         scriptDir.mkdirs();
         tmpDir.mkdirs();
     }
 
-    public static boolean hasFile(final String file) {
-        File f = new File(root, file + ".jesus");
-        return f.exists();
-    }
+    private static File get(File dir, String name) {
+        File file = new File(dir, name);
+        File parentDir = file.getParentFile();
 
-    public static JesusFile open(final String file) throws FileNotFoundException {
-        File f = new File(root, file + ".jesus");
-
-        if (!f.exists()) {
-            throw new FileNotFoundException("'open' requires an existing file");
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
         }
 
-        return new JesusFile(f);
-    }
-
-    public static JesusFile create(final String file) throws FileAlreadyExistsException {
-        File f = new File(root, file + ".jesus");
-
-        if (f.exists()) {
-            throw new FileAlreadyExistsException("'create' requires a file to not exist");
-        }
-
-        try {
-            f.createNewFile();
-        } catch (IOException e) {
-            return null;
-        }
-
-        return new JesusFile(f);
-    }
-
-    public static JesusFile get(final String file) {
-        return fromFile(new File(root, file + ".jesus"));
-    }
-
-    public static JesusFile fromFile(final File file) {
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -79,27 +50,28 @@ public final class FileManager {
             }
         }
 
-        return new JesusFile(file);
+        return file;
     }
 
-    public static JesusFile getModuleFile(final String module) {
-        return fromFile(new File(moduleDir, module + ".jesus"));
+    public static boolean hasFile(String file) {
+        File f = new File(root, file + ".jesus");
+        return f.exists();
     }
 
-    public static JesusFile[] getAllModuleFiles() {
-        File[] files = moduleDir.listFiles();
-        assert files != null;
+    public static File get(String fileName) {
+        return get(root, fileName);
+    }
 
-        JesusFile[] moduleFiles = new JesusFile[files.length];
+    public static File getConfigFile(String name) {
+        File file = new File(configDir, name + ".jesus");
+        File parentDir = file.getParentFile();
 
-        for (int i = 0; i < files.length; i++) {
-            moduleFiles[i] = fromFile(files[i]);
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
         }
 
-        return moduleFiles;
+        return file;
     }
-
-    // normal file stuff
 
     public static String read(File file) {
         if (!file.exists()) return null;
@@ -124,7 +96,7 @@ public final class FileManager {
         }
     }
 
-    public static String saveResource(String resourceName, String outputName, boolean replace) {
+    public static String saveResourceString(String resourceName, String outputName, boolean replace) {
         if (resourceName == null || resourceName.isEmpty() || outputName == null || outputName.isEmpty()) {
             return null;
         }
@@ -147,6 +119,50 @@ public final class FileManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static File saveResource(String resourceName, String outputName, boolean replace) {
+        if (resourceName == null || resourceName.isEmpty() || outputName == null || outputName.isEmpty()) {
+            return null;
+        }
+
+        File output = new File(resourcesDir, outputName);
+
+        if (output.exists() && !replace) {
+            return output;
+        }
+
+        try (InputStream resource = FileManager.class.getResourceAsStream(resourceName)) {
+            if (resource == null) {
+                throw new IllegalArgumentException("The embedded resource '" + resourceName + "' cannot be found");
+            }
+
+            FileUtils.copyInputStreamToFile(resource, output);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return output;
+    }
+
+    public static void loadLibraryFromResources(String libName) {
+        if (libName == null || libName.isEmpty()) {
+            return;
+        }
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            libName += ".dll";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            libName += ".so";
+        } else {
+            throw new UnsupportedOperationException("Unsupported OS: " + SystemUtils.OS_NAME);
+        }
+
+        String[] parts = libName.replace('\\', File.separatorChar).replace('/', File.separatorChar).split("/");
+        String fileName = parts[parts.length - 1];
+        File output = saveResource(libName, fileName, true);
+
+        System.load(output.getAbsolutePath());
     }
 
     public static File getTmpFile() {

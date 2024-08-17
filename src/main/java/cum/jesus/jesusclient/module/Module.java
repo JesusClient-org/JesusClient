@@ -2,6 +2,8 @@ package cum.jesus.jesusclient.module;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.config.IConfigurable;
+import cum.jesus.jesusclient.file.builder.FileBuilder;
+import cum.jesus.jesusclient.file.reader.FileReader;
 import cum.jesus.jesusclient.setting.BooleanSetting;
 import cum.jesus.jesusclient.setting.NumberSetting;
 import cum.jesus.jesusclient.setting.Setting;
@@ -35,11 +37,9 @@ public abstract class Module implements IConfigurable {
         this.canBeEnabled = canBeEnabled;
         this.hidden = hidden;
         this.keybind = keybind;
-
-        this.settings.add(new BooleanSetting("toggled", false));
-        this.settings.add(new NumberSetting<Integer>("keybind", keybind, Integer.MIN_VALUE, Integer.MAX_VALUE));
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -53,11 +53,28 @@ public abstract class Module implements IConfigurable {
     }
 
     @Override
+    public String getFileName() {
+        return "modules/" + category.name + "." + name.replace(" ", "");
+    }
+
+    @Override
     public List<Setting> getSettings() {
         return settings;
     }
 
-    public boolean isCanBeEnabled() {
+    @Override
+    public void writeSpecial(FileBuilder builder) {
+        builder.addBoolean(toggled);
+        builder.addInt(keybind);
+    }
+
+    @Override
+    public void readSpecial(FileReader reader) {
+        toggled = reader.getBoolean();
+        keybind = reader.getInt();
+    }
+
+    public boolean canBeEnabled() {
         return canBeEnabled;
     }
 

@@ -15,16 +15,15 @@ public final class ModuleRegistry {
     }
 
     public void addDefaultModules() {
-        add(new TestModule());
     }
 
     public void addDevModules() {
-
+        add(new TestModule());
     }
 
     public void add(Module module) {
         modules.add(module);
         EventManager.register(module);
-        JesusClient.instance.settingManager.registerObject(module.name.replace(" ", ""), module);
+        JesusClient.instance.configManager.register(module);
     }
 }

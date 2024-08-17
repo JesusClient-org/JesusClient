@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.script.languages.js;
 
 import cum.jesus.jesusclient.JesusClient;
+import cum.jesus.jesusclient.util.ModifiedURLClassLoader;
 import net.minecraft.launchwrapper.Launch;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -70,25 +71,5 @@ public final class JSContextFactory extends ContextFactory {
         else if (featureIndex == EMIT_DEBUG_OUTPUT) return JesusClient.isLoaded() && JesusClient.instance.devMode;
 
         return super.hasFeature(cx, featureIndex);
-    }
-
-    private class ModifiedURLClassLoader extends URLClassLoader {
-        private List<URL> sources = new ArrayList<>();
-
-        public ModifiedURLClassLoader() {
-            super(new URL[0], ModifiedURLClassLoader.class.getClassLoader());
-        }
-
-        private void addAllURLs(List<URL> urls) {
-            urls.stream()
-                    .filter(url -> !sources.contains(url))
-                    .forEach(this::addURL);
-        }
-
-        @Override
-        protected void addURL(URL url) {
-            super.addURL(url);
-            sources.add(url);
-        }
     }
 }

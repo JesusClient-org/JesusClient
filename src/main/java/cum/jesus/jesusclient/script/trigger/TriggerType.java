@@ -7,6 +7,8 @@ public enum TriggerType {
     TICK,
     SECOND,
 
+    EVENT,
+
     ;
 
     public void triggerAll(Object[] args) {
