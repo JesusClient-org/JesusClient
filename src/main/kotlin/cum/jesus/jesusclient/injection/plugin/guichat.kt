@@ -11,7 +11,8 @@ import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.GuiTextField
 
 fun injectGuiChat() {
-
+    injectInitGui()
+    injectSendAutocompleteRequest()
 }
 
 fun injectInitGui() = inject {

@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.injection
 
 import cum.jesus.jesusclient.injection.plugin.injectGuiChat
+import cum.jesus.jesusclient.injection.plugin.injectGuiInGame
 import cum.jesus.jesusclient.injection.plugin.injectGuiScreen
 import cum.jesus.jesusclient.injection.plugin.injectMinecraft
 import cum.jesus.jesusclient.script.ScriptManager
@@ -31,6 +32,7 @@ class JesusTransformer : BaseClassTransformer() {
             injectMinecraft()
             injectGuiChat()
             injectGuiScreen()
+            injectGuiInGame()
 
             ScriptManager.setup()
             ScriptManager.asmPass()

@@ -5,7 +5,8 @@ import cum.jesus.jesusclient.command.annotations.*;
 import cum.jesus.jesusclient.command.arguments.*;
 import cum.jesus.jesusclient.command.commands.DiscordCommand;
 import cum.jesus.jesusclient.command.commands.HelpCommand;
-import cum.jesus.jesusclient.command.commands.dev.ModuleCommand;
+import cum.jesus.jesusclient.command.commands.ModuleCommand;
+import cum.jesus.jesusclient.command.commands.dev.TestCommand;
 import cum.jesus.jesusclient.util.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -49,11 +50,13 @@ public final class CommandHandler {
 
     public void addCommands() {
         registerCommand(new DiscordCommand());
+        registerCommand(new ModuleCommand());
+
         registerCommand(new HelpCommand());
     }
 
     public void addDevCommands() {
-        registerCommand(new ModuleCommand());
+        registerCommand(new TestCommand());
     }
 
     public void registerCommand(Object cmd) {
@@ -162,7 +165,7 @@ public final class CommandHandler {
             }
         }
 
-        return new String[] { "Command not found. Do " + JesusClient.instance.config.commandPrefix + command.meta.value() + " help for help" };
+        return new String[] { "Command not found. Do " + JesusClient.instance.config.commandPrefix.getValue() + command.meta.value() + " help for help" };
     }
 
     private Pair<String[], InternalCommand> getCommand(RegisteredCommand root, String[] args) {

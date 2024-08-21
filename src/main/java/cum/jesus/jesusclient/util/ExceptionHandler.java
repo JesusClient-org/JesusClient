@@ -1,13 +1,9 @@
 package cum.jesus.jesusclient.util;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 public final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     private static final Color backgroundColor = new Color(40, 40, 40);
@@ -77,8 +73,6 @@ public final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         frame.add(panel);
 
         frame.setVisible(true);
-
-        e.printStackTrace();
     }
 
     private static JPanel getButtons(JFrame frame) {
@@ -105,7 +99,7 @@ public final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         });
 
         exitButton.addActionListener(event -> {
-            System.exit(0);
+            FMLCommonHandler.instance().exitJava(0, false);
         });
 
         buttonPanel.add(continueButton);

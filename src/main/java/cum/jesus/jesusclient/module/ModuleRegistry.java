@@ -2,7 +2,6 @@ package cum.jesus.jesusclient.module;
 
 import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.event.EventManager;
-import cum.jesus.jesusclient.module.modules.TestModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,6 @@ public final class ModuleRegistry {
     }
 
     public void addDevModules() {
-        add(new TestModule());
     }
 
     public void add(Module module) {
