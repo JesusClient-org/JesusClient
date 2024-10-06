@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.injection.plugin
 
 import cum.jesus.jesusclient.JesusClient
+import cum.jesus.jesusclient.module.modules.render.ClickGUIModule
 import dev.falsehonesty.asmhelper.dsl.At
 import dev.falsehonesty.asmhelper.dsl.InjectionPoint
 import dev.falsehonesty.asmhelper.dsl.code.CodeBlock
@@ -62,7 +63,7 @@ fun injectSendAutocompleteRequest() = inject {
         val local1 = shadowLocal<String>() // message
 
         code {
-            if (JesusClient.isLoaded() && local1.startsWith(JesusClient.instance.config.commandPrefix.value)) {
+            if (JesusClient.isLoaded() && local1.startsWith(ClickGUIModule.INSTANCE.commandPrefix.value)) {
                 val ls = JesusClient.instance.commandHandler.autoComplete(local1).toTypedArray()
 
                 if (ls.isNotEmpty() && !local1.lowercase().endsWith(ls[ls.size - 1].lowercase())) {

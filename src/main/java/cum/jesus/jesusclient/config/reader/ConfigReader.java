@@ -4,6 +4,7 @@ import cum.jesus.jesusclient.config.IConfigurable;
 import cum.jesus.jesusclient.file.FileManager;
 import cum.jesus.jesusclient.file.reader.FileReader;
 import cum.jesus.jesusclient.setting.Setting;
+import cum.jesus.jesusclient.util.Logger;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -62,114 +63,123 @@ public final class ConfigReader {
 
         readable = true;
 
-        for (Setting setting : object.getSettings()) {
+        for (Setting setting : object.getSettings2()) {
             setting.getFromReader(this);
         }
     }
 
-    public boolean getBoolean(String name) {
+    public boolean getBoolean(String name, boolean defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getBoolean(pos);
     }
 
-    public byte getByte(String name) {
+    public byte getByte(String name, byte defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getByte(pos);
     }
 
-    public short getShort(String name) {
+    public short getShort(String name, short defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getShort(pos);
     }
 
-    public int getInt(String name) {
+    public int getInt(String name, int defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getInt(pos);
     }
 
-    public long getLong(String name) {
+    public long getLong(String name, long defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getLong(pos);
     }
 
-    public float getFloat(String name) {
+    public float getFloat(String name, float defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getFloat(pos);
     }
 
-    public double getDouble(String name) {
+    public double getDouble(String name, double defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getDouble(pos);
     }
 
-    public BigInteger getBigInt(String name) {
+    public BigInteger getBigInt(String name, BigInteger defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getBigInt(pos);
     }
 
-    public String getString(String name) {
+    public String getString(String name, String defaultVal) {
         readable();
 
         Integer pos = settingOffsets.get(name);
 
         if (pos == null) {
-            throw new RuntimeException("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            Logger.warn("setting '" + name + "' not found in configurable '" + object.getName() + "'");
+            return defaultVal;
         }
 
         return fileReader.getString(pos);

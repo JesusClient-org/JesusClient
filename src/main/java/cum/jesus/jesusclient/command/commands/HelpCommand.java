@@ -4,6 +4,7 @@ import cum.jesus.jesusclient.JesusClient;
 import cum.jesus.jesusclient.command.CommandHandler;
 import cum.jesus.jesusclient.command.annotations.Command;
 import cum.jesus.jesusclient.command.annotations.Entry;
+import cum.jesus.jesusclient.module.modules.render.ClickGUIModule;
 import cum.jesus.jesusclient.util.ChatColor;
 import cum.jesus.jesusclient.util.ChatUtils;
 
@@ -19,7 +20,7 @@ public final class HelpCommand {
         sb.append(ChatColor.GOLD).append(ChatColor.BOLD).append("List of available commands\n");
 
         for (CommandHandler.RegisteredCommand command : commands) {
-            sb.append(ChatColor.GOLD).append(JesusClient.instance.config.commandPrefix.getValue()).append(command.meta.value());
+            sb.append(ChatColor.GOLD).append(ClickGUIModule.INSTANCE.commandPrefix.getValue()).append(command.meta.value());
 
             if (!command.meta.description().isEmpty())
                 sb.append(" - ").append(command.meta.description());
@@ -27,7 +28,7 @@ public final class HelpCommand {
             sb.append("\n");
         }
 
-        sb.append("\n").append(ChatColor.GOLD).append(ChatColor.ITALIC).append("Type ").append(JesusClient.instance.config.commandPrefix.getValue()).append("cmd help for more detailed help about cmd\n");
+        sb.append("\n").append(ChatColor.GOLD).append(ChatColor.ITALIC).append("Type ").append(ClickGUIModule.INSTANCE.commandPrefix.getValue()).append("cmd help for more detailed help about cmd\n");
 
         String[] lines = sb.toString().split("\n");
 

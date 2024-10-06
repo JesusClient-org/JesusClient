@@ -7,6 +7,7 @@ import cum.jesus.jesusclient.command.commands.DiscordCommand;
 import cum.jesus.jesusclient.command.commands.HelpCommand;
 import cum.jesus.jesusclient.command.commands.ModuleCommand;
 import cum.jesus.jesusclient.command.commands.dev.TestCommand;
+import cum.jesus.jesusclient.module.modules.render.ClickGUIModule;
 import cum.jesus.jesusclient.util.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -64,7 +65,7 @@ public final class CommandHandler {
     }
 
     public boolean execute(String string) {
-        String raw = string.substring(JesusClient.instance.config.commandPrefix.getValue().length());
+        String raw = string.substring(ClickGUIModule.INSTANCE.commandPrefix.getValue().length());
         String[] splitCommand = raw.split(" ");
 
         if (splitCommand.length == 0) return false;
@@ -73,7 +74,7 @@ public final class CommandHandler {
         RegisteredCommand command = commands.stream().filter(c -> matchCmdName(c, commandName)).findFirst().orElse(null);
 
         if (command == null) {
-            ChatUtils.sendPrefixMessage(commandName + " is not a valid command. Run " + JesusClient.instance.config.commandPrefix.getValue() + "help for a list of commands");
+            ChatUtils.sendPrefixMessage(commandName + " is not a valid command. Run " + ClickGUIModule.INSTANCE.commandPrefix.getValue() + "help for a list of commands");
             return false;
         }
 
@@ -91,7 +92,7 @@ public final class CommandHandler {
     }
 
     public Collection<String> autoComplete(String current) {
-        String raw = current.substring(JesusClient.instance.config.commandPrefix.getValue().length());
+        String raw = current.substring(ClickGUIModule.INSTANCE.commandPrefix.getValue().length());
         String[] split = raw.split(" ");
 
         List<String> autoCompletions = new ArrayList<>();
@@ -111,7 +112,7 @@ public final class CommandHandler {
         } else if (split.length == 1) {
             for (RegisteredCommand c : commands) autoCompletions.addAll(c.getNameAndAliases());
 
-            return autoCompletions.stream().map(str -> JesusClient.instance.config.commandPrefix.getValue() + str).filter(str -> str.toLowerCase().startsWith(current.toLowerCase())).collect(Collectors.toList());
+            return autoCompletions.stream().map(str -> ClickGUIModule.INSTANCE.commandPrefix.getValue() + str).filter(str -> str.toLowerCase().startsWith(current.toLowerCase())).collect(Collectors.toList());
         }
 
         return autoCompletions;
@@ -165,7 +166,7 @@ public final class CommandHandler {
             }
         }
 
-        return new String[] { "Command not found. Do " + JesusClient.instance.config.commandPrefix.getValue() + command.meta.value() + " help for help" };
+        return new String[] { "Command not found. Do " + ClickGUIModule.INSTANCE.commandPrefix.getValue() + command.meta.value() + " help for help" };
     }
 
     private Pair<String[], InternalCommand> getCommand(RegisteredCommand root, String[] args) {
@@ -432,7 +433,7 @@ public final class CommandHandler {
             String name = meta.value();
             StringBuilder sb = new StringBuilder(200);
 
-            sb.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Help for '").append(JesusClient.instance.config.commandPrefix.getValue()).append(name).append("'").append(ChatColor.RESET).append(ChatColor.GOLD);
+            sb.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Help for '").append(ClickGUIModule.INSTANCE.commandPrefix.getValue()).append(name).append("'").append(ChatColor.RESET).append(ChatColor.GOLD);
 
             if (!meta.description().isEmpty()) sb.append(" - ").append(meta.description());
             if (meta.aliases().length > 0) sb.append(":           ").append(Arrays.toString(meta.aliases()));
@@ -446,7 +447,7 @@ public final class CommandHandler {
                     Entry entry = command.method.isAnnotationPresent(Entry.class) ? command.method.getAnnotation(Entry.class) : null;
 
                     path = command.getPrimaryPath().substring(0, command.getPrimaryPath().length() - ENTRY_METHOD_NAME.length()).replaceAll(DELIMITER, " ").trim();
-                    sb.append(JesusClient.instance.config.commandPrefix.getValue()).append(name).append(path.isEmpty() ? "" : " ").append(path).append(" ");
+                    sb.append(ClickGUIModule.INSTANCE.commandPrefix.getValue()).append(name).append(path.isEmpty() ? "" : " ").append(path).append(" ");
 
                     for (Parameter parameter : command.method.getParameters()) {
                         appendParameter(sb, parameter);
@@ -457,7 +458,7 @@ public final class CommandHandler {
                 }
 
                 path = command.getPrimaryPath().replaceAll(DELIMITER, " ");
-                sb.append(JesusClient.instance.config.commandPrefix.getValue()).append(name).append(" ").append(path).append(" ");
+                sb.append(ClickGUIModule.INSTANCE.commandPrefix.getValue()).append(name).append(" ").append(path).append(" ");
 
                 for (Parameter parameter : command.method.getParameters()) {
                     appendParameter(sb, parameter);
@@ -486,7 +487,7 @@ public final class CommandHandler {
             if (command != null) {
                 StringBuilder sb = new StringBuilder(200);
                 
-                sb.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Advanced help for ").append(JesusClient.instance.config.commandPrefix.getValue()).append(meta.value()).append(" ").append(command.getPrimaryPath().replaceAll(DELIMITER, " "));
+                sb.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Advanced help for ").append(ClickGUIModule.INSTANCE.commandPrefix.getValue()).append(meta.value()).append(" ").append(command.getPrimaryPath().replaceAll(DELIMITER, " "));
                 sb.append(ChatColor.RESET).append(ChatColor.GOLD).append(": ").append("\n").append(ChatColor.GOLD);
                 
                 if (command.hasHelp) {
@@ -509,7 +510,7 @@ public final class CommandHandler {
                     sb.append(desc != null ? ": " + desc : "\n").append(ChatColor.GOLD);
                 }
                 return sb.toString().split("\n");
-            } else return new String[]{ ChatColor.GOLD + "Could not find help for command. Try running " + JesusClient.instance.config.commandPrefix.getValue() + meta.value() + " help for more generic help" };
+            } else return new String[]{ ChatColor.GOLD + "Could not find help for command. Try running " + ClickGUIModule.INSTANCE.commandPrefix.getValue() + meta.value() + " help for more generic help" };
         }
     }
 

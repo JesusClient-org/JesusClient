@@ -37,7 +37,7 @@ public final class ConfigBuilder {
 
         object.writeSpecial(fileBuilder);
 
-        List<Setting> settings = object.getSettings();
+        List<Setting> settings = object.getSettings2();
         fileBuilder.addInt(settings.size());
 
         writable = true;

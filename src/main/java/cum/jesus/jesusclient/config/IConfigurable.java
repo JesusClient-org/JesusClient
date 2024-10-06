@@ -11,7 +11,8 @@ public interface IConfigurable {
 
     String getFileName(); // path from the jesusclient config root (.minecraft/jesusclient/config/) where the config file is stored
 
-    List<Setting> getSettings();
+    // it's called getSettings2 because panelstudio SUCKS
+    List<Setting> getSettings2();
 
     void writeSpecial(FileBuilder builder);
 

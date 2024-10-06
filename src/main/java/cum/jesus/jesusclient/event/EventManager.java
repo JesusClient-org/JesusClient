@@ -133,6 +133,7 @@ public final class EventManager {
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             Logger.error("dawg something's wrong here");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

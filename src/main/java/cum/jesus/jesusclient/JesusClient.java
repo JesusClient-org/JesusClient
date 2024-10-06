@@ -2,7 +2,6 @@ package cum.jesus.jesusclient;
 
 import com.google.gson.Gson;
 import cum.jesus.jesusclient.command.CommandHandler;
-import cum.jesus.jesusclient.config.ClientConfig;
 import cum.jesus.jesusclient.config.ConfigManager;
 import cum.jesus.jesusclient.event.EventManager;
 import cum.jesus.jesusclient.file.FileManager;
@@ -14,6 +13,7 @@ import cum.jesus.jesusclient.script.trigger.EventTrigger;
 import cum.jesus.jesusclient.util.ExceptionHandler;
 import cum.jesus.jesusclient.util.Logger;
 import cum.jesus.jesusclient.util.User;
+import cum.jesus.jesusclient.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.launchwrapper.Launch;
 
@@ -27,8 +27,6 @@ public class JesusClient {
     public ConfigManager configManager;
     public CommandHandler commandHandler;
     public ModuleHandler moduleHandler;
-
-    public ClientConfig config;
 
     public boolean devMode = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") || User.username.equals("JesusTouchMe") || FileManager.hasFile("developer");
 
@@ -49,6 +47,8 @@ public class JesusClient {
     }
 
     public void start() {
+        Logger.debug("start");
+
         ModuleRegistry moduleRegistry = new ModuleRegistry();
 
         configManager = new ConfigManager();
@@ -58,9 +58,6 @@ public class JesusClient {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
         FileManager.clearTmpDir();
-
-        config = new ClientConfig();
-        configManager.register(config);
 
         commandHandler.addCommands();
         moduleHandler.addModules();
@@ -76,6 +73,7 @@ public class JesusClient {
 
         EventManager.register(ClientListener.INSTANCE);
         EventManager.register(EventTrigger.EVENT_LISTENER);
+        EventManager.register(Utils.INSTANCE);
 
         ScriptManager.setup();
         ScriptManager.entryPass();

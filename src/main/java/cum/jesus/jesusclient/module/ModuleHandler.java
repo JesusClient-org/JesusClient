@@ -2,6 +2,10 @@ package cum.jesus.jesusclient.module;
 
 import cum.jesus.jesusclient.event.EventTarget;
 import cum.jesus.jesusclient.event.events.videogame.KeyInputEvent;
+import cum.jesus.jesusclient.event.events.videogame.MouseInputEvent;
+import cum.jesus.jesusclient.setting.settings.KeybindSetting;
+import cum.jesus.jesusclient.setting.Setting;
+import cum.jesus.jesusclient.util.Logger;
 
 public final class ModuleHandler {
     private final ModuleRegistry registry;
@@ -22,26 +26,29 @@ public final class ModuleHandler {
         registry.addDevModules();
     }
 
-    public <T extends Module> T getModule(Class<T> klass) {
-        return (T) registry.getModules().stream().filter(mod -> mod.getClass() == klass).findFirst().orElse(null);
-    }
+    @EventTarget
+    private void onKey(KeyInputEvent event) {
 
-    public Module getModule(String name) {
-        return registry.getModules().stream().filter(mod -> name.equalsIgnoreCase(mod.getName())).findFirst().orElse(null);
-    }
-
-    /**
-     * For config manager
-     */
-    public Module getModuleNoSpace(String name) {
-        return registry.getModules().stream().filter(mod -> name.equalsIgnoreCase(mod.getName().replace(" ", ""))).findFirst().orElse(null);
+        for (Module module : registry.getModules()) {
+            for (Setting setting : module.getSettings2()) {
+                if (setting instanceof KeybindSetting && ((KeybindSetting) setting).getValue().getKey() == event.getKey()) {
+                    Runnable func = ((KeybindSetting) setting).getValue().getOnPress();
+                    if (func != null) {
+                        func.run();
+                    }
+                }
+            }
+        }
     }
 
     @EventTarget
-    private void onKey(KeyInputEvent event) {
+    private void onMouse(MouseInputEvent event) {
         for (Module module : registry.getModules()) {
-            if (module.getKeybind() == event.getKey()) {
-                module.handleKeybind();
+            for (Setting setting : module.getSettings2()) {
+                if (setting instanceof KeybindSetting && ((KeybindSetting) setting).getValue().getKey() + 100 == event.getButton()) {
+                    Runnable func = ((KeybindSetting) setting).getValue().getOnPress();
+                    if (func != null) func.run();
+                }
             }
         }
     }

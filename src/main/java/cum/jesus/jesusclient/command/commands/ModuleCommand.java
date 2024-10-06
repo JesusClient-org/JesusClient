@@ -13,7 +13,7 @@ import cum.jesus.jesusclient.util.ChatUtils;
 public final class ModuleCommand {
     @SubCommand(description = "Toggles a given module")
     private void toggle(@Argument(value = "Module name", description = "Name of the module to toggle") @Variadic String moduleName) {
-        Module module = JesusClient.instance.moduleHandler.getModule(moduleName);
+        Module module = JesusClient.instance.moduleHandler.getRegistry().getModule(moduleName);
 
         if (module == null) {
             throw new CommandException("Module named '" + moduleName + "' wasn't found");

@@ -1,6 +1,7 @@
 package cum.jesus.jesusclient.injection.plugin
 
 import cum.jesus.jesusclient.JesusClient
+import cum.jesus.jesusclient.module.modules.render.ClickGUIModule
 import dev.falsehonesty.asmhelper.dsl.At
 import dev.falsehonesty.asmhelper.dsl.InjectionPoint
 import dev.falsehonesty.asmhelper.dsl.code.CodeBlock
@@ -24,7 +25,7 @@ fun injectSendChatMessage() = inject {
         val local1 = shadowLocal<String>()
 
         code {
-            if (JesusClient.isLoaded() && local1.startsWith(JesusClient.instance.config.commandPrefix.value) && local1.length > JesusClient.instance.config.commandPrefix.value.length) {
+            if (JesusClient.isLoaded() && local1.startsWith(ClickGUIModule.INSTANCE.commandPrefix.value) && local1.length > ClickGUIModule.INSTANCE.commandPrefix.value.length) {
                 if (JesusClient.instance.commandHandler.execute(local1)) {
                     mc.ingameGUI.chatGUI.addToSentMessages(local1)
                 }

@@ -5,6 +5,7 @@ import cum.jesus.jesusclient.event.EventManager
 import cum.jesus.jesusclient.event.EventType
 import cum.jesus.jesusclient.event.events.videogame.GameTickEvent
 import cum.jesus.jesusclient.event.events.videogame.KeyInputEvent
+import cum.jesus.jesusclient.gui.clickgui.ClickGUI
 import cum.jesus.jesusclient.util.Logger
 import dev.falsehonesty.asmhelper.dsl.At
 import dev.falsehonesty.asmhelper.dsl.InjectionPoint
@@ -82,15 +83,21 @@ fun injectRunTickDispatchKeypresses() = inject {
     )
 
     codeBlock {
-        val currentScreen = shadowField<GuiScreen>()
+        val currentScreen = shadowField<GuiScreen?>()
 
         code {
             if (JesusClient.isLoaded()) {
-                if (Keyboard.getEventKeyState() && currentScreen != null) {
-                    EventManager.call(KeyInputEvent(
-                        if (Keyboard.getEventKey() == 0) Keyboard.getEventCharacter().code + 256
-                        else Keyboard.getEventKey()
-                    ))
+                if (Keyboard.getEventKeyState()) {
+                    ClickGUI.INSTANCE.handleKeyEvent(Keyboard.getEventKey())
+
+                    if (currentScreen == null) {
+                        EventManager.call(
+                            KeyInputEvent(
+                                if (Keyboard.getEventKey() == 0) Keyboard.getEventCharacter().code + 256
+                                else Keyboard.getEventKey()
+                            )
+                        )
+                    }
                 }
             }
         }
